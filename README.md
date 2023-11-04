@@ -1,2 +1,3 @@
-# ensf-614-group
-ENSF 614 Group Project
+# Flight Reservation Web Application
+## ENSF 614 Group Project
+
