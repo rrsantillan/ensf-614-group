@@ -1,0 +1,56 @@
+/* Add or adjust the following CSS in your styles */
+.seat-map {
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* Adjust the gap between seat rows */
+  }
+  
+  .seat-row {
+    display: flex;
+    justify-content: space-around;
+  }
+  
+  .seat {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+  }
+  
+  .selected {
+    background-color: #3498db;
+    color: #fff;
+  }
+
+
+  .selectedFlight {
+    background-color: yellow; /* or any other highlighting style */
+  }
+
+  .flight-data-container {
+    border: 2px solid #000; /* Set border width and color as needed */
+    padding: 10px; /* Optional: Add padding to create space between the box and content */
+    margin-bottom: 15px; /* Optional: Add margin to create space between multiple boxes */
+  }
+
+
+  .selected-range {
+    background-color: lightblue;
+    border-radius: 50%;
+    height: 80%;
+    width: 80%;
+    margin: 10%;
+  }
+  
+  .selected-start {
+    background-color: lightgreen;
+    border-radius: 50%;
+    height: 80%;
+    width: 80%;
+    margin: 10%;
+  }
+  
