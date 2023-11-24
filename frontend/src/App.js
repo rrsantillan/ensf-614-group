@@ -1,13 +1,13 @@
 
 import React from 'react';
-import Login from './Componets/Login'
+import Login from './Components/Login'
 import Signup from './Signup'
 import Home from './Home'
-import Admin from './Componets/Adminview'
-import FindFlight from './Componets/FindFlight'
-import CurrentFlight from './Componets/CurrentFlight'
-import BookFlight from './Componets/BookFlight'
-import Agentview from './Componets/Agentview'
+import Admin from './Components/Adminview'
+import FindFlight from './Components/FindFlight'
+import CurrentFlight from './Components/CurrentFlight'
+import BookFlight from './Components/BookFlight'
+import Agentview from './Components/Agentview'
 
 
 import {BrowserRouter, Routes, Route} from 'react-router-dom'

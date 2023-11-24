@@ -37,7 +37,7 @@ function BookFlight(){
     setValues((prevValues) => ({
       ...prevValues,
       selectedClass: event.target.value,
-      price: event.target.value === 'Bussniess' ? "$400.00": "$300.00",
+      price: event.target.value === 'Business' ? "$400.00": "$300.00",
       flight_ID: flightID,
       username: username
  
@@ -183,7 +183,7 @@ function BookFlight(){
                   <div style ={{width: '10px'}}/>
                   <select id="Class" value={selectedClass} onChange={handleClassChange}>
                     <option value="">Select...</option>
-                    <option value="Bussniess">Bussniess</option>
+                    <option value="Business">Business</option>
                     <option value="Economy">Economy</option>
                   </select>
                   </div>
