@@ -19,6 +19,12 @@ function validation(values){
     else{
         error.password = ""
     }
+    if(values.email === ""){
+        error.email = "Email should not be empty"
+    }
+    else{
+        error.email = ""
+    }
     return error;
 }
 

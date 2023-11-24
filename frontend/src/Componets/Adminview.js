@@ -5,7 +5,7 @@ import FlightForm from './FlightForm';
 import axios from 'axios'
 
 function AdminView(){
-    const { username } = useParams();
+    //const { username } = useParams();
     const [activeTab, setActiveTab] = useState('create'); // 'create' or 'browse'
 
     const [flightData, setFlightData] = useState(null);

@@ -1,7 +1,7 @@
 
 import React from 'react';
 import Login from './Componets/Login'
-import Signup from './Signup'
+import Signup from './Componets/Signup'
 import Home from './Home'
 import Admin from './Componets/Adminview'
 import FindFlight from './Componets/FindFlight'

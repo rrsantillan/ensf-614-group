@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import { Link, useParams } from 'react-router-dom';
-
+import Footer from './Componets/Footer'; 
 
 
 function Home(){
@@ -39,8 +39,8 @@ function Home(){
         </form>
 
       </div>
-      <div className="row p-3 bg-green w-25 justify-content-right align-items-right">
-        <button>Sign Out</button>
+      <div className="row p-3 bg-green w-25 justify-content-bottom align-items-bottom">
+        <Footer />
       </div>
     </div>
       

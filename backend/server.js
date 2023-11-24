@@ -21,16 +21,19 @@ const db = mysql.createConnection({
  * SignUp whihc adds row to user table  
  */
 app.post('/Signup', (req, res) => {
-    const sql = "INSERT INTO USERTABLE (USERNAME, PASSWORD) VALUES (?)"
+    const sql = "INSERT INTO USERTABLE (USERNAME, PASSWORD, PROFILE, EMAIL, DOB) VALUES (?, ?, ?, ?, ?)"
+    
     const values = [
         req.body.user,
-        req.body.password
+        req.body.password,
+        req.body.email
     ]
-
-    db.query(sql, [values], (err, data) => {
+    console.log(values)
+    db.query(sql,  [req.body.user, req.body.password, 'REGUSER', req.body.email, '1982-10-17 00:00:00'], (err, data) => {
       if(err){
         return res.json("Error");
       }
+      console.log(data)
       return res.json(data);
      
     })
