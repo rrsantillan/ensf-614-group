@@ -51,13 +51,13 @@ function BookFlight(){
     if(event.target.value === 'Economy'){
       setPrice(`${"300.00$"}`);
       newSeatMap = [
-        ['A4', 'B4', ' ','C4', 'D4'],
-        ['A5', 'B5', ' ','C5', 'D5'],
-        ['A6', 'B6', ' ','C6', 'D6'],
-        ['A7', 'B7', ' ','C7', 'D7'],
-        ['A8', 'B8', ' ','C8', 'D8'],
-        ['A9', 'B9', ' ','C9', 'D9'],
-        ['A10', 'B10', ' ','C10', 'D10']];
+        ['A4', 'B4', 'C4',  ' ', 'D4','E4', 'F4'],
+        ['A5', 'B5', 'C5',  ' ', 'D4','E5', 'F5'],
+        ['A6', 'B6', 'C6',  ' ', 'D4','E6', 'F6'],
+        ['A7', 'B7', 'C7',  ' ', 'D4','E7', 'F7'],
+        ['A8', 'B8', 'C8',  ' ', 'D8','E8', 'F8'],
+        ['A9', 'B9', 'C9',  ' ', 'D9','E9', 'F9'],
+        ['A10', 'B10', 'C10',  ' ', 'D10','E10', 'F10']];
       
 
     }else{
@@ -107,7 +107,9 @@ function BookFlight(){
    */
   const handleSeatSelect = async (seat) => {
     try {
-      if (await isSeatAvailable(seat)) {
+      if (seat === ' ') {
+        setSeatMessage(`This is the aisle please select a seat. Thank you`);
+      }else if (await isSeatAvailable(seat)) {
         setSelectedSeat(seat);
         
         setValues((prevValues) => ({
@@ -125,8 +127,6 @@ function BookFlight(){
         if (textarea) {
           textarea.value = seat;
         }
-      } else if (seat === ' ') {
-        setSeatMessage(`This is the aisle please select a seat. Thank you`);
       }else{
 
         setSeatMessage(`Seat ${seat} is not available. Please choose another seat.`);

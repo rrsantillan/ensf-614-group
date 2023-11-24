@@ -2,9 +2,15 @@ import React from "react"
 import axios from 'axios'
 import  { useState } from 'react';
 import { Link, useParams  } from 'react-router-dom';
-//import Calendar from 'react-calendar'
 
+import 'react-calendar/dist/Calendar.css';
 import '../CSS/styles.css';
+
+// import dayjs from 'dayjs';
+// import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
+// import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+// import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
 
 function FindFlight(){
     const { username } = useParams();
@@ -21,25 +27,29 @@ function FindFlight(){
 
     const [errors, setErrors] = useState({})
         
-    // const [dateRange, setDateRange] = useState({
-    //     start: null,
-    //     end: null,
-    //   });
+    const [dateRange, setDateRange] = useState({
+        start: null,
+        end: null,
+      });
     
-    // const handleDateChange = (date) => {
-    //     // If start date is not selected, set it as the start date
-    //     if (!dateRange.start) {
-    //     setDateRange({ start: date, end: null });
-    //     }
-    //     // If start date is already selected and end date is not selected, set it as the end date
-    //     else if (dateRange.start && !dateRange.end) {
-    //     setDateRange({ ...dateRange, end: date });
-    //     }
-    //     // If both start and end dates are selected, reset the range
-    //     else {
-    //     setDateRange({ start: date, end: null });
-    //     }
-    // };
+    // const [value, setValue] = React.useState([
+    //     dayjs('2022-04-17'),
+    //     dayjs('2022-04-21'),
+    // ]);
+    const handleDateChange = (date) => {
+        // If start date is not selected, set it as the start date
+        if (!dateRange.start) {
+        setDateRange({ start: date, end: null });
+        }
+        // If start date is already selected and end date is not selected, set it as the end date
+        else if (dateRange.start && !dateRange.end) {
+        setDateRange({ ...dateRange, end: date });
+        }
+        // If both start and end dates are selected, reset the range
+        else {
+        setDateRange({ start: date, end: null });
+        }
+    };
     const handleInput = (event) => {
         const { name, value } = event.target;
         setValues({
@@ -102,30 +112,7 @@ return(
                     onChange={handleInput} className='form-control'/>
                     {errors.Dest && <span className='text-danger'> {errors.Dest} </span>}
                 </div>
-                {/* <Calendar
-                    onChange={handleDateChange}
-                    value={dateRange.start || dateRange.end}
-                    selectRange={true}
-                    tileContent={({ date, view }) => {
-                    if (view === 'month') {
-                        // Highlight the selected date range
-                        if (
-                        dateRange.start &&
-                        dateRange.end &&
-                        date >= dateRange.start &&
-                        date <= dateRange.end
-                        ) {
-                        return <div className="selected-range"></div>;
-                        }
-                        // Highlight the selected start date
-                        else if ( dateRange.start &&
-                            dateRange.end === null &&
-                            date.getTime() === dateRange.start.getTime()) {
-                        return <div className="selected-start"></div>;
-                        }
-                    }
-                    }}
-                /> */}
+               
                 <button type='submit' className='btn btn-success w-100'>Search Flights</button>
 
 
@@ -164,3 +151,22 @@ return(
 
 }
 export default FindFlight
+
+
+ {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
+<DemoContainer components={['DateRangePicker', 'DateRangePicker']}>
+    <DemoItem label="Uncontrolled picker" component="DateRangePicker">
+    <DateRangePicker
+        defaultValue={[dayjs('2022-04-17'), dayjs('2022-04-21')]}
+    />
+    </DemoItem>
+    <DemoItem label="Controlled picker" component="DateRangePicker">
+    <DateRangePicker
+        value={value}
+        onChange={(newValue) => setValue(newValue)}
+    />
+    </DemoItem>
+</DemoContainer>
+</LocalizationProvider> */}
+              
+             

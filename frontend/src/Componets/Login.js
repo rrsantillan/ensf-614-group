@@ -9,6 +9,7 @@ function Login(){
         user: '',
         password: ''
     })
+    
     const encodedUsername = encodeURIComponent(values.user); 
     const navigate = useNavigate();
 
@@ -28,20 +29,13 @@ function Login(){
                if(res.data === "Failed"){
                     alert("No Record");
                     
-               }else {
+               }else { 
     
                     const fetchedUserArray = res.data.user;
-                    const Profile1 = fetchedUserArray[0].Profile;
+                    const Profile1 = fetchedUserArray[0].PROFILE;
                     console.log(Profile1)
-                    if (Profile1 === 'Admin'){
-                        navigate(`/Adminview/${encodedUsername}`);
-                    }
-                    else if(Profile1 === 'Agent'){
-                        navigate(`/home/${encodedUsername}`);
-                    }
-                    else{
-                        navigate(`/home/${encodedUsername}`);
-                    }
+                    
+                    navigate(`/home/${Profile1}/${encodedUsername}`);
                   
                    
                }
