@@ -1,11 +1,11 @@
 import axios from 'axios'
 import React, {useState} from 'react'
-import { Link } from 'react-router-dom';
+import {  } from 'react-router-dom';
 
 
 function Agentview(){
     const [selectedFlightID, setSelectedFlightID] = useState(null);
-    const [flightID2, setFlightID] = useState(null);
+    //const [flightID2, setFlightID] = useState(null);
     const [flightData, setFlightData] = useState(null);
 
     const [fetchedRegisteredTickets, setFetchedRegisteredTickets] = useState([]);
@@ -15,7 +15,7 @@ function Agentview(){
     
         const requestData = { flightID2: FLIGHTID };
 
-        axios.post('http://localhost:8081/getRegTicket', requestData )
+        axios.post('http://localhost:8081/getRegTicket', requestData)
         .then((response) => {  // Change 'res' to 'response' or any other variable name you prefer
             const fetchedTickets = response.data.registeredTickets;
             setFetchedRegisteredTickets(fetchedTickets);
@@ -26,9 +26,6 @@ function Agentview(){
        
         
     };
-
-
-
  
 
     const handleSumbit = (event)=> {
@@ -64,9 +61,9 @@ function Agentview(){
                                     <button onClick={() => 
                                         {
                                         handlePassSel(flight.FLIGHTID);
-                                        setFlightID(flight.FLIGHTID);
+                                        //setFlightID(flight.FLIGHTID);
                                         setSelectedFlightID(flight.FLIGHTID)}}
-                                        className={selectedFlightID === flight.FLIGHTID ? 'selectedFlight' : 'btn btn-primary mt-2'}>
+                                        className={selectedFlightID === flight.FLIGHTID ? 'selectedFlight' : "btn btn-outline-secondary"}>
                                         See Passengar List 
                                     </button>
                                     </p>
