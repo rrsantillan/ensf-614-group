@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import { Link, useParams } from 'react-router-dom';
-import Footer from './Componets/Footer'; 
+import Footer from './Components/Footer'; 
 
 
 function Home(){
