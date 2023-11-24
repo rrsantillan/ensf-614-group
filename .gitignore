@@ -58,7 +58,7 @@ Thumbs.db
 # Add any other files or directories specific to your project that should be ignored
 
 #################################################### 
-# bakend    :  node.js
+# backend    :  node.js
 ####################################################
 
 # Dependency directories
