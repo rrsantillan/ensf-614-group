@@ -5,8 +5,10 @@ import { useNavigate } from 'react-router-dom';
 
 const Payment = (props) => {
 
-    const { Price, values, username } = props;
+    const { price, myValues} = props;
     const navigate = useNavigate();
+
+    console.log('Values:', myValues);
 
     const [formData, setFormData] = useState({
         CardNumber: '',
@@ -60,13 +62,13 @@ const Payment = (props) => {
 
     const handleSumbit =(event)=> {
         event.preventDefault();
-        console.log(values)
+        console.log()
        
-        axios.post('http://localhost:8081/bookflight', values)
+        axios.post('http://localhost:8081/bookflight', {values: myValues, price: price})
         
         .then(res=> {
             if(res.data === "Success"){
-                navigate(`/home/${username}`);
+                //navigate(`/home/${username}`);
             }else {
                 alert("Unable to book flight");
             }
@@ -85,7 +87,9 @@ const Payment = (props) => {
                 {/* Payment Amount */}
                 <div>
                 <label>Payment amount:</label>
-                <label>{Price}</label>
+                
+              
+                <label>{price}</label>
                 </div>
 
                 {/* Name on Card */}
@@ -106,10 +110,10 @@ const Payment = (props) => {
                     />
                 </div>
 
-                <div class = "col" style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div className = "col" style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <div>
                         <label>Expiry Date:</label>
-                        <div class = "col" style={{ display: 'flex', justifyContent: 'space-between' }}>                    
+                        <div className = "col" style={{ display: 'flex', justifyContent: 'space-between' }}>                    
                             <input
                                 type="text"
                                 placeholder="MM"

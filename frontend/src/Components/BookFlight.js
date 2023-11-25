@@ -21,11 +21,11 @@ function BookFlight(){
 
   //Values is an array of values used to pass to a query on the backend
   const [values, setValues] = useState({
-    price: '',
     selectedClass: '',
     SelectedSeat2: '',
     flight_ID: '',
-    username: ''
+    username: '',
+    Insurance: ''
   })
 
   /**
@@ -40,10 +40,10 @@ function BookFlight(){
     setValues((prevValues) => ({
       ...prevValues,
       selectedClass: event.target.value,
-      price: event.target.value === 'Business' ? "$400.00": "$300.00",
       flight_ID: flightID,
-      username: username
- 
+      username: username,
+      Insurance: "No"
+      
     }));
     
    
@@ -55,9 +55,9 @@ function BookFlight(){
       setPrice(300.00);
       newSeatMap = [
         ['A4', 'B4', 'C4',  ' ', 'D4','E4', 'F4'],
-        ['A5', 'B5', 'C5',  ' ', 'D4','E5', 'F5'],
-        ['A6', 'B6', 'C6',  ' ', 'D4','E6', 'F6'],
-        ['A7', 'B7', 'C7',  ' ', 'D4','E7', 'F7'],
+        ['A5', 'B5', 'C5',  ' ', 'D5','E5', 'F5'],
+        ['A6', 'B6', 'C6',  ' ', 'D6','E6', 'F6'],
+        ['A7', 'B7', 'C7',  ' ', 'D7','E7', 'F7'],
         ['A8', 'B8', 'C8',  ' ', 'D8','E8', 'F8'],
         ['A9', 'B9', 'C9',  ' ', 'D9','E9', 'F9'],
         ['A10', 'B10', 'C10',  ' ', 'D10','E10', 'F10']];
@@ -165,8 +165,17 @@ function BookFlight(){
     
     if (!isChecked) {
       setPrice(price + 50)
+      setValues((prevValues) => ({
+        ...prevValues,
+        Insurance: "Yes"
+      }));
+      
     }else{
       setPrice(price - 50)
+      setValues((prevValues) => ({
+        ...prevValues,
+        Insurance: "No"
+      }));
     }
 
   };
@@ -218,7 +227,7 @@ function BookFlight(){
                   <div className="text-danger">{seatMessage}</div>
                 )}
                 {/* Display the selected seat information */}
-                <div className="d-flex justify-content-left align-items-top">
+                {/* <div className="d-flex justify-content-left align-items-top">
                   <label htmlFor="outputTextarea" >Selected Seat: </label>
                   <div style={{ width: '10px' }} />
                   <textarea name ='SelectedSeat2'
@@ -228,13 +237,13 @@ function BookFlight(){
                     rows={1}
                     cols={10}
                   />
-                </div>
+                </div> */}
                
                
                 <p></p>
                 <div>
                   <h4>Flight Insurance</h4>
-                  <div className="d-flex justify-content-left align-items-top">
+                  <div className="d-flex justify-content-left align-items-top p-2">
                     <input 
                       type="checkbox"  
                       onChange={() => {
@@ -242,14 +251,16 @@ function BookFlight(){
                         editPayment(); // Call the editPayment function on checkbox change
                       }}
                       aria-label="Checkbox for following text input"/>
-                    <text> Yes</text>
+                    <text className = "p-2"> Would you like Flight Insurance?</text>
                     </div>
                 </div>
                 <div>
-                    <h4>Final Cost</h4>
                    
-                      <div className="d-flex justify-content-left align-items-top">
-                      <textarea
+                   
+                      <div className="d-flex justify-content-left align-items-center">
+                      <text className ="p-2">Price: </text>
+                      <textarea 
+                        className ="p-1"
                         id="outputTextarea"
                         value={price}
                         readOnly  
@@ -264,7 +275,7 @@ function BookFlight(){
             </form>
           ) : (
             <div>
-              <Payment Price={price} value ={values} username = {values.username} />
+              <Payment price={price} myValues = {values} />
             </div>
          )}
         </div>

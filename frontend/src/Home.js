@@ -19,6 +19,29 @@ function Home(){
     console.log(Profile1)
    });  
 
+  const [emailData, setEmailData] = useState({
+    to: 'braden11tink@gmail.com',
+    subject: 'test',
+    body: 'Whats up',
+  });
+  const sendEmail = async () => {
+    try {
+      const response = await fetch('http://localhost:7000/api/send-', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(emailData),
+      });
+
+      const result = await response.json();
+      console.log(result.message);  // Assuming the server sends a response with a 'message' property
+
+    } catch (error) {
+      console.error('Error sending email:', error);
+    }
+  };
+
   return(
     <div class="container">  
       <div class = "row" classname ="vh-100 justify-content-center align-items-top">
@@ -35,7 +58,9 @@ function Home(){
              {showAgentLink && (
                 <Link to={`../Agentview`} className='btn btn-default border w-100 bg-light'>Agent View</Link>
             )}
-
+            <div>
+                <button onClick={sendEmail}>Send Email</button>
+            </div>
         </form>
 
       </div>
