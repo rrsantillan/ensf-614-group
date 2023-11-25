@@ -58,9 +58,7 @@ const FlightForm = () => {
         </label>
       </div>
 
-      <button type="submit" className="submit-button" style={{ display: 'block', width: '100%' }}>
-        Add Flight
-      </button>
+      <button type='submit' className='btn btn-success w-100'>Add Flight</button>
     </form>
   );
 };
