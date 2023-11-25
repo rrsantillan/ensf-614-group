@@ -1,11 +1,21 @@
+/**
+ * SQL Setup
+ */
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
+
+/**
+ * Email Setup
+ */
+const nodemailer = require('nodemailer');
+
 
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
 
 /**
  * Create connection 
@@ -16,6 +26,17 @@ const db = mysql.createConnection({
   password: "Password1",
   database: "ensf_614"
 })
+
+// Setup nodemailer
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'ensf614group@gmail.com',  // Replace with your Gmail email address
+      pass: 'Password$$!'        // Replace with your Gmail password or an App Password if using 2-factor authentication
+    },
+  });
+
+
 
 /**
  * SignUp whihc adds row to user table  
@@ -44,10 +65,8 @@ app.post('/Signup', (req, res) => {
  */
 
 app.post('/bookflight', (req, res) => {
-    const sql = "INSERT REGISTEREDTICKETS values (?, ?, ?)"
-     //const sql = "UPDATE Flights SET TakenSeats = CONCAT(TakenSeats, ', ', ''?'') WHERE flightid = ?";
-  
-     db.query(sql, [req.body.username, req.body.flight_ID, req.body.SelectedSeat2], (err, data) => {
+    const sql = "INSERT REGISTEREDTICKETS values (?, ?, ?, ?, ?)"
+    db.query(sql, [req.body.values.username, req.body.values.flight_ID, req.body.values.SelectedSeat2, req.body.price, req.body.values.Insurance], (err, data) => {
        if (err) {
             console.error('Error updating taken seats:', err);
             return res.status(500).json({ error: 'Internal Server Error' });
@@ -96,8 +115,8 @@ app.post('/checkFlights', (req, res) => {
  */
 app.post('/getFlights', (req, res) => {
     const sql = "SELECT * FROM flights LEFT JOIN registeredtickets ON flights.FlightID = registeredtickets.FLIGHTID WHERE username = ?"
-    console.log(req.body.username2)
-    db.query(sql, [req.body.username2], (err, data) => {
+    console.log(req.body.username)
+    db.query(sql, [req.body.username], (err, data) => {
         if (err) {
             return res.status(500).json({ error: "Internal Server Error" });
         }
@@ -280,4 +299,37 @@ app.post('/getRegTicket', (req, res) => {
 app.listen(8081, () =>{
   console.log("Listening...")
 })
+
+
+
+
+//////////////////////////////////////////////////////////
+// Define your route to send an email
+app.post('/api/send-email', async (req, res) => {
+    const { to, subject, body } = req.body;
+  
+    // Setup email data
+    const mailOptions = {
+      from: 'ensf614group@gmail.com',  // Replace with your Gmail email address
+      to: 'braden11tink@gmail.com', 
+      subject: 'test',
+      text: body,
+    };
+  
+    try {
+      // Send the email
+      await transporter.sendMail(mailOptions);
+  
+      // Respond to the client
+      res.json({ message: 'Email sent successfully' });
+    } catch (error) {
+      console.error('Error sending email:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+
+const PORT = process.env.PORT || 7000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
 

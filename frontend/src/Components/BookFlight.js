@@ -1,28 +1,31 @@
 import React, {useState} from 'react'
-
 import axios from 'axios'
-import { useNavigate, useParams } from 'react-router-dom';
-
+import { useParams } from 'react-router-dom';
+import Payment from './Payment'
 import '../CSS/styles.css';
 
 function BookFlight(){
   //Variables used to hold states of objects for the view
   //The setters are used inorder to change the values
-  const navigate = useNavigate();
+  
   const { username, flightID } = useParams();
   const [selectedSeat, setSelectedSeat] = useState('');
   const [seatMessage, setSeatMessage] = useState('');
   const [selectedClass, setSelectedClass] = useState('');
-  const [price, setPrice] = useState('');
+ 
   const [seatMap, setSeats] = useState([]);
+
+
+  
+  const [price, setPrice] = useState();
 
   //Values is an array of values used to pass to a query on the backend
   const [values, setValues] = useState({
-    price: '',
     selectedClass: '',
     SelectedSeat2: '',
     flight_ID: '',
-    username: ''
+    username: '',
+    Insurance: ''
   })
 
   /**
@@ -37,10 +40,10 @@ function BookFlight(){
     setValues((prevValues) => ({
       ...prevValues,
       selectedClass: event.target.value,
-      price: event.target.value === 'Business' ? "$400.00": "$300.00",
       flight_ID: flightID,
-      username: username
- 
+      username: username,
+      Insurance: "No"
+      
     }));
     
    
@@ -49,19 +52,19 @@ function BookFlight(){
     setSelectedClass(event.target.value)
     let newSeatMap;
     if(event.target.value === 'Economy'){
-      setPrice(`${"300.00$"}`);
+      setPrice(300.00);
       newSeatMap = [
         ['A4', 'B4', 'C4',  ' ', 'D4','E4', 'F4'],
-        ['A5', 'B5', 'C5',  ' ', 'D4','E5', 'F5'],
-        ['A6', 'B6', 'C6',  ' ', 'D4','E6', 'F6'],
-        ['A7', 'B7', 'C7',  ' ', 'D4','E7', 'F7'],
+        ['A5', 'B5', 'C5',  ' ', 'D5','E5', 'F5'],
+        ['A6', 'B6', 'C6',  ' ', 'D6','E6', 'F6'],
+        ['A7', 'B7', 'C7',  ' ', 'D7','E7', 'F7'],
         ['A8', 'B8', 'C8',  ' ', 'D8','E8', 'F8'],
         ['A9', 'B9', 'C9',  ' ', 'D9','E9', 'F9'],
         ['A10', 'B10', 'C10',  ' ', 'D10','E10', 'F10']];
       
 
     }else{
-      setPrice(`${"400.00$"}`);
+      setPrice(400.00);
       newSeatMap = [
         ['A1', 'B1', ' ','C1', 'D1'],
         ['A2', 'B2', ' ','C2', 'D2'],
@@ -147,24 +150,35 @@ function BookFlight(){
    * 
    * @param {*} event 
    */
-  const handleSumbit =(event)=> {
-    event.preventDefault();
-    console.log(values)
-   
-    axios.post('http://localhost:8081/bookflight', values)
-    
-    .then(res=> {
-        if(res.data === "Success"){
-            navigate(`/home/${username}`);
-        }else {
-            alert("Unable to book flight");
-        }
-    })
-    .catch(err=> console.log(err));
-    
-    
+  
+
+
+  const [showPayment, setShowPayment] = useState(false);
+  const changePage = (e) => {
+    e.preventDefault();
+    setShowPayment(true)
   }
 
+
+ const [isChecked, setChecked] = useState(false);
+ const editPayment = () => {
+    
+    if (!isChecked) {
+      setPrice(price + 50)
+      setValues((prevValues) => ({
+        ...prevValues,
+        Insurance: "Yes"
+      }));
+      
+    }else{
+      setPrice(price - 50)
+      setValues((prevValues) => ({
+        ...prevValues,
+        Insurance: "No"
+      }));
+    }
+
+  };
 
 
 
@@ -176,7 +190,8 @@ function BookFlight(){
     <div className="d-flex vh-100 justify-content-center align-items-top">
         <div className='p-3 bg-white w-75'>
           <h2>Book Flight</h2>
-          <form action='' onSubmit={handleSumbit}>
+          {!showPayment ? (
+            <form action=''>
                 <h4>Departing Flight</h4>
                 <div className = "d-flex justify-content-left align-items-top">
                   <label htmlFor="Class">Select Class: </label>
@@ -186,9 +201,9 @@ function BookFlight(){
                     <option value="Business">Business</option>
                     <option value="Economy">Economy</option>
                   </select>
-                  </div>
-                  <p></p>
-                  <div>
+                </div>
+                <p></p>
+                <div>
                     <h4>Seat Selection</h4>
                     <div className="seat-map">
                       {seatMap.map((row, rowIndex) => (
@@ -205,45 +220,66 @@ function BookFlight(){
                         </div>
                       ))}
                     </div>
-                  </div>
-                  <p></p>
-                  {/* Display a message for unavailable seats */}
-                  {seatMessage && (
-                    <div className="text-danger">{seatMessage}</div>
-                  )}
-                  {/* Display the selected seat information */}
-                  <div className="d-flex justify-content-left align-items-top">
-                    <label htmlFor="outputTextarea" >Selected Seat: </label>
-                    <div style={{ width: '10px' }} />
-                    <textarea name ='SelectedSeat2'
-                      id="outputTextarea"
-                      value={selectedSeat}
-                      readOnly
-                      rows={1}
-                      cols={10}
-                    />
-                  </div>
-                  <p></p>
-                  <div className = "d-flex justify-content-left align-items-top">
-                    <label htmlFor="outputTextarea">Cost: </label>
-                      <div style ={{width: '75px'}}/>
-                      <textarea
+                </div>
+                <p></p>
+                {/* Display a message for unavailable seats */}
+                {seatMessage && (
+                  <div className="text-danger">{seatMessage}</div>
+                )}
+                {/* Display the selected seat information */}
+                {/* <div className="d-flex justify-content-left align-items-top">
+                  <label htmlFor="outputTextarea" >Selected Seat: </label>
+                  <div style={{ width: '10px' }} />
+                  <textarea name ='SelectedSeat2'
+                    id="outputTextarea"
+                    value={selectedSeat}
+                    readOnly
+                    rows={1}
+                    cols={10}
+                  />
+                </div> */}
+               
+               
+                <p></p>
+                <div>
+                  <h4>Flight Insurance</h4>
+                  <div className="d-flex justify-content-left align-items-top p-2">
+                    <input 
+                      type="checkbox"  
+                      onChange={() => {
+                        setChecked(!isChecked);
+                        editPayment(); // Call the editPayment function on checkbox change
+                      }}
+                      aria-label="Checkbox for following text input"/>
+                    <text className = "p-2"> Would you like Flight Insurance?</text>
+                    </div>
+                </div>
+                <div>
+                   
+                   
+                      <div className="d-flex justify-content-left align-items-center">
+                      <text className ="p-2">Price: </text>
+                      <textarea 
+                        className ="p-1"
                         id="outputTextarea"
                         value={price}
                         readOnly  
                         rows={1}
                         cols={10}
                       />
-                  </div>
-                  <p></p>
-                  <button type='submit' className='btn btn-success w-100'>Book Flight</button>
-             </form>
+                      <text>$</text>
+                      </div>
+                 </div>
+                 <p></p>
+                <button onClick = {changePage}  className='btn btn-success w-25'>Go To Payment</button>
+            </form>
+          ) : (
+            <div>
+              <Payment price={price} myValues = {values} />
+            </div>
+         )}
         </div>
     </div>
-      
-
-      
   )
-
 }
 export default BookFlight
