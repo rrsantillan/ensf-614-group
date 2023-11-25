@@ -1,17 +1,22 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect } from 'react'
 import axios from 'axios'
 import { useParams } from 'react-router-dom';
 
 
 
 function CurrentFlights(){
-    const { username } = useParams();
-   
+    
     const [flightData, setFlightData] = useState(null);
-
+    
+    const { username } = useParams();
     const [values, setValues] = useState({
-        username2: ''
+        username: ''
     })
+
+    useEffect(() => {
+        setValues({ username });
+    }, [username]);
+    
 
     const handleDeleteTicket = (SEATNUMBER, FLIGHTID) => {
        
@@ -39,14 +44,11 @@ function CurrentFlights(){
     };
     const handleSumbit = (event)=> {
         event.preventDefault();
-        setValues((prevValues) => ({
-            ...prevValues,
-            username2: username
-        }));
+        
 
         axios.post('http://localhost:8081/getFlights', values)
         .then((res) => {
-            console.log(username)
+            
             const fetchedFlightData = res.data.flights;
             setFlightData(fetchedFlightData);
         })

@@ -96,8 +96,8 @@ app.post('/checkFlights', (req, res) => {
  */
 app.post('/getFlights', (req, res) => {
     const sql = "SELECT * FROM flights LEFT JOIN registeredtickets ON flights.FlightID = registeredtickets.FLIGHTID WHERE username = ?"
-    console.log(req.body.username2)
-    db.query(sql, [req.body.username2], (err, data) => {
+    console.log(req.body.username)
+    db.query(sql, [req.body.username], (err, data) => {
         if (err) {
             return res.status(500).json({ error: "Internal Server Error" });
         }
