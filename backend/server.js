@@ -129,6 +129,28 @@ app.post('/getFlights', (req, res) => {
         res.status(200).json({ flights: data });
     })
 })
+
+/**
+ * WORK IN PROGRESS
+ * overwrite flight data where the dest and source match in the db
+ */
+app.post('/overwriteFlights', (req, res) => {
+    const sql = "SELECT * FROM flights LEFT JOIN registeredtickets ON flights.FlightID = registeredtickets.FLIGHTID WHERE username = ?"
+    console.log(req.body.username)
+    db.query(sql, [req.body.username], (err, data) => {
+        if (err) {
+            return res.status(500).json({ error: "Internal Server Error" });
+        }
+        if (data.length > 0) {
+            console.log("Data returned from the database:", data);
+        } else {
+            console.log("No data returned from the database.");
+        }
+
+        res.status(200).json({ flights: data });
+    })
+})
+
 /**
  * get flights brings all data back where the dest and source match in the db
  */
@@ -242,21 +264,35 @@ app.post('/updateCrew', async (req, res) => {
 /**
  * get flights brings all data back where the dest and source match in the db
  */
-app.post('/addFlight', (req, res) => {
-    const sql = "INSERT INTO FLIGHTS (SOURCE, DESTINATION, DEPARTURE, LANDING) VALUES(?, ?, ?, ?)"
+// app.post('/addFlight', (req, res) => {
+//     const createFlightQuery = "INSERT INTO FLIGHTS (SOURCE, DESTINATION, DEPARTURE, LANDING) VALUES(?, ?, ?, ?)"
    
-    db.query(sql, [req.body.destination, req.body.source,  
-        req.body.departureTime, req.body.landingTime], (err, data) => {
+//     db.query(createFlightQuery, [req.body.destination, req.body.source,  
+//         req.body.departureTime, req.body.landingTime], (err, data) => {
         
-        console.log("SQL Query:", sql); // Log the SQL query
-        if(err){
-            return res.json("Error");
-         }
-        return res.json();
+//         console.log("SQL Query:", createFlightQuery); // Log the SQL query
+//         if(err){
+//             return res.json("Error");
+//          }
+//         return res.json();
         
-    })
-})
+//     })
+// })
 
+app.post('/addFlight', (req, res) => {
+    const { destination, source, departureTime, landingTime } = req.body;
+    const sql = "INSERT INTO FLIGHTS (SOURCE, DESTINATION, DEPARTURE, LANDING) VALUES (?, ?, ?, ?)";
+  
+    db.query(sql, [source, destination, departureTime, landingTime], (err, data) => {
+      console.log("SQL Query:", sql); // Log the SQL query
+      if (err) {
+        console.error('Error adding flight:', err);
+        return res.status(500).json({ error: 'Error adding flight to database' });
+      }
+      console.log("Flight added successfully!");
+      return res.status(200).json({ message: 'Flight added successfully' });
+    });
+  });
 
 /**
  * getUnavailableSeats brings the list of seats taken
@@ -328,7 +364,7 @@ app.post('/api/send-email', async (req, res) => {
     }
   });
 
-const PORT = process.env.PORT || 7000;
+const PORT = process.env.PORT || 7002;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

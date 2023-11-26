@@ -2,11 +2,12 @@ import React, {useState} from 'react'
 import { useParams } from 'react-router-dom';
 import CrewEditor from './CrewEditor';
 import FlightForm from './FlightForm';
+import EditFlightForm from './EditFlightForm';
 import axios from 'axios'
 
 function AdminView(){
     //const { username } = useParams();
-    const [activeTab, setActiveTab] = useState('create'); // 'create' or 'browse'
+    const [activeTab, setActiveTab] = useState('create-flight'); // 'create-flight' or 'assign-crew'
 
     const [flightData, setFlightData] = useState(null);
     const [selectedFlight, setSelectedFlight] = useState(null);
@@ -33,6 +34,11 @@ function AdminView(){
         setSelectedCrew([]);
     };
 
+    const handleSubmitCrewAssignment = async (e) => {
+      e.preventDefault(); // Prevent the default form submission behavior
+      updateCrew(flightID2);
+    };
+    
 
 
     const [allCrew, setAllCrew] = useState([
@@ -91,9 +97,6 @@ function AdminView(){
         }
     };
       
-     
-     
-
     const handleSearch = (e) => {
         e.preventDefault(); // Prevent the default form submission behavior
         console.log(values)
@@ -113,17 +116,28 @@ function AdminView(){
 
     const renderContent = () => {
         switch (activeTab) {
-          case 'create':
+          case 'create-flight':
             return (
               <div>
                 <h1>{selectedFlight ? 'Edit Flight' : 'Create Flight'}</h1>
                 <FlightForm selectedFlight={selectedFlight} />
               </div>
             );
-          case 'browse':
+
+          case 'edit-flight':
             return (
               <div>
-                <h1>Browse Existing Flights</h1>
+                <h1>Edit Flight</h1>
+                
+                <EditFlightForm selectedFlight={selectedFlight} />
+
+              </div>
+              );
+          
+          case 'assign-crew':
+            return (
+              <div>
+                <h1>Edit Flight Crews</h1>
                 <form action='' onSubmit={handleSearch}>
                     <div>
                         <input type="text" placeholder='From...' name = 'Source'
@@ -142,8 +156,8 @@ function AdminView(){
                         <h3>Flight Details</h3>
                         {flightData.map((flight, index) => (
                             <div className="flight-data-container" key={index}>
-                                <p>Departure: {flight.DEPARTURE}</p>
-                                <p>Land: {flight.LANDING}</p>
+                                <p>Departure: {flight.SOURCE}, {flight.DEPARTURE}</p>
+                                <p>Land: {flight.DESTINATION}, {flight.LANDING}</p>
 
                                 <button onClick={() => {
                                     setFlightID(flight.FLIGHTID);
@@ -163,11 +177,23 @@ function AdminView(){
     
                 <div style={{ marginTop: '20px' }}>
                     <h1>{selectedFlight ? 'Edit Crew' : 'Assign Crew'}</h1>
-                    <CrewEditor allCrew={allCrew} selectedCrew={selectedCrew} onSelectCrew={onSelectCrew} onRemoveCrew={onRemoveCrew} />
-                    <button onClick={() => {updateCrew(flightID2)}}> Update Crew </button>
+                    <CrewEditor 
+                      allCrew={allCrew} 
+                      selectedCrew={selectedCrew}
+                      onSelectCrew={onSelectCrew}
+                      onRemoveCrew={onRemoveCrew}/>
+                    <form className="flight-form" onSubmit={handleSubmitCrewAssignment} style={{ maxWidth: '400px', margin: 'auto', textAlign: 'left' }}>
+                      <button type='submit' className='btn btn-success w-100'>Update Crew</button>
+                    </form>
                 </div>
               </div>
             );
+            case 'manage-crew':
+              return(
+                <div>
+                  <h1>Manage Crew Members</h1>
+                </div>
+              );
           default:
             return null;
         }
@@ -178,10 +204,16 @@ function AdminView(){
         <div className="mb-4">
             <ul className="nav nav-tabs">
             <li className="nav-item">
-                <button className={`nav-link ${activeTab === 'create' ? 'active' : ''}`} onClick={() => setActiveTab('create')}>Create Flight</button>
+                <button className={`nav-link ${activeTab === 'create-flight' ? 'active' : ''}`} onClick={() => setActiveTab('create-flight')}>Create Flight</button>
             </li>
             <li className="nav-item">
-                <button className={`nav-link ${activeTab === 'browse' ? 'active' : ''}`} onClick={() => setActiveTab('browse')}>Browse Flights</button>
+                <button className={`nav-link ${activeTab === 'edit-flight' ? 'active' : ''}`} onClick={() => setActiveTab('edit-flight')}>Edit Flight</button>
+            </li>
+            <li className="nav-item">
+                <button className={`nav-link ${activeTab === 'assign-crew' ? 'active' : ''}`} onClick={() => setActiveTab('assign-crew')}>Crew Assignment</button>
+            </li>
+            <li className="manage-crew">
+                <button className={`nav-link ${activeTab === 'manage-crew' ? 'active' : ''}`} onClick={() => setActiveTab('manage-crew')}>Manage Crew Members</button>
             </li>
             </ul>
       </div>
