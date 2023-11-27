@@ -32,7 +32,7 @@ const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
       user: 'ensf614group@gmail.com',  // Replace with your Gmail email address
-      pass: 'Password$$!'        // Replace with your Gmail password or an App Password if using 2-factor authentication
+      pass: 'aigo oqed zijo wtsg'        // Replace with your Gmail password or an App Password if using 2-factor authentication
     },
   });
 
@@ -328,7 +328,7 @@ app.post('/api/send-email', async (req, res) => {
     }
   });
 
-const PORT = process.env.PORT || 7000;
+const PORT = process.env.PORT || 7002;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
