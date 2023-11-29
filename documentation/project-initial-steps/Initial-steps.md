@@ -35,9 +35,9 @@ if that doesn't work:
 				`sudo chown -R $USER /usr/local/lib/node_modules`
 	
 install mysql
-	`npm install mysql`
+	`npm install mysql`(not needed, already in package-lock.json)
 install mysql2
-	`npm install mysql`
+	`npm install mysql` (not needed, already in package-lock.json)
 
 
 Start the app
