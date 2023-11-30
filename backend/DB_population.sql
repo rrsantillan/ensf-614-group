@@ -16,17 +16,11 @@ CREATE TABLE tblUser (
 DROP TABLE IF EXISTS tblAirplane;
 CREATE TABLE tblAirplane (
 	AIRPLANEID 		INT AUTO_INCREMENT PRIMARY KEY,
-	MODEL 			VARCHAR(25) NOT NULL
+	MODEL 			VARCHAR(25) NOT NULL,
+    ROWCNT 			INT,
+    COLCNT			INT
 );
 
-DROP TABLE IF EXISTS tblSeatMap;
-CREATE TABLE tblSeatMap(
-	AIRPLANEID 		INT NOT NULL,
-	CLASS				INT,
-	ROWCNT 			INT NOT NULL,
-	COLCNT			INT NOT NULL,
-	FOREIGN KEY (AIRPLANEID) REFERENCES tblAirplane(AIRPLANEID)
-);
 	
 DROP TABLE IF EXISTS tblFlight;
 CREATE TABLE tblFlight (    
@@ -51,12 +45,7 @@ CREATE TABLE tblTickets (
 	FOREIGN KEY (FLIGHTID) REFERENCES tblFlight(FLIGHTID)
 );
 
-DROP TABLE IF EXISTS tblSeatSelection;
-CREATE TABLE tblSeatSelection (
-	SEATSTYLE 		INT AUTO_INCREMENT PRIMARY KEY, 
-	COMFORTLEVEL	VARCHAR(25) NOT NULL,
-	CLASS 			VARCHAR(25) NOT NULL
-);
+
 	
 
 DROP TABLE IF EXISTS tblCrew; 
@@ -78,28 +67,19 @@ CREATE TABLE tblAassignedCrew (
 
 
 
-INSERT INTO tblUser (USERID, USERNAME, PASSWORD, PROFILE, EMAIL, YEARLYPROMO)
+INSERT INTO tblUser ( USERNAME, PASSWORD, PROFILE, EMAIL, YEARLYPROMO)
 VALUES
-(1, 'Kate', 'Stevens', 'AGENT', 'braden@gmail.com', 0),
-(2, 'Jack', 'fred', 'ADMIN', 'fred@gmail.com', 1),
-(3, 'James', 'bob', 'REGUSER', 'bob@gmail.com', 1);
+( 'Kate', 'kate', 'AGENT', 'braden@gmail.com', 0),
+( 'Jack', 'jack', 'ADMIN', 'fred@gmail.com', 1),
+( 'James', 'james', 'REGUSER', 'bob@gmail.com', 1);
 
 
-INSERT INTO tblAirplane (AIRPLANEID, MODEL)
+INSERT INTO tblAirplane ( MODEL)
 VALUES
-(1, 'BOEING 747'),
-(2, 'BOEING 777'),
-(3, 'AIRBUS a320');
+( 'BOEING 747'),
+( 'BOEING 777'),
+( 'AIRBUS a320');
 
-
-INSERT INTO tblSeatMap(AIRPLANEID, CLASS, ROWCNT, COLCNT)
-VALUES 
-(1, 1, 3, 4),
-(1, 2, 20, 4),
-(2, 1, 4, 4),
-(2, 2, 30, 4),
-(3, 1, 5, 6),
-(3, 2, 40, 6);
 
 INSERT INTO tblFlight (FLIGHTID, AIRPLANEID, ORIGIN, DESTINATION, DEPARTURETIME, ARRIVALTIME)
 VALUES	
@@ -107,13 +87,13 @@ VALUES
 (2, 2, 'YYC', 'YVR',	'2023-11-12', '2023-11-14'),
 (3, 1, 'YYC', 'YVR',	'2023-11-13', '2023-11-16');
 
-INSERT INTO tblTickket (TICKETID, USERNAME, FLIGHTID, SEATNUMBER, SEATTYPE, PRICE, INSURANCE)
+INSERT INTO tblTickets ( USERNAME, FLIGHTID, SEATNUMBER, SEATTYPE, PRICE, INSURANCE)
 VALUES
-(1, 'Kate', 1, 'A1', 1, '400', 'Yes'),
-(2, 'Jack', 1, 'B1', 2, '300', 'Yes'),
-(3, 'James', 2, 'A3', 2, '300', 'Yes'),
-(4, 'Guest', 3, 'C1', 3, '200', 'No'),
-(5, 'Guest', 2, 'D4', 4, '100', 'No');
+( 'Kate', 1, 'A1', 1, '400', 'Yes'),
+( 'Jack', 1, 'B1', 2, '300', 'Yes'),
+( 'James', 2, 'A3', 2, '300', 'Yes'),
+( 'Guest', 3, 'C1', 3, '200', 'No'),
+( 'Guest', 2, 'D4', 4, '100', 'No');
 
 
 INSERT INTO tblCrew(CREWID, FNAME, LASTNAME, POSITION)
@@ -124,17 +104,11 @@ VALUES
 (4, 'Nancy', 'Drew', 'PILOT'),
 (5, 'Bob', 'Tim', 'ATTENDANT');
 
-INSERT INTO tblAssignedCrew(FLIGHTID, CREWID)
+INSERT INTO tblAassignedCrew(FLIGHTID, CREWID)
 VALUES
 (1, 1),
 (1, 2);
 
-INSERT INTO tblSeatSelection (SEATSTYLE, COMFORTLEVEL , CLASS)
-VALUES
-(1, 'Ordinary', 'Bussniess')
-(2, 'Ordinary', 'Economy')
-(3, 'Comfort', 'Bussniess')
-(4, 'Comfort', 'Economy');
  
 
 
