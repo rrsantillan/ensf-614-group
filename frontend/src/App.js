@@ -3,7 +3,7 @@ import React from 'react';
 import Login from './Components/Login'
 import Signup from './Signup'
 import Home from './Home'
-import Admin from './Components/Adminview'
+import Adminview from './Components/Adminview'
 import FindFlight from './Components/FindFlight'
 import CurrentFlight from './Components/CurrentFlight'
 import BookFlight from './Components/BookFlight'
@@ -21,7 +21,7 @@ function App() {
         <Route path='/' element={<Login/>}> </Route>
         <Route path='/Signup' element={<Signup/>}> </Route>
         <Route path='/home/:Profile1/:username' element={<Home/>}> </Route>
-        <Route path='/Adminview/:username' element={<Admin/>}></Route>
+        <Route path='/Adminview/:username' element={<Adminview/>}></Route>
         <Route path='/FindFlight/:username' element={<FindFlight/>}> </Route>
         <Route path='/CurrentFlight/:username' element={<CurrentFlight/>}> </Route>
         <Route path='/BookFlight/:username/:flightID' element={<BookFlight/>}> </Route>
