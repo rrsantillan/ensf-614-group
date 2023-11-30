@@ -79,9 +79,8 @@ function CurrentFlights(){
                     <h3>Flight Details</h3>
                     {flightData.map((flight, index) => (
                         <div className="flight-data-container" key={index}>
-                            <p>From {flight.SOURCE} to {flight.DESTINATION}</p>
-                            <p>Departure: {flight.DEPARTURE}</p>
-                            <p>Land: {flight.LANDING}</p>
+                            <p>Origin: {flight.ORIGIN} Departure Time: {flight.DEPARTURETIME}</p>
+                            <p>Destination: {flight.DESTINATION} Landing Time: {flight.ARRIVALTIME}</p>
                             <p>Seat: {flight.SEATNUMBER}</p>
                               <button onClick={() => handleDeleteTicket(flight.SEATNUMBER, flight.FLIGHTID)}>Delete Ticket</button>
                         </div>

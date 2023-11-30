@@ -1,13 +1,13 @@
 import React, {useState, useEffect} from 'react'
 import { Link, useParams } from 'react-router-dom';
-import Footer from './Components/Footer'; 
+import Footer from './Footer'; 
 
 
 function Home(){
   const {Profile1, username } = useParams();
-  const shouldShowAdminLink = Profile1 === 'Admin';
+  const shouldShowAdminLink = Profile1 === 'ADMIN';
   const shouldShowRegLink = Profile1 === 'REGUSER';
-  const shouldShowAgentLink = Profile1 === 'Agent';
+  const shouldShowAgentLink = Profile1 === 'AGENT';
 
   const [showAdminLink, setShowAdminLink] = useState(shouldShowAdminLink); 
   const [showRegLink, setShowRegLink] = useState(shouldShowRegLink); 
@@ -22,8 +22,11 @@ function Home(){
   
 
   return(
-    <div class="container">  
-      <div class = "row" classname ="vh-100 justify-content-center align-items-top">
+    <div className="d-flex flex-column">
+      <div className="p-3 bg-green">
+        <Footer />
+      </div>
+      <div classname ="container vh-100 justify-content-center align-items-top">
           
         <h2>Home Page</h2>
         <form action=''>
@@ -41,9 +44,7 @@ function Home(){
         </form>
 
       </div>
-      <div className="row p-3 bg-green w-25 justify-content-bottom align-items-bottom">
-        <Footer />
-      </div>
+      
     </div>
       
 

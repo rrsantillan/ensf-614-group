@@ -8,6 +8,7 @@ const Payment = (props) => {
     const { price, myValues} = props;
     const navigate = useNavigate();
     
+   
     const [CardHolder, setCardHolder] = useState('');
     const [CardNumber, setCardNumber] = useState('');
 
@@ -27,6 +28,7 @@ const Payment = (props) => {
             ...formData,
             [name]: formattedCardNumber,
         });
+
     };
 
     //Input Format for Expiry Date
@@ -74,12 +76,14 @@ const Payment = (props) => {
         
         .then(res=> {
             if(res.data === "Success"){
-                //navigate(`/home/${username}`);
+                sendEmail()
+                navigate(`/home/${'REGUSER'}/${myValues.username}`);
             }else {
                 alert("Unable to book flight");
             }
         })
         .catch(err=> console.log(err));
+        
         
         
     }
@@ -167,7 +171,7 @@ const Payment = (props) => {
                                 value={formData.expiryMonth}
                                 onChange={handleInput2}
                                 maxLength="2"
-                               
+                                className ="form-control"
                             />
                             <input
                                 type="text"
@@ -176,7 +180,7 @@ const Payment = (props) => {
                                 value={formData.expiryYear}
                                 onChange={handleInput2}
                                 maxLength="2"
-                               
+                                className ="form-control"
                             />
                         </div>
 
@@ -208,9 +212,6 @@ const Payment = (props) => {
                 </div>
                 <div>
                     <button onClick={handleSumbit} className="btn btn-primary">Make Payment</button>
-                </div>
-                <div>
-                    <button onClick={sendEmail}>Send Email</button>
                 </div>
             </div>
         </div>

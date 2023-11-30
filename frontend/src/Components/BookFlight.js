@@ -54,13 +54,13 @@ function BookFlight(){
     if(event.target.value === 'Economy'){
       setPrice(300.00);
       newSeatMap = [
-        ['A4', 'B4', 'C4',  ' ', 'D4','E4', 'F4'],
-        ['A5', 'B5', 'C5',  ' ', 'D5','E5', 'F5'],
-        ['A6', 'B6', 'C6',  ' ', 'D6','E6', 'F6'],
-        ['A7', 'B7', 'C7',  ' ', 'D7','E7', 'F7'],
-        ['A8', 'B8', 'C8',  ' ', 'D8','E8', 'F8'],
-        ['A9', 'B9', 'C9',  ' ', 'D9','E9', 'F9'],
-        ['A10', 'B10', 'C10',  ' ', 'D10','E10', 'F10']];
+        ['A4', 'B4', 'C4', ' ', 'D4','E4', 'F4'],
+        ['A5', 'B5', 'C5', ' ','D5','E5', 'F5'],
+        ['A6', 'B6', 'C6',  ' ','D6','E6', 'F6'],
+        ['A7', 'B7', 'C7',  ' ','D7','E7', 'F7'],
+        ['A8', 'B8', 'C8',  ' ','D8','E8', 'F8'],
+        ['A9', 'B9', 'C9', ' ','D9','E9', 'F9'],
+        ['A10', 'B10', 'C10', ' ','D10','E10', 'F10']];
       
 
     }else{
@@ -201,11 +201,16 @@ function BookFlight(){
                     <option value="Business">Business</option>
                     <option value="Economy">Economy</option>
                   </select>
+                  <select id="Comfort" value={selectedClass} onChange={handleClassChange}>
+                      <option value="Ordinary">Ordinary</option>
+                      <option value="Comfort">Comfort</option>
+                  </select>
                 </div>
                 <p></p>
                 <div>
                     <h4>Seat Selection</h4>
                     <div className="seat-map">
+                      
                       {seatMap.map((row, rowIndex) => (
                         <div key={rowIndex} className="seat-row">
                           {row.map((seat) => (

@@ -42,7 +42,7 @@ const transporter = nodemailer.createTransport({
  * SignUp whihc adds row to user table  
  */
 app.post('/Signup', (req, res) => {
-    const sql = "INSERT INTO USERTABLE (USERNAME, PASSWORD, PROFILE, EMAIL, DOB) VALUES (?, ?, ?, ?, ?)"
+    const sql = "INSERT INTO TBLUSER (USERNAME, PASSWORD, PROFILE, EMAIL, DOB) VALUES (?, ?, ?, ?, ?)"
     
     const values = [
         req.body.user,
@@ -65,8 +65,8 @@ app.post('/Signup', (req, res) => {
  */
 
 app.post('/bookflight', (req, res) => {
-    const sql = "INSERT REGISTEREDTICKETS values (?, ?, ?, ?, ?)"
-    db.query(sql, [req.body.values.username, req.body.values.flight_ID, req.body.values.SelectedSeat2, req.body.price, req.body.values.Insurance], (err, data) => {
+    const sql = "INSERT tblTicket values (?, ?, ?, ?, ?, ?, ?)"
+    db.query(sql, ['0', req.body.values.username, req.body.values.flight_ID, req.body.values.SelectedSeat2, '1', req.body.price, req.body.values.Insurance], (err, data) => {
        if (err) {
             console.error('Error updating taken seats:', err);
             return res.status(500).json({ error: 'Internal Server Error' });
@@ -80,7 +80,7 @@ app.post('/bookflight', (req, res) => {
  * Login ensures the user is part of the system 
  */
 app.post('/login', (req, res) => {
-    const sql = "SELECT * FROM USERTABLE WHERE USERNAME = ? and PASSWORD = ?"
+    const sql = "SELECT * FROM TBLUSER WHERE USERNAME = ? and PASSWORD = ?"
     
     db.query(sql, [req.body.user, req.body.password], (err, data) => {
         if(err){
@@ -100,7 +100,7 @@ app.post('/login', (req, res) => {
  */
 app.post('/checkFlights', (req, res) => {
     
-    const sql = "SELECT FLIGHTID, SOURCE, DESTINATION, DEPARTURE, LANDING FROM FLIGHTS WHERE SOURCE = ? and DESTINATION = ?"
+    const sql = "SELECT FLIGHTID, ORIGIN, DESTINATION, DEPARTURETIME, ARRIVALTIME FROM tblFlight WHERE ORIGIN = ? and DESTINATION = ?"
     db.query(sql, [req.body.Source, req.body.Dest], (err, data) => {
         if (err) {
             return res.status(500).json({ error: "Internal Server Error" });
@@ -114,7 +114,7 @@ app.post('/checkFlights', (req, res) => {
  * get flights brings all data back where the dest and source match in the db
  */
 app.post('/getFlights', (req, res) => {
-    const sql = "SELECT * FROM flights LEFT JOIN registeredtickets ON flights.FlightID = registeredtickets.FLIGHTID WHERE username = ?"
+    const sql = "SELECT * FROM tblFlight LEFT JOIN tblTicket ON tblFlight.FlightID = tblTicket.FLIGHTID WHERE USERNAME = ?"
     console.log(req.body.username)
     db.query(sql, [req.body.username], (err, data) => {
         if (err) {
@@ -133,7 +133,7 @@ app.post('/getFlights', (req, res) => {
  * get flights brings all data back where the dest and source match in the db
  */
 app.post('/getAllFlights', (req, res) => {
-    const sql = "SELECT * FROM flights"
+    const sql = "SELECT * FROM tblFlight"
     console.log(req.body.username2)
     db.query(sql, [req.body.username2], (err, data) => {
         if (err) {
@@ -148,15 +148,32 @@ app.post('/getAllFlights', (req, res) => {
         res.status(200).json({ flights: data });
     })
 })
+/**
+ * get flights brings all data back where the dest and source match in the db
+ */
+app.post('/getAllFlights', (req, res) => {
+    const sql = "SELECT TBLSEATMAP.ROWCNT, TBLSEATMAP.COLCNT FROM TBLSEATMAP LEFT JOIN TBLFLIGHT ON TBLSEATMAP.AIRPLANEID = TBLFLIGHT.AIRPLANEID WHERE TBLFLIGHT = ?"
+    console.log(req.body.FLIGHTID)
+    db.query(sql, [req.body.FLIGHTID], (err, data) => {
+        if (err) {
+            return res.status(500).json({ error: "Internal Server Error" });
+        }
+        if (data.length > 0) {
+            console.log("Data returned from the database:", data);
+        } else {
+            console.log("No data returned from the database.");
+        }
 
-
+        res.status(200).json({ seats: data });
+    })
+})
 
 
 /**
  * delete ticket
  */
 app.post('/deleteTicket', (req, res) => {
-    const sql = "delete from registeredtickets where FlightID = ? and SEATNUMBER = ?"
+    const sql = "delete from tblTicket where FlightID = ? and SEATNUMBER = ?"
     
     db.query(sql, [req.body.FLIGHTID, req.body.SEATNUMBER],(err, data) => {
         if (err) {
@@ -172,7 +189,7 @@ app.post('/deleteTicket', (req, res) => {
  * get Crew brings all data back where the dest and source match in the db
  */
 app.post('/getCrew', (req, res) => {
-    const sql = "SELECT crew.CREWID, crew.FNAME FROM crew LEFT JOIN assignedcrew on crew.CREWID = assignedcrew.CREWID WHERE assignedcrew.FLIGHTID IS null"
+    const sql = "SELECT tblCrew.CREWID, tblCrew.FNAME FROM tblCrew LEFT JOIN tblAssignedCrew on tblCrew.CREWID = tblAssignedCrew.CREWID WHERE tblAssignedCrew.FLIGHTID IS null"
     
     db.query(sql, (err, data) => {
         if (err) {
@@ -190,7 +207,7 @@ app.post('/getCrew', (req, res) => {
  * get Crew brings all data back where the dest and source match in the db
  */
 app.post('/getAssignedCrew', (req, res) => {
-    const sql = "SELECT crew.CREWID, crew.FNAME FROM crew LEFT JOIN assignedcrew on crew.CREWID = assignedcrew.CREWID WHERE assignedcrew.FLIGHTID = ?"
+    const sql = "SELECT tblCrew.CREWID, tblCrew.FNAME FROM tblCrew LEFT JOIN tblAssignedCrew on tblCrew.CREWID = tblAssignedCrew.CREWID WHERE tblAssignedCrew.FLIGHTID = ?"
     
     db.query(sql, [req.body.FLIGHTID], (err, data) => {
         if (err) {
@@ -212,8 +229,8 @@ app.post('/updateCrew', async (req, res) => {
     const { FLIGHTID, updatedCrew } = req.body;
     console.log(FLIGHTID)
     // Assuming you have a table named CREW in your database
-    const deleteQuery = 'DELETE FROM assignedcrew WHERE FLIGHTID = ?';
-    const insertQuery = 'INSERT INTO assignedcrew (FLIGHTID, CREWID) VALUES (?, ?)';
+    const deleteQuery = 'DELETE FROM tblAssignedCrew WHERE FLIGHTID = ?';
+    const insertQuery = 'INSERT INTO tblAssignedCrew (FLIGHTID, CREWID) VALUES (?, ?)';
   
     try {
       // Delete all existing crew records for the given FLIGHTID
@@ -243,7 +260,7 @@ app.post('/updateCrew', async (req, res) => {
  * get flights brings all data back where the dest and source match in the db
  */
 app.post('/addFlight', (req, res) => {
-    const sql = "INSERT INTO FLIGHTS (SOURCE, DESTINATION, DEPARTURE, LANDING) VALUES(?, ?, ?, ?)"
+    const sql = "INSERT INTO tblFlight (ORIGIN, DESTINATION, DEPARTURETIME, ARRIVALTIME) VALUES(?, ?, ?, ?)"
    
     db.query(sql, [req.body.destination, req.body.source,  
         req.body.departureTime, req.body.landingTime], (err, data) => {
@@ -262,7 +279,7 @@ app.post('/addFlight', (req, res) => {
  * getUnavailableSeats brings the list of seats taken
  */
 app.post('/getUnavailableSeats', (req, res) => {
-    const sql = "SELECT SEATNUMBER FROM REGISTEREDTICKETS WHERE FLIGHTID = ?"
+    const sql = "SELECT SEATNUMBER FROM tblTicket WHERE FLIGHTID = ?"
     
     
     db.query(sql, [req.body.flight_ID], (err, data) => {
@@ -280,7 +297,7 @@ app.post('/getUnavailableSeats', (req, res) => {
  * getUnavailableSeats brings the list of seats taken
  */
 app.post('/getRegTicket', (req, res) => {
-    const sql = "SELECT * FROM REGISTEREDTICKETS WHERE FLIGHTID = ?"
+    const sql = "SELECT * FROM tblTicket WHERE FLIGHTID = ?"
    
     db.query(sql, [req.body.flightID2], (err, data) => {
         if (err) {
