@@ -32,10 +32,7 @@ function FindFlight(){
         end: null,
       });
     
-    // const [value, setValue] = React.useState([
-    //     dayjs('2022-04-17'),
-    //     dayjs('2022-04-21'),
-    // ]);
+  
     const handleDateChange = (date) => {
         // If start date is not selected, set it as the start date
         if (!dateRange.start) {
@@ -122,20 +119,20 @@ return(
                     <h3>Flight Details</h3>
                     {flightData.map((flight, index) => (
                         <div className="flight-data-container" key={index}>
-                            <p>Departure: {flight.DEPARTURE}</p>
-                            <p>Land: {flight.LANDING}</p>
+                            <p>Origin: {flight.ORIGIN} Departure Time: {flight.DEPARTURETIME}</p>
+                            <p>Destination: {flight.DESTINATION} Landing Time: {flight.ARRIVALTIME}</p>
 
                             <button onClick={() => {
                                 setFlightID(flight.FLIGHTID);
                                 setSelectedFlightID(flight.FLIGHTID)}}
                                 className={selectedFlightID === flight.FLIGHTID ? 'selectedFlight' : ''}>
-                                Set Flight ID
+                                Select Flight
                             </button>
                             <p></p>
                         </div>
                     ))}
-                    <h2>Book Flight</h2>
-                    <Link to={`../BookFlight/${username}/${flightID2}`} className='btn btn-default border w-100 bg-light'> BookFlight </Link>
+                    
+                    <Link to={`../BookFlight/${username}/${flightID2}`} className='btn btn-default border w-100 bg-light'> Select To Seat... </Link>
                             
                 </div>
                 
