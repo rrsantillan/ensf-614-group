@@ -119,22 +119,16 @@ const EditFlightForm = () => {
     // console.log(FLIGHTID)
     axios.post('http://localhost:8081/overwriteFlightsByFlightID', requestData)
       .then((res) => {
-          const fetchedFlightData = res.data.flights;
-      //     console.log('fetchedFlightData:', fetchedFlightData);
-      //     setFlightData(fetchedFlightData);
-      //     setFlightID(fetchedFlightData.flightID);
-      //     setDestination(fetchedFlightData[0].DESTINATION)
-      //     setSource(fetchedFlightData[0].SOURCE)
-      //     setDepartureTime(formatDateString(fetchedFlightData[0].DEPARTURE))
-      //     setLandingTime(formatDateString(fetchedFlightData[0].LANDING))
-      //     console.log(fetchedFlightData.DESTINATION)
-          
-      // console.log(fetchedFlightData[0].DESTINATION)
+          // no need to do anything here, just writing to the database
           if(res.data === "Success"){
             //navigate(`/home/${username}`);
-          }else {
-              alert("Unable to edit flight.");
+          }else if (requestData.flightID === null){
+            alert("Flight ID was empty.");
           }
+          else {
+            alert("Unable to edit flight.");
+          }
+          console.log(res)
       })
       .catch((err) => {
           console.error(err);
