@@ -1,14 +1,17 @@
 // FlightForm.js
 import React, { useState } from 'react';
 import axios from 'axios';
+import moment from 'moment';
 
 const EditFlightForm = () => {
-  const [dataToPopulateWith, setPopulateData] = useState({
-    Source: '',
-    Dest: '',
-    Departure: '',
-    Landing: '',
-  })
+  // const [dataToPopulateWith, setPopulateData] = useState({
+  //   Source: '',
+  //   Dest: '',
+  //   Departure: '',
+  //   Landing: '',
+  // })
+  
+  // const []
 
   const [destination, setDestination] = useState('');
   const [source, setSource] = useState('');
@@ -24,16 +27,16 @@ const EditFlightForm = () => {
   const [values, setValues] = useState({
     Source: '',
     Dest: ''
-})
+  })
 
 
-const handleInput = (event) => {
+  const handleInput = (event) => {
     const { name, value } = event.target;
     setValues({
     ...values,
     [name]: value,
     });
-};
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -70,38 +73,83 @@ const handleInput = (event) => {
         console.error(err);
     });
   
-};
-const populateEditFields = (FLIGHTID) => {
+  };
 
+  /**
+   * Populates the edit flight details
+   * @param {*} FLIGHTID 
+   */
+  const populateEditFields = (FLIGHTID) => {
 
-  const requestData = { flightID2: FLIGHTID }
-  // console.log(FLIGHTID)
-  axios.post('http://localhost:8081/getFlightByFlightID', requestData)
-    .then((res) => {
-        const fetchedFlightData = res.data.flights;
-        console.log('fetchedFlightData:', fetchedFlightData);
-        setFlightData(fetchedFlightData);
-        setFlightID(fetchedFlightData.flightID);
-        setDestination(fetchedFlightData[0].DESTINATION)
-        setSource(fetchedFlightData[0].SOURCE)
-        setDepartureTime(fetchedFlightData[0].DEPARTURE)
-        setLandingTime(fetchedFlightData[0].LANDING)
-        console.log(fetchedFlightData.DESTINATION)
-        // setPopulateData(prevState => ({
-        //   ...prevState,
-        //   [dataToPopulateWith.Source]: fetchedFlightData[0].SOURCE,
-        //   [dataToPopulateWith.Dest]: fetchedFlightData[0].DESTINATION,
-        //   [dataToPopulateWith.Departure]: fetchedFlightData[0].DEPARTURE,
-        //   [dataToPopulateWith.Landing]: fetchedFlightData[0].LANDING
-        // }));
-    // console.log(dataToPopulateWith.Source)
-    console.log(fetchedFlightData[0].DESTINATION)
-    
-    })
-    .catch((err) => {
-        console.error(err);
-    });
-}
+    // flightID2 on the next line must be the same name in the post definition for /getFlightByFlightID
+    // specifically the String that goes into db.query(sql, req.body.flightID2)
+    const requestData = { flightID2: FLIGHTID }
+    // console.log(FLIGHTID)
+    axios.post('http://localhost:8081/getFlightByFlightID', requestData)
+      .then((res) => {
+          const fetchedFlightData = res.data.flights;
+          console.log('fetchedFlightData before setters:', fetchedFlightData);
+          setFlightData(fetchedFlightData);
+          setFlightID(fetchedFlightData.flightID);
+          setDestination(fetchedFlightData[0].DESTINATION)
+          setSource(fetchedFlightData[0].SOURCE)
+          setDepartureTime(formatDateString(fetchedFlightData[0].DEPARTURE))
+          setLandingTime(formatDateString(fetchedFlightData[0].LANDING))
+          // console.log(fetchedFlightData.DESTINATION)
+          console.log('fetchedFlightData[0].DESTINATION after setters:',fetchedFlightData[0].DESTINATION)
+      
+      })
+      .catch((err) => {
+          console.error(err);
+      });
+  }
+
+  /**
+   * Populates the edit flight details
+   * @param {*} FLIGHTID 
+   */
+  const saveChangesToFlight = async (e) => {
+    e.preventDefault(); // Prevent the default form submission behavior
+    const requestData = { flightID: selectedFlightID,
+                          source: source,
+                          destination: destination,
+                          departureTime: departureTime,
+                          landingTime: landingTime
+     }
+    // console.log(FLIGHTID)
+    axios.post('http://localhost:8081/overwriteFlightsByFlightID', requestData)
+      .then((res) => {
+          const fetchedFlightData = res.data.flights;
+      //     console.log('fetchedFlightData:', fetchedFlightData);
+      //     setFlightData(fetchedFlightData);
+      //     setFlightID(fetchedFlightData.flightID);
+      //     setDestination(fetchedFlightData[0].DESTINATION)
+      //     setSource(fetchedFlightData[0].SOURCE)
+      //     setDepartureTime(formatDateString(fetchedFlightData[0].DEPARTURE))
+      //     setLandingTime(formatDateString(fetchedFlightData[0].LANDING))
+      //     console.log(fetchedFlightData.DESTINATION)
+          
+      // console.log(fetchedFlightData[0].DESTINATION)
+          if(res.data === "Success"){
+            //navigate(`/home/${username}`);
+          }else {
+              alert("Unable to edit flight.");
+          }
+      })
+      .catch((err) => {
+          console.error(err);
+      });
+    }
+
+  /**
+   * Converts the date/time string into the required format of'YYYY-MM-DDTHH:mm:ss.SSS'
+   * @param {*} dateString 
+   * @returns 
+   */
+  const formatDateString = (dateString) => {
+    const formattedDate = moment.utc(dateString).format('YYYY-MM-DDTHH:mm:ss.SSS');
+    return formattedDate;
+  };
 
   return (
     <div>
@@ -144,7 +192,8 @@ const populateEditFields = (FLIGHTID) => {
                 )}
 
     <div>
-        <form className="flight-form" onSubmit={handleSubmit} style={{ maxWidth: '400px', margin: 'auto', textAlign: 'left' }}>
+        <form className="flight-form" onSubmit={saveChangesToFlight} style={{ maxWidth: '400px', margin: 'auto', textAlign: 'left' }}>
+            <h3>Edit Flight Details for FlightID: {selectedFlightID}</h3>
             <div className="form-input" style={{ marginBottom: '10px', display: 'flex', flexDirection: 'column' }}>
                 <label style={{ marginBottom: '5px' }}>
                 Destination:
