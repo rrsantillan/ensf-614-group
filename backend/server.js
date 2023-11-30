@@ -111,7 +111,7 @@ app.post('/checkFlights', (req, res) => {
 })
 
 /**
- * get flights brings all data back where the dest and source match in the db
+ * get flights brings all data back where the dest and source match in the db, based on username
  */
 app.post('/getFlights', (req, res) => {
     const sql = "SELECT * FROM flights LEFT JOIN registeredtickets ON flights.FlightID = registeredtickets.FLIGHTID WHERE username = ?"
@@ -132,23 +132,38 @@ app.post('/getFlights', (req, res) => {
 
 /**
  * WORK IN PROGRESS
- * overwrite flight data where the dest and source match in the db
+ * search for flight by flightID
  */
-app.post('/overwriteFlights', (req, res) => {
-    const sql = "SELECT * FROM flights LEFT JOIN registeredtickets ON flights.FlightID = registeredtickets.FLIGHTID WHERE username = ?"
-    console.log(req.body.username)
-    db.query(sql, [req.body.username], (err, data) => {
+app.post('/getFlightByFlightID', (req, res) => {
+    
+    const sql = "SELECT * FROM flights WHERE flightID = ?"
+
+    console.log(req.body.flightID2)
+    db.query(sql, [req.body.flightID2], (err, data) => {
         if (err) {
             return res.status(500).json({ error: "Internal Server Error" });
         }
-        if (data.length > 0) {
-            console.log("Data returned from the database:", data);
-        } else {
-            console.log("No data returned from the database.");
-        }
-
+       
         res.status(200).json({ flights: data });
-    })
+      })
+})
+
+/**
+ * WORK IN PROGRESS
+ * overwrite flight data based on flightID
+ */
+app.post('/overwriteFlightsByFlightID', (req, res) => {
+    const { destination, source, departureTime, landingTime, flightID } = req.body;
+    const sql = "UPDATE flights SET SOURCE = ?, DESTINATION = ?, DEPARTURE = ?, LANDING = ? WHERE FLIGHTID = ?;"
+    console.log(req.body.flightID)
+    db.query(sql, [source, destination, departureTime, landingTime, flightID], (err, data) => {
+        if (err) {
+             console.error('Error couldn\'t find flight:', err);
+             return res.status(500).json({ error: 'Internal Server Error' });
+        } else {
+             return res.json("Success") 
+        }
+      })
 })
 
 /**
@@ -257,32 +272,11 @@ app.post('/updateCrew', async (req, res) => {
       return res.status(500).json({ error: 'Internal Server Error' });
     }
   });
-  
-
-
-
-/**
- * get flights brings all data back where the dest and source match in the db
- */
-// app.post('/addFlight', (req, res) => {
-//     const createFlightQuery = "INSERT INTO FLIGHTS (SOURCE, DESTINATION, DEPARTURE, LANDING) VALUES(?, ?, ?, ?)"
-   
-//     db.query(createFlightQuery, [req.body.destination, req.body.source,  
-//         req.body.departureTime, req.body.landingTime], (err, data) => {
-        
-//         console.log("SQL Query:", createFlightQuery); // Log the SQL query
-//         if(err){
-//             return res.json("Error");
-//          }
-//         return res.json();
-        
-//     })
-// })
 
 app.post('/addFlight', (req, res) => {
     const { destination, source, departureTime, landingTime } = req.body;
     const sql = "INSERT INTO FLIGHTS (SOURCE, DESTINATION, DEPARTURE, LANDING) VALUES (?, ?, ?, ?)";
-  
+    console.log(req.body.destination)
     db.query(sql, [source, destination, departureTime, landingTime], (err, data) => {
       console.log("SQL Query:", sql); // Log the SQL query
       if (err) {
