@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import CrewEditor from './CrewEditor';
 import FlightForm from './FlightForm';
 import EditFlightForm from './EditFlightForm';
+import ManageCrew from './ManageCrew';
 import axios from 'axios'
 
 function AdminView(){
@@ -192,6 +193,8 @@ function AdminView(){
               return(
                 <div>
                   <h1>Manage Crew Members</h1>
+
+                  <ManageCrew selectedFlight={selectedFlight} />
                 </div>
               );
           default:

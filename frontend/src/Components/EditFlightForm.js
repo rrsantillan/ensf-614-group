@@ -4,14 +4,6 @@ import axios from 'axios';
 import moment from 'moment';
 
 const EditFlightForm = () => {
-  // const [dataToPopulateWith, setPopulateData] = useState({
-  //   Source: '',
-  //   Dest: '',
-  //   Departure: '',
-  //   Landing: '',
-  // })
-  
-  // const []
 
   const [destination, setDestination] = useState('');
   const [source, setSource] = useState('');
