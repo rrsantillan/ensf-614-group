@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 const FlightForm = () => {
+  const [flightid, setFlightId] = useState('');
+  const [aircraftid, setAircraftId] = useState('');
   const [destination, setDestination] = useState('');
   const [source, setSource] = useState('');
   const [departureTime, setDepartureTime] = useState('');
@@ -14,6 +16,8 @@ const FlightForm = () => {
     // Make an API request to your backend to add the flight to the database
     try {
       axios.post('http://localhost:8081/addFlight', {
+        flightid,
+        aircraftid,
         destination,
         source,
         departureTime,
@@ -36,13 +40,29 @@ const FlightForm = () => {
         </label>
         <input type="text" value={destination} onChange={(e) => setDestination(e.target.value)} />
       </div>
-
+      
       <div className="form-input" style={{ marginBottom: '10px', display: 'flex', flexDirection: 'column' }}>
         <label style={{ marginBottom: '5px' }}>
           Source:
         </label>
         <input type="text" value={source} onChange={(e) => setSource(e.target.value)} />
       </div>
+      
+      <div className="form-input" style={{ marginBottom: '10px', display: 'flex', flexDirection: 'column' }}>
+        <label style={{ marginBottom: '5px' }}>
+          Flight ID:
+        </label>
+        <input type="text" value={flightid} onChange={(e) => setFlightId(e.target.value)} />
+      </div>
+
+      <div className="form-input" style={{ marginBottom: '10px', display: 'flex', flexDirection: 'column' }}>
+        <label style={{ marginBottom: '5px' }}>
+          Aircraft ID:
+        </label>
+        <input type="number" value={aircraftid} onChange={(e) => setAircraftId(e.target.value)} />
+      </div>
+
+      
 
       <div className="form-input" style={{ marginBottom: '10px' }}>
         <label>

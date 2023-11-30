@@ -39,7 +39,7 @@ const transporter = nodemailer.createTransport({
 
 
 /**
- * SignUp whihc adds row to user table  
+ * SignUp which adds row to user table  
  */
 app.post('/Signup', (req, res) => {
     const sql = "INSERT INTO TBLUSER (USERNAME, PASSWORD, PROFILE, EMAIL, DOB) VALUES (?, ?, ?, ?, ?)"
@@ -129,6 +129,48 @@ app.post('/getFlights', (req, res) => {
         res.status(200).json({ flights: data });
     })
 })
+
+
+
+/**
+* search for flight by flightID
+*/
+app.post('/getFlightByFlightID', (req, res) => {
+  
+    const sql = "SELECT * FROM flights WHERE flightID = ?"
+ 
+ 
+    console.log(req.body.flightID2) // displays the currently selected flightID
+    db.query(sql, [req.body.flightID2], (err, data) => {
+        if (err) {
+            return res.status(500).json({ error: "Internal Server Error" });
+        }
+      
+        res.status(200).json({ flights: data });
+      })
+ })
+ 
+ 
+ /**
+ * WORK IN PROGRESS
+ * overwrite flight data based on flightID
+ */
+ app.post('/overwriteFlightsByFlightID', (req, res) => {
+    const { destination, source, departureTime, landingTime, flightID } = req.body;
+    const sql = "UPDATE flights SET SOURCE = ?, DESTINATION = ?, DEPARTURE = ?, LANDING = ? WHERE FLIGHTID = ?;"
+    console.log("selected FlightID: ", req.body.flightID)
+    db.query(sql, [source, destination, departureTime, landingTime, flightID], (err, data) => {
+        if (err) {
+             console.error('Error couldn\'t find flight:', err);
+             return res.status(500).json({ error: 'Internal Server Error' });
+        } else {
+             return res.json("Success")
+        }
+      })
+ })
+ 
+ 
+
 /**
  * get flights brings all data back where the dest and source match in the db
  */
@@ -203,6 +245,8 @@ app.post('/getCrew', (req, res) => {
     
     })
 })
+
+
 /**
  * get Crew brings all data back where the dest and source match in the db
  */
@@ -262,7 +306,7 @@ app.post('/updateCrew', async (req, res) => {
 app.post('/addFlight', (req, res) => {
     const sql = "INSERT INTO tblFlight (ORIGIN, DESTINATION, DEPARTURETIME, ARRIVALTIME) VALUES(?, ?, ?, ?)"
    
-    db.query(sql, [req.body.destination, req.body.source,  
+    db.query(sql, [req.body.flightid, req.body.aircraftid, req.body.destination, req.body.source,  
         req.body.departureTime, req.body.landingTime], (err, data) => {
         
         console.log("SQL Query:", sql); // Log the SQL query
@@ -274,6 +318,22 @@ app.post('/addFlight', (req, res) => {
     })
 })
 
+/**
+ * Insert new aircraft
+ */
+app.post('/addAircraft', (req, res) => {
+    const sql = "INSERT INTO AIRCRAFT (AIRCRAFTID, MODEL) VALUES(?, ?)"
+   
+    db.query(sql, [req.body.aircraftid, req.body.model], (err, data) => {
+        
+        console.log("SQL Query:", sql); // Log the SQL query
+        if(err){
+            return res.json("Error");
+         }
+        return res.json();
+        
+    })
+})
 
 /**
  * getUnavailableSeats brings the list of seats taken
