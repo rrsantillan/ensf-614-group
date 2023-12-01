@@ -39,6 +39,7 @@ const Signup = (props) => {
         // Update emailData whenever formData changes
         setEmailData((prevEmailData) => ({
           ...prevEmailData,
+          to: values.email,
           body: getEmailBody(values),
         }));
       }, [values]);
