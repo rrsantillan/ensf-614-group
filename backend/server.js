@@ -49,7 +49,7 @@ app.post('/Signup', (req, res) => {
         req.body.password,
         req.body.email
     ]
-    console.log(values)
+
     db.query(sql,  ['0', req.body.user, req.body.password, 'REGUSER', req.body.email, '0', 'TEST'], (err, data) => {
     console.log("SQL:", sql);
       if(err){
