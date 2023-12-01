@@ -138,8 +138,7 @@ app.post('/getFlights', (req, res) => {
 app.post('/getFlightByFlightID', (req, res) => {
   
     const sql = "SELECT * FROM flights WHERE flightID = ?"
- 
- 
+
     console.log(req.body.flightID2) // displays the currently selected flightID
     db.query(sql, [req.body.flightID2], (err, data) => {
         if (err) {
@@ -193,10 +192,10 @@ app.post('/getAllFlights', (req, res) => {
 /**
  * get flights brings all data back where the dest and source match in the db
  */
-app.post('/getAllFlights', (req, res) => {
-    const sql = "SELECT TBLSEATMAP.ROWCNT, TBLSEATMAP.COLCNT FROM TBLSEATMAP LEFT JOIN TBLFLIGHT ON TBLSEATMAP.AIRPLANEID = TBLFLIGHT.AIRPLANEID WHERE TBLFLIGHT = ?"
-    console.log(req.body.FLIGHTID)
-    db.query(sql, [req.body.FLIGHTID], (err, data) => {
+app.post('/getAirPlaneSeatMap', (req, res) => {
+    const sql = "SELECT tblAirplane.ROWCNT, tblAirplane.COLCNT FROM tblAirplane LEFT JOIN TBLFLIGHT ON tblAirplane.AIRPLANEID = TBLFLIGHT.AIRPLANEID WHERE tblflight.flightid = ?"
+   
+    db.query(sql, [req.body.flightID], (err, data) => {
         if (err) {
             return res.status(500).json({ error: "Internal Server Error" });
         }
@@ -205,8 +204,8 @@ app.post('/getAllFlights', (req, res) => {
         } else {
             console.log("No data returned from the database.");
         }
-
-        res.status(200).json({ seats: data });
+        
+        res.status(200).json({ seatMap: data });
     })
 })
 

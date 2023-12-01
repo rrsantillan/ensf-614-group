@@ -19,8 +19,6 @@ function Home(){
     console.log(Profile1)
    });  
 
-  
-
   return(
     <div className="d-flex flex-column">
       <div className="p-3 bg-green">

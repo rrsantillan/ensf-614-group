@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect } from 'react'
 import axios from 'axios'
 import { useParams } from 'react-router-dom';
 import Payment from './Payment'
@@ -12,12 +12,11 @@ function BookFlight(){
   const [selectedSeat, setSelectedSeat] = useState('');
   const [seatMessage, setSeatMessage] = useState('');
   const [selectedClass, setSelectedClass] = useState('');
- 
-  const [seatMap, setSeats] = useState([]);
-
-
-  
+  const [seatMap, setSeatMap] = useState([]);  
   const [price, setPrice] = useState();
+  const [rowcnt, setrowcnt] = useState('');
+  const [colcnt, setcolcnt] = useState('');
+  
 
   //Values is an array of values used to pass to a query on the backend
   const [values, setValues] = useState({
@@ -27,7 +26,37 @@ function BookFlight(){
     username: '',
     Insurance: ''
   })
+  const generateSeatMap = (rowCount, columnCount) => {
+    setSeatMap([])
+    
+    for (let row = 1; row <= rowCount + 3; row++) {
+      const rowSeats = [];
+      for (let col = 1; col <= columnCount; col++) {
+        rowSeats.push(`${String.fromCharCode(64 + col)}${row}`);
+      }
+      seatMap.push(rowSeats);
+    }
+  
+    return seatMap;
+  };
+  useEffect(() => {
+    
+    axios.post('http://localhost:8081/getAirPlaneSeatMap', {flightID: flightID})
+    .then((res) => {
+      setcolcnt(res.data.seatMap[0].COLCNT)
+      setrowcnt(res.data.seatMap[0].ROWCNT)
 
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+    let newSeatMap = [];
+    
+    newSeatMap = generateSeatMap(rowcnt, colcnt)
+    setSeatMap(newSeatMap)
+    console.log(rowcnt)
+    console.log(colcnt)
+  });
   /**
    * handleClassChange is used to set the values of the values
    * array that is used in the query. 
@@ -46,32 +75,22 @@ function BookFlight(){
       
     }));
     
-   
+    
+
     //Seatmap temp variable based on the selected value we preselect what 
     //Seats the user is allowed to select 
     setSelectedClass(event.target.value)
-    let newSeatMap;
+    
     if(event.target.value === 'Economy'){
       setPrice(300.00);
-      newSeatMap = [
-        ['A4', 'B4', 'C4', ' ', 'D4','E4', 'F4'],
-        ['A5', 'B5', 'C5', ' ','D5','E5', 'F5'],
-        ['A6', 'B6', 'C6',  ' ','D6','E6', 'F6'],
-        ['A7', 'B7', 'C7',  ' ','D7','E7', 'F7'],
-        ['A8', 'B8', 'C8',  ' ','D8','E8', 'F8'],
-        ['A9', 'B9', 'C9', ' ','D9','E9', 'F9'],
-        ['A10', 'B10', 'C10', ' ','D10','E10', 'F10']];
       
 
     }else{
       setPrice(400.00);
-      newSeatMap = [
-        ['A1', 'B1', ' ','C1', 'D1'],
-        ['A2', 'B2', ' ','C2', 'D2'],
-        ['A3', 'B3', ' ','C3', 'D3']];
+      
       
     }
-    setSeats(newSeatMap);
+   
     //console.log('Selected Class:', event.target.value);
 
   };
@@ -199,11 +218,8 @@ function BookFlight(){
                   <select id="Class" value={selectedClass} onChange={handleClassChange}>
                     <option value="">Select...</option>
                     <option value="Business">Business</option>
-                    <option value="Economy">Economy</option>
-                  </select>
-                  <select id="Comfort" value={selectedClass} onChange={handleClassChange}>
-                      <option value="Ordinary">Ordinary</option>
-                      <option value="Comfort">Comfort</option>
+                    <option value="Ordinary">Ordinary</option>
+                    <option value="Comfort">Comfort</option>
                   </select>
                 </div>
                 <p></p>
@@ -230,21 +246,7 @@ function BookFlight(){
                 {/* Display a message for unavailable seats */}
                 {seatMessage && (
                   <div className="text-danger">{seatMessage}</div>
-                )}
-                {/* Display the selected seat information */}
-                {/* <div className="d-flex justify-content-left align-items-top">
-                  <label htmlFor="outputTextarea" >Selected Seat: </label>
-                  <div style={{ width: '10px' }} />
-                  <textarea name ='SelectedSeat2'
-                    id="outputTextarea"
-                    value={selectedSeat}
-                    readOnly
-                    rows={1}
-                    cols={10}
-                  />
-                </div> */}
-               
-               
+                )} 
                 <p></p>
                 <div>
                   <h4>Flight Insurance</h4>

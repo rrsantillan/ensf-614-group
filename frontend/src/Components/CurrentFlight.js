@@ -30,17 +30,32 @@ function CurrentFlights(){
 
         axios.post('http://localhost:8081/deleteTicket', updatedValues)
         .then(() => {
-            handleSumbit();
-            window.location.reload();
+           
+            
+            handleSumbit2();
 
         })
         .catch((err) => {
             console.error(err)
         })
         
-        window.location.reload();
+      
 
 
+    };
+    const handleSumbit2 = ()=> {
+        
+
+        axios.post('http://localhost:8081/getFlights', values)
+        .then((res) => {
+            
+            const fetchedFlightData = res.data.flights;
+            setFlightData(fetchedFlightData);
+        })
+        .catch((err) => {
+            console.error(err);       
+        });
+      
     };
     const handleSumbit = (event)=> {
         event.preventDefault();
