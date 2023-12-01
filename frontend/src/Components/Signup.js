@@ -18,23 +18,6 @@ const Signup = (props) => {
     const [errors, setErrors] = useState({})
     
     useEffect(() => {
-        setEmailData((prevEmailData) => ({
-            ...prevEmailData,
-            to: values.email,
-            body: getEmailBody(values),
-        }));
-    }, [values]);
-
-    // useEffect(() => {
-    //     // This useEffect will run whenever 'values' changes
-    //     console.log('Updated values:', values);
-        
-    //     // You can perform validation here whenever 'values' changes
-    //     const newErrors = validation(values);
-    //     setErrors(newErrors);
-    // }, [values]);
-    
-    useEffect(() => {
         // Update emailData whenever formData changes
         setEmailData((prevEmailData) => ({
           ...prevEmailData,
