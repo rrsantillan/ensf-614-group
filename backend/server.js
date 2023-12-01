@@ -39,7 +39,7 @@ const transporter = nodemailer.createTransport({
 
 
 /**
- * SignUp which adds row to user table  
+ * SignUp which adds (new user) row to user table
  */
 app.post('/Signup', (req, res) => {
     // const sql = "INSERT INTO TBLUSER (USERNAME, PASSWORD, PROFILE, EMAIL, DOB) VALUES (?, ?, ?, ?, ?)"
