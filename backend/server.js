@@ -424,7 +424,7 @@ app.post('/api/send-email', async (req, res) => {
     const mailOptions = {
         from: 'ensf614group@gmail.com',  // Replace with your Gmail email address
         //   to: 'braden11tink@gmail.com',
-          to: 'redgesantillan@hotmail.com',
+          to: to,
         // to: validatedTo, 
         subject: subject,
         text: body,
