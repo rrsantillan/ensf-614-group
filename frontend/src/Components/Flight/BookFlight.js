@@ -1,9 +1,10 @@
-import React, {useState, useEffect } from 'react'
+import React, {useState } from 'react'
 import axios from 'axios'
 import { useParams } from 'react-router-dom';
 import Payment from './Payment'
 import '../../CSS/styles.css';
 import Header from '../Header'; 
+
 
 function BookFlight(){
   //Variables used to hold states of objects for the view
@@ -11,17 +12,17 @@ function BookFlight(){
   
   const { username, flightID } = useParams();
 
+  const showPromoCode = username !== 'guest';
+
+  const [promoCode, setPromoCode] = useState('');
   const [checkSeat, setcheckSeat] = useState('');
   const [seatMessage, setSeatMessage] = useState('');
   const [seatMap, setSeatMap] = useState([]);  
   const [price, setPrice] = useState();
 
-
-  const [rowcnt, setrowcnt] = useState('');
-  const [colcnt, setcolcnt] = useState('');
-  
   const [isChecked, setChecked] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
+
 
   //Values is an array of values used to pass to a query on the backend
   const [values, setValues] = useState({
@@ -64,9 +65,32 @@ function BookFlight(){
   
   };
 
+  const handlePromoCodeChange = (e) => {
+    e.preventDefault()
+    setPromoCode(e.target.value);
+    
+  };
+  const checkPromo = (e) => {
+    e.preventDefault();
+    console.log(promoCode)
+    axios.post('http://localhost:8081/checkPromoCode', { User: username, Promo: promoCode })
+    .then((res) => {
+        if(res.data === "Yes"){
+          setPrice(price - (price*0.5))
+        }else{
+          setPrice(price)
+          setPromoCode("Invalid")
+        }
+    })
+    .catch((err) => {
+         console.error(err);
+    });
+
+  } 
+
   const generateSeatMap  =  (rowCount, columnCount) => {
     const tempSeatMap = []
-    for (let row = 1; row <= rowCount + 3; row++) {
+    for (let row = 1; row <= rowCount; row++) {
       const rowSeats = [];
       for (let col = 1; col <= columnCount; col++) {
         rowSeats.push(`${String.fromCharCode(64 + col)}${row}`);
@@ -81,9 +105,7 @@ function BookFlight(){
     axios.post('http://localhost:8081/getAirPlaneSeatMap', { flightID: flightID })
     .then((res) => {
       const seatMap = res.data.seatMap;
-      setcolcnt(seatMap[0].COLCNT);
-      setrowcnt(seatMap[0].ROWCNT);
-     
+    
       const newSeatMap = generateSeatMap(seatMap[0].ROWCNT, seatMap[0].COLCNT);
       setSeatMap([...newSeatMap]);
     })
@@ -185,98 +207,114 @@ function BookFlight(){
   /**
    * View is shows below 
    */
-  return(
+  return (
     <div className="d-flex flex-column">
       <div className="p-3 bg-green">
         <Header />
-    </div>  
-    <div className="d-flex vh-100 justify-content-center align-items-top">
-        
-        <div className='p-3 bg-white w-75'>
+      </div>
+      <div className="d-flex vh-100 justify-content-center align-items-top">
+        <div className="p-3 bg-white w-75">
           <h2>Book Flight</h2>
           {!showPayment ? (
-            <form action=''>
-                <h4>Departing Flight</h4>
-                <div className = "d-flex justify-content-left align-items-top">
-                  <label htmlFor="Class">Select Class: </label>
-                  <div style ={{width: '10px'}}/>
-                  <select id="Class" 
-                    onChange={(e) => {
-                      handleClassChange(e);
-                      getSeatSelection(e);
-                    }}>
-                    <option value="">Select...</option>
-                    <option value="Ordinary">Ordinary</option>
-                    <option value="Comfort">Comfort</option>
-                    <option value="Business">Business</option>
-                  </select>
-                </div>
-                <p></p>
-                <div>
-                    <h4>Seat Selection</h4>
-                    <div className="seat-map">
-                      
-                      {seatMap.map((row, rowIndex) => (
-                        <div key={rowIndex} className="seat-row">
-                          {row.map((seat) => (
-                            <div
-                              key={seat}
-                              className={`seat ${checkSeat === seat ? 'selected' : ''}`}
-                              onClick={() => handleSeatSelect(seat)}
-                            >
-                              {seat}
-                            </div>
-                          ))}
+            <div>
+              <h4>Departing Flight</h4>
+              <div className="d-flex justify-content-left align-items-top">
+                <label htmlFor="Class">Select Class: </label>
+                <div style={{ width: '10px' }} />
+                <select
+                  id="Class"
+                  onChange={(e) => {
+                    handleClassChange(e);
+                    getSeatSelection(e);
+                  }}
+                >
+                  <option value="">Select...</option>
+                  <option value="Ordinary">Ordinary</option>
+                  <option value="Comfort">Comfort</option>
+                  <option value="Business">Business</option>
+                </select>
+              </div>
+              <p></p>
+              <div>
+                <h4>Seat Selection</h4>
+                <div className="seat-map">
+                  {seatMap.map((row, rowIndex) => (
+                    <div key={rowIndex} className="seat-row">
+                      {row.map((seat) => (
+                        <div
+                          key={seat}
+                          className={`seat ${checkSeat === seat ? 'selected' : ''}`}
+                          onClick={() => handleSeatSelect(seat)}
+                        >
+                          {seat}
                         </div>
                       ))}
                     </div>
+                  ))}
                 </div>
-                <p></p>
-                {/* Display a message for unavailable seats */}
-                {seatMessage && (
-                  <div className="text-danger">{seatMessage}</div>
-                )} 
-                <p></p>
-                <div>
-                  <h4>Flight Insurance</h4>
-                  <div className="d-flex justify-content-left align-items-top p-2">
-                    <input 
-                      type="checkbox"  
-                      onChange={() => {
-                        setChecked(!isChecked);
-                        editPayment(); // Call the editPayment function on checkbox change
-                      }}
-                      aria-label="Checkbox for following text input"/>
-                    <text className = "p-2"> Would you like Flight Insurance?</text>
-                    </div>
+              </div>
+              <p></p>
+              {seatMessage && <div className="text-danger">{seatMessage}</div>}
+              <p></p>
+              <div>
+                <h4>Flight Insurance</h4>
+                <div className="d-flex justify-content-left align-items-top p-2">
+                  <input
+                    type="checkbox"
+                    onChange={() => {
+                      setChecked(!isChecked);
+                      editPayment();
+                    }}
+                    aria-label="Checkbox for following text input"
+                  />
+                  <text className="p-2"> Would you like Flight Insurance?</text>
                 </div>
-                <div>
-                   
-                   
-                      <div className="d-flex justify-content-left align-items-center">
-                      <text className ="p-2">Price: </text>
-                      <textarea 
-                        className ="p-1"
-                        id="outputTextarea"
-                        value={price}
-                        readOnly  
-                        rows={1}
-                        cols={10}
+              </div>
+              {showPromoCode && ( 
+                <div className="row">
+                  <form onSubmit={checkPromo} className="col-auto">
+                    <div className="d-flex">
+                      <input
+                        type="text"
+                        placeholder="Promo Code"
+                        value={promoCode}
+                        onChange={handlePromoCodeChange}
+                        maxLength="5"
+                        className="form-control"
                       />
-                      <text>$</text>
-                      </div>
-                 </div>
-                 <p></p>
-                <button onClick = {changePage}  className='btn btn-success w-25'>Go To Payment</button>
-            </form>
+                      <button type="submit" className="btn btn-outline-success ml-2">
+                        Apply
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              )}
+              <p></p>
+              <div className="d-flex justify-content-left align-items-center">
+                <text className ="p-2">Price: </text>
+                <input 
+                  id="outputTextarea"
+                  className="form-control"
+                  value={price !== undefined ? price.toFixed(2) : ''}
+                  readOnly 
+                  style={{ maxWidth: '150px' }}
+                />
+                <span style={{ fontWeight: 'bold', padding: '0 5px' }}>$</span>
+              </div>
+              <p></p>
+              <button onClick={changePage} className="btn btn-success w-25">
+                Go To Payment
+              </button>
+            </div>
           ) : (
             <div>
-              <Payment price={price} myValues = {values} />
+              <Payment price={price} myValues={values} />
             </div>
-         )}
+          )}
         </div>
+      </div>
     </div>
-    </div>
-  )
+  );
+  
 }
 export default BookFlight

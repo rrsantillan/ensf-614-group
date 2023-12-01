@@ -73,6 +73,7 @@ function CurrentFlights(){
       
     };
 
+
     return(
         <div className="d-flex flex-column">
             <div className="p-3 bg-green">

@@ -27,7 +27,7 @@ const db = mysql.createConnection({
   database: "ensf_614"
 })
 
-// Setup nodemailer
+// EMAIL - Setup nodemailer
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -39,10 +39,11 @@ const transporter = nodemailer.createTransport({
 
 
 /**
- * SignUp which adds row to user table  
+ * SignUp which adds (new user) row to user table
  */
 app.post('/Signup', (req, res) => {
-    const sql = "INSERT INTO TBLUSER (USERNAME, PASSWORD, PROFILE, EMAIL, DOB) VALUES (?, ?, ?, ?, ?)"
+    
+    const sql = "INSERT INTO TBLUSER (USERID, USERNAME, PASSWORD, PROFILE, EMAIL, YEARLYPROMO, PROMOCODE) VALUES (?, ?, ?, ?, ?, ?, ?)"
     
     const values = [
         req.body.user,
@@ -50,15 +51,17 @@ app.post('/Signup', (req, res) => {
         req.body.email
     ]
     console.log(values)
-    db.query(sql,  [req.body.user, req.body.password, 'REGUSER', req.body.email, '1982-10-17 00:00:00'], (err, data) => {
-      if(err){
-        return res.json("Error");
-      }
-      console.log(data)
-      return res.json(data);
+    db.query(sql,  ['0', req.body.user, req.body.password, 'REGUSER', req.body.email, '0', '50OFF'], (err, data) => {
+        console.log("SQL:", sql);
+        if(err){
+            return res.json("Error");
+        } else{
+            console.log("Writing new registered user info to DB...")
+        }
+        return res.json(data);
      
     })
-})
+});
 
 /**
  * Book flight updates row in db to add another seat to the taken seats 
@@ -94,7 +97,23 @@ app.post('/login', (req, res) => {
     
     })
 })
-
+/**
+ * Login ensures the user is part of the system 
+ */
+app.post('/getUserProfile', (req, res) => {
+    const sql = "SELECT EMAIL FROM TBLUSER WHERE USERNAME = ?"
+    db.query(sql, [req.body.user], (err, data) => {
+        if(err){
+            return res.json("Error");
+        }
+        if(data.length > 0){
+            res.status(200).json({ user: data });
+        } else {
+            return res.json("Failed") 
+        }
+    
+    })
+})
 /**
  * check flight brings all data back where the dest and source match in the db
  * used in EditFLightForm.js to look for flights
@@ -160,7 +179,6 @@ app.post('/getFlights', (req, res) => {
 app.post('/getFlightByFlightID', (req, res) => {
   
     const sql = "SELECT * FROM tblFlight WHERE flightID = ?"
-
     console.log(req.body.flightID2) // displays the currently selected flightID
     db.query(sql, [req.body.flightID2], (err, data) => {
         if (err) {
@@ -173,13 +191,14 @@ app.post('/getFlightByFlightID', (req, res) => {
  
  
  /**
- * 
+
  * overwrite flight data based on flightID
  * used in EditFlightForm.js
  */
  app.post('/overwriteFlightsByFlightID', (req, res) => {
     const { destination, origin, departureTime, landingTime, flightID, aircraftid } = req.body;
     const sql = "UPDATE tblFlight SET ORIGIN = ?, DESTINATION = ?, DEPARTURETIME = ?, ARRIVALTIME = ?, AIRPLANEID = ? WHERE FLIGHTID = ?;"
+
     console.log("selected FlightID: ", req.body.flightID)
     db.query(sql, [origin, destination, departureTime, landingTime, aircraftid, flightID], (err, data) => {
         if (err) {
@@ -229,6 +248,27 @@ app.post('/getAirPlaneSeatMap', (req, res) => {
         }
         
         res.status(200).json({ seatMap: data });
+    })
+})
+/**
+ * Check Promo Code For the given user
+ */
+app.post('/checkPromoCode', (req, res) => {
+    console.log(req.body.User, req.body.Promo)
+    const sql = "SELECT YEARLYPROMO, PROMOCODE FROM TBLUSER WHERE USERNAME = ? and PROMOCODE = ? and YEARLYPROMO = 0"
+    const updateQuery = 'UPDATE TBLUSER SET YEARLYPROMO = 1 where USERNAME = ? and PROMOCODE = ? ';
+    db.query(sql, [req.body.User, req.body.Promo], (err, data) => {
+        if(err){
+            return res.json("Error");
+        }
+        if(data.length > 0){
+            db.query(updateQuery, [req.body.User, req.body.Promo]);
+            return res.json("Yes");
+            
+        } else {
+            return res.json("No") 
+        }
+    
     })
 })
 
@@ -444,14 +484,9 @@ app.post('/getRegTicket', (req, res) => {
     })
 })
 
-
-
-
-
 app.listen(8081, () =>{
   console.log("Listening...")
 })
-
 
 
 //////////////////////////////////////////////////////////
@@ -459,24 +494,32 @@ app.listen(8081, () =>{
 app.post('/api/send-email', async (req, res) => {
     console.log("Here")
     const { to, subject, body } = req.body;
-  
+    
+    const validatedTo = String(to).trim();
+
     // Setup email data
     const mailOptions = {
-      from: 'ensf614group@gmail.com',  // Replace with your Gmail email address
-      to: 'braden11tink@gmail.com', 
-      subject: 'test',
-      text: body,
+        from: 'ensf614group@gmail.com',  // Replace with your Gmail email address
+        //   to: 'braden11tink@gmail.com',
+          to: to,
+        // to: validatedTo, 
+        subject: subject,
+        text: body,
     };
-  
+    console.log("API call, to field: ", mailOptions.to)
+
     try {
-      // Send the email
-      await transporter.sendMail(mailOptions);
-  
-      // Respond to the client
-      res.json({ message: 'Email sent successfully' });
+        // res.json({ message: "API call, trying to send..." });
+        // Send the email
+        console.log("API call, trying to send...");
+        await transporter.sendMail(mailOptions);
+    
+        // Respond to the client
+        res.json({ message: 'Email sent successfully' });
     } catch (error) {
-      console.error('Error sending email:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
+        console.log(error)
+        console.error('Error sending email:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
   });
 

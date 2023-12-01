@@ -71,8 +71,13 @@ function Login(){
                         </div>
                         <button type='submit' className='btn btn-success w-100'>Log In</button>
                         <p></p>
-                        <Link to='./Signup' className='btn btn-default border w-100 bg-light'> Create Account</Link>
 
+                    </form>
+
+                    <Link to='./Signup' className='btn btn-default border w-100 bg-light'> Create Account</Link>
+
+                    <form action='' onSubmit={handleSumbit}>
+                        <button type='submit' className='btn btn-light w-100'>Log In</button>
                     </form>
                     <div>
                         <p></p>
