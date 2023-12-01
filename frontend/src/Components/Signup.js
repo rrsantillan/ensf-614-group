@@ -57,6 +57,7 @@ function Signup(){
     }, []); // Empty dependency array ensures this effect runs only once
     
     const handleSendEmail = () => {
+        console.log("Sending Email...")
         sendEmail(emailData);
     };
 
