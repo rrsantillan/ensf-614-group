@@ -43,7 +43,7 @@ const transporter = nodemailer.createTransport({
  */
 app.post('/Signup', (req, res) => {
     // const sql = "INSERT INTO TBLUSER (USERNAME, PASSWORD, PROFILE, EMAIL, DOB) VALUES (?, ?, ?, ?, ?)"
-    const sql = "INSERT INTO tblUser (USERNAME, PASSWORD, PROFILE, EMAIL, DOB) VALUES (?, ?, ?, ?, ?)"
+    const sql = "INSERT INTO tblUser (USERID, USERNAME, PASSWORD, PROFILE, EMAIL, YEARLYPROMO) VALUES (?, ?, ?, ?, ?, ?)"
     
     const values = [
         req.body.user,
@@ -51,7 +51,7 @@ app.post('/Signup', (req, res) => {
         req.body.email
     ]
     console.log(values)
-    db.query(sql,  [req.body.user, req.body.password, 'REGUSER', req.body.email, '1982-10-17 00:00:00'], (err, data) => {
+    db.query(sql,  ['0', req.body.user, req.body.password, 'REGUSER', req.body.email, '0'], (err, data) => {
       if(err){
         return res.json("Error");
       } else{
@@ -61,7 +61,7 @@ app.post('/Signup', (req, res) => {
       return res.json(data);
      
     })
-})
+});
 
 /**
  * Book flight updates row in db to add another seat to the taken seats 
@@ -155,7 +155,6 @@ app.post('/getFlightByFlightID', (req, res) => {
  
  
  /**
- * WORK IN PROGRESS
  * overwrite flight data based on flightID
  */
  app.post('/overwriteFlightsByFlightID', (req, res) => {
@@ -372,34 +371,32 @@ app.post('/getRegTicket', (req, res) => {
     })
 })
 
-
-
-
-
 app.listen(8081, () =>{
   console.log("Listening...")
 })
-
-
-
 
 //////////////////////////////////////////////////////////
 // Define your route to send an email
 app.post('/api/send-email', async (req, res) => {
     const { to, subject, body } = req.body;
-  
+    
+    const validatedTo = String(to).trim();
+
     // Setup email data
     const mailOptions = {
         from: 'ensf614group@gmail.com',  // Replace with your Gmail email address
         //   to: 'braden11tink@gmail.com',
-        //   to: 'redgesantillan@hotmail.com',
-        to: to, 
+          to: 'redgesantillan@hotmail.com',
+        // to: validatedTo, 
         subject: subject,
         text: body,
     };
-  
+    console.log("API call, to field: ", mailOptions.to)
+
     try {
+        // res.json({ message: "API call, trying to send..." });
         // Send the email
+        console.log("API call, trying to send...");
         await transporter.sendMail(mailOptions);
     
         // Respond to the client

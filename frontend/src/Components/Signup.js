@@ -1,6 +1,6 @@
 import React from "react"
 import axios from 'axios'
-import  { useState, useEffect } from 'react';
+import  { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate  } from 'react-router-dom';
 import { createEmailBody, createEmailData, sendEmail } from './EmailFunctions'; // Adjust the path based on your file structure
 import validation from "./SignupValidation";
@@ -12,6 +12,8 @@ const Signup = (props) => {
         password: '',
         email: ''
     })
+    
+    const promoCode = '50OFF';
 
     const navigate = useNavigate();
     const [errors, setErrors] = useState({})
@@ -24,19 +26,28 @@ const Signup = (props) => {
     //     const newErrors = validation(values);
     //     setErrors(newErrors);
     // }, [values]);
+    
+    useEffect(() => {
+        // Update emailData whenever formData changes
+        setEmailData((prevEmailData) => ({
+          ...prevEmailData,
+          body: getEmailBody(values),
+        }));
+      }, [values]);
 
     const handleInput = (event) => {
-        setValues(prev => ({...prev,[event.target.name]: [event.target.value]}))
+        setValues(prev => ({...prev,[event.target.name]: event.target.value}))
+        // setValues(prev => ({...prev, [event.target.name]: [event.target.value]}))
         console.log("values printout:")
-        console.log(values.user[0])
-        console.log(values.password[0])
-        console.log(values.email[0])
+        console.log(values.user)
+        console.log(values.password)
+        console.log(values.email)
     }
     
-    // Use useEffect to observe the values state
-    useEffect(() => {
-        console.log(values); // Log values whenever it changes
-    }, [values]);
+    // // Use useEffect to observe the values state
+    // useEffect(() => {
+    //     console.log(values); // Log values whenever it changes
+    // }, [values]);
 
     const handleSumbit =(event)=> {
         event.preventDefault();
@@ -53,30 +64,33 @@ const Signup = (props) => {
         }
     }
 
-    const emailBody = `
-        Hello ${values.user[0]},
+    const getEmailBody = (values) => {
+        
+        return ` 
+            
+        Hello ${values.user},
 
-        This is your password: ${values.password[0]}
-
-        You are using this email: ${values.email[0]}
+        You are using this email: ${values.email}
 
         Thank you for signing up with Oceanic!
 
-        Here's your promo code:
+        Here's your promo code: ${promoCode}
 
         Regards,
-        Your Oceanic Airlines`;
+        Your Oceanic Airlines
+            `;
+        };
 
     const [emailData, setEmailData] = useState({
         // to: 'braden11tink@gmail.com',
         to: 'redgesantillan@hotmail.com',
-        // to: values.email,
+        // to: values.email.trim(),
         subject: 'Welcome!',
-        body: emailBody,
+        body: getEmailBody(values),
     });
 
     const sendEmail = async () => {
-        console.log("sendEmail call (async)")
+        console.log("frontend sendEmail call (async)")
        
         try {
           const response = await fetch('http://localhost:7002/api/send-email', {
