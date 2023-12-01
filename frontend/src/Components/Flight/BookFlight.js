@@ -279,7 +279,7 @@ function BookFlight(){
                         placeholder="Promo Code"
                         value={promoCode}
                         onChange={handlePromoCodeChange}
-                        maxLength="4"
+                        maxLength="5"
                         className="form-control"
                       />
                       <button type="submit" className="btn btn-outline-success ml-2">

@@ -131,10 +131,12 @@ const Payment = (props) => {
     useEffect(() => {
         console.log("ran")
         // Fetch the user's email only once when the component mounts
-        axios.post('http://localhost:8081/getUserProfile', { user: myValues.username })
-          .then(res => {
-            setGuestEmail(res.data.user[0].EMAIL);
-          });
+        if (myValues.username !== 'guest'){
+            axios.post('http://localhost:8081/getUserProfile', { user: myValues.username })
+            .then(res => {
+                setGuestEmail(res.data.user[0].EMAIL);
+            });
+        }
       }, [myValues.username]);  
 
     // Update emailData whenever formData changes
@@ -146,6 +148,7 @@ const Payment = (props) => {
         }));
     }, [formData, getEmailBody, guestEmail]);
 
+   
     const [emailData, setEmailData] = useState({
         to: guestEmail,
         subject: 'Booked Ticket!',
@@ -200,7 +203,6 @@ const Payment = (props) => {
                     <label>Name on Card:</label>
                     <input type="text" placeholder='Card Holder' name='CardHolder' value={formData.CardHolder} onChange={handleInput5} className='form-control' />
                 </div>
-
                 <div>
                     <label>Card number:</label>
                     <input
