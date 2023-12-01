@@ -2,9 +2,9 @@ import React from "react"
 import axios from 'axios'
 import  { useState } from 'react';
 import { Link, useParams  } from 'react-router-dom';
-
+import Header from '../Header'; 
 import 'react-calendar/dist/Calendar.css';
-import '../CSS/styles.css';
+import '../../CSS/styles.css';
 
 // import dayjs from 'dayjs';
 // import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
@@ -57,13 +57,22 @@ function FindFlight(){
 
     const handleSumbit =(event)=> {
         event.preventDefault();
-
+        setErrors({
+            Source: '',
+            Dest: '',
+        });
         if (values.Source === '') {
             setErrors({
                 ...errors,
                 Source: 'Source should not be empty',
             });
+            
             return;
+        }else{
+            setErrors({
+                ...errors,
+                Source: '',
+            });
         }
     
         if (values.Dest === '') {
@@ -72,17 +81,19 @@ function FindFlight(){
                 Dest: 'Destination should not be empty',
             });
             return;
+        }else{
+            setErrors({
+                ...errors,
+                Dest: '',
+            });
         }
         // Clear previous errors
-        setErrors({
-            Source: '',
-            Dest: '',
-        });
+        
         
         axios.post('http://localhost:8081/checkFlights', values)
         .then((res) => {
             const fetchedFlightData = res.data.flights;
-            console.log('fetchedFlightData:', fetchedFlightData);
+            
             setFlightData(fetchedFlightData);
             setFlightID(fetchedFlightData.flightID);
     
@@ -95,7 +106,11 @@ function FindFlight(){
  
 
 return(
-    <div className="d-flex vh-100 justify-content-center align-items-top">
+    <div className="d-flex flex-column">
+        <div className="p-3 bg-green">
+            <Header />
+        </div>
+        <div className="d-flex vh-100 justify-content-center align-items-top">
         <div className='p-3 bg-white w-75'>
             <h2>Where To?</h2>
             <form action='' onSubmit={handleSumbit}>
@@ -139,7 +154,7 @@ return(
             )}
         </div>
 
-
+    </div>
     </div>
       
 

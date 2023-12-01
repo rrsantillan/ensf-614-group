@@ -2,61 +2,36 @@ import React, {useState, useEffect } from 'react'
 import axios from 'axios'
 import { useParams } from 'react-router-dom';
 import Payment from './Payment'
-import '../CSS/styles.css';
+import '../../CSS/styles.css';
+import Header from '../Header'; 
 
 function BookFlight(){
   //Variables used to hold states of objects for the view
   //The setters are used inorder to change the values
   
   const { username, flightID } = useParams();
-  const [selectedSeat, setSelectedSeat] = useState('');
+
+  const [checkSeat, setcheckSeat] = useState('');
   const [seatMessage, setSeatMessage] = useState('');
-  const [selectedClass, setSelectedClass] = useState('');
   const [seatMap, setSeatMap] = useState([]);  
   const [price, setPrice] = useState();
+
+
   const [rowcnt, setrowcnt] = useState('');
   const [colcnt, setcolcnt] = useState('');
   
+  const [isChecked, setChecked] = useState(false);
+  const [showPayment, setShowPayment] = useState(false);
 
   //Values is an array of values used to pass to a query on the backend
   const [values, setValues] = useState({
     selectedClass: '',
-    SelectedSeat2: '',
+    SelectedSeat: '',
     flight_ID: '',
     username: '',
     Insurance: ''
   })
-  const generateSeatMap = (rowCount, columnCount) => {
-    setSeatMap([])
-    
-    for (let row = 1; row <= rowCount + 3; row++) {
-      const rowSeats = [];
-      for (let col = 1; col <= columnCount; col++) {
-        rowSeats.push(`${String.fromCharCode(64 + col)}${row}`);
-      }
-      seatMap.push(rowSeats);
-    }
-  
-    return seatMap;
-  };
-  useEffect(() => {
-    
-    axios.post('http://localhost:8081/getAirPlaneSeatMap', {flightID: flightID})
-    .then((res) => {
-      setcolcnt(res.data.seatMap[0].COLCNT)
-      setrowcnt(res.data.seatMap[0].ROWCNT)
 
-    })
-    .catch((err) => {
-      console.error(err);
-    });
-    let newSeatMap = [];
-    
-    newSeatMap = generateSeatMap(rowcnt, colcnt)
-    setSeatMap(newSeatMap)
-    console.log(rowcnt)
-    console.log(colcnt)
-  });
   /**
    * handleClassChange is used to set the values of the values
    * array that is used in the query. 
@@ -75,25 +50,48 @@ function BookFlight(){
       
     }));
     
-    
-
     //Seatmap temp variable based on the selected value we preselect what 
     //Seats the user is allowed to select 
-    setSelectedClass(event.target.value)
     
-    if(event.target.value === 'Economy'){
+    if(event.target.value === 'Ordinary'){
       setPrice(300.00);
-      
-
+    }else if (event.target.value === 'Comfort'){
+      setPrice(420.00);
+    
     }else{
-      setPrice(400.00);
-      
-      
+      setPrice(600.00);
     }
-   
-    //console.log('Selected Class:', event.target.value);
-
+  
   };
+
+  const generateSeatMap  =  (rowCount, columnCount) => {
+    const tempSeatMap = []
+    for (let row = 1; row <= rowCount + 3; row++) {
+      const rowSeats = [];
+      for (let col = 1; col <= columnCount; col++) {
+        rowSeats.push(`${String.fromCharCode(64 + col)}${row}`);
+      }
+      
+      tempSeatMap.push(rowSeats);
+    }
+    return tempSeatMap;
+  };
+
+  const getSeatSelection  = () => {
+    axios.post('http://localhost:8081/getAirPlaneSeatMap', { flightID: flightID })
+    .then((res) => {
+      const seatMap = res.data.seatMap;
+      setcolcnt(seatMap[0].COLCNT);
+      setrowcnt(seatMap[0].ROWCNT);
+     
+      const newSeatMap = generateSeatMap(seatMap[0].ROWCNT, seatMap[0].COLCNT);
+      setSeatMap([...newSeatMap]);
+    })
+    .catch((err) => {
+        console.error(err);
+    });
+
+  } 
 
 
   /**
@@ -108,10 +106,6 @@ function BookFlight(){
       const fetchedSeatsArray = response.data.unSeats;
       const fetchedSeats = fetchedSeatsArray[0].TakenSeats;
       const takenSeatsArray = fetchedSeats.split(',').map((seat) => seat.trim());
-  
-      console.log(takenSeatsArray);
-  
-     
   
       return !takenSeatsArray.includes(seat);
     } catch (error) {
@@ -132,18 +126,16 @@ function BookFlight(){
       if (seat === ' ') {
         setSeatMessage(`This is the aisle please select a seat. Thank you`);
       }else if (await isSeatAvailable(seat)) {
-        setSelectedSeat(seat);
+        setcheckSeat(seat);
         
         setValues((prevValues) => ({
           ...prevValues,
-          SelectedSeat2: seat,
+          SelectedSeat: seat,
           flight_ID: flightID
         }));
 
         setSeatMessage('');
-        console.log('Selected Seat:', seat);
-
-        
+       
         // Update the textarea with the selected seat
         const textarea = document.getElementById('outputTextarea');
         if (textarea) {
@@ -160,28 +152,19 @@ function BookFlight(){
   };
 
   
-  
-
-
   /**
    * handleSubmit send the current information to the data base 
    * of what seat is being selected 
    * 
    * @param {*} event 
    */
-  
-
-
-  const [showPayment, setShowPayment] = useState(false);
   const changePage = (e) => {
     e.preventDefault();
     setShowPayment(true)
   }
 
 
- const [isChecked, setChecked] = useState(false);
  const editPayment = () => {
-    
     if (!isChecked) {
       setPrice(price + 50)
       setValues((prevValues) => ({
@@ -199,14 +182,16 @@ function BookFlight(){
 
   };
 
-
-
   /**
    * View is shows below 
    */
   return(
-   
+    <div className="d-flex flex-column">
+      <div className="p-3 bg-green">
+        <Header />
+    </div>  
     <div className="d-flex vh-100 justify-content-center align-items-top">
+        
         <div className='p-3 bg-white w-75'>
           <h2>Book Flight</h2>
           {!showPayment ? (
@@ -215,11 +200,15 @@ function BookFlight(){
                 <div className = "d-flex justify-content-left align-items-top">
                   <label htmlFor="Class">Select Class: </label>
                   <div style ={{width: '10px'}}/>
-                  <select id="Class" value={selectedClass} onChange={handleClassChange}>
+                  <select id="Class" 
+                    onChange={(e) => {
+                      handleClassChange(e);
+                      getSeatSelection(e);
+                    }}>
                     <option value="">Select...</option>
-                    <option value="Business">Business</option>
                     <option value="Ordinary">Ordinary</option>
                     <option value="Comfort">Comfort</option>
+                    <option value="Business">Business</option>
                   </select>
                 </div>
                 <p></p>
@@ -232,7 +221,7 @@ function BookFlight(){
                           {row.map((seat) => (
                             <div
                               key={seat}
-                              className={`seat ${selectedSeat === seat ? 'selected' : ''}`}
+                              className={`seat ${checkSeat === seat ? 'selected' : ''}`}
                               onClick={() => handleSeatSelect(seat)}
                             >
                               {seat}
@@ -286,6 +275,7 @@ function BookFlight(){
             </div>
          )}
         </div>
+    </div>
     </div>
   )
 }

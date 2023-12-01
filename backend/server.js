@@ -66,7 +66,7 @@ app.post('/Signup', (req, res) => {
 
 app.post('/bookflight', (req, res) => {
     const sql = "INSERT tblTicket values (?, ?, ?, ?, ?, ?, ?)"
-    db.query(sql, ['0', req.body.values.username, req.body.values.flight_ID, req.body.values.SelectedSeat2, '1', req.body.price, req.body.values.Insurance], (err, data) => {
+    db.query(sql, ['0', req.body.values.username, req.body.values.flight_ID, req.body.values.SelectedSeat, '1', req.body.price, req.body.values.Insurance], (err, data) => {
        if (err) {
             console.error('Error updating taken seats:', err);
             return res.status(500).json({ error: 'Internal Server Error' });
@@ -194,7 +194,7 @@ app.post('/getAllFlights', (req, res) => {
  */
 app.post('/getAirPlaneSeatMap', (req, res) => {
     const sql = "SELECT tblAirplane.ROWCNT, tblAirplane.COLCNT FROM tblAirplane LEFT JOIN TBLFLIGHT ON tblAirplane.AIRPLANEID = TBLFLIGHT.AIRPLANEID WHERE tblflight.flightid = ?"
-   
+    
     db.query(sql, [req.body.flightID], (err, data) => {
         if (err) {
             return res.status(500).json({ error: "Internal Server Error" });
@@ -382,6 +382,7 @@ app.listen(8081, () =>{
 //////////////////////////////////////////////////////////
 // Define your route to send an email
 app.post('/api/send-email', async (req, res) => {
+    console.log("Here")
     const { to, subject, body } = req.body;
   
     // Setup email data

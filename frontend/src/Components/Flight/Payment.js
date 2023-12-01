@@ -1,5 +1,5 @@
 // Payment.js
-import React, { useState } from 'react';
+import React, { useState, useEffect  } from 'react';
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
 
@@ -11,10 +11,17 @@ const Payment = (props) => {
    
     const [CardHolder, setCardHolder] = useState('');
     const [CardNumber, setCardNumber] = useState('');
-
+    const [expiryMonth, setexpiryMonth] = useState('');
+    const [expiryYear, setexpiryYear] = useState('');
+    
 
     const [formData, setFormData] = useState({
+        CardHolder: '',
         CardNumber: '',
+        expiryMonth: '',
+        expiryYear: '',
+        SIN: '',
+        POSTAL: ''
     });
 
 
@@ -66,18 +73,25 @@ const Payment = (props) => {
         });
     };
     const handleInput5 = (e) => {
+        const { name, value } = e.target;
         setCardHolder(e.target.value);
+        setFormData({
+            ...formData,
+            [name]: value,
+          });
+        
+       
     };
 
     const handleSumbit =(event)=> {
         event.preventDefault();
-       
+        console.log(myValues)
         axios.post('http://localhost:8081/bookflight', {values: myValues, price: price})
         
         .then(res=> {
             if(res.data === "Success"){
                 sendEmail()
-                navigate(`/home/${'REGUSER'}/${myValues.username}`);
+                //navigate(`/home/${'REGUSER'}/${myValues.username}`);
             }else {
                 alert("Unable to book flight");
             }
@@ -87,32 +101,49 @@ const Payment = (props) => {
         
         
     }
-    
-    
-    const emailBody = `
-        Hello ${myValues.username},
+    useEffect(() => {
+        // Update emailData whenever formData changes
+        setEmailData((prevEmailData) => ({
+          ...prevEmailData,
+          body: getEmailBody(formData),
+        }));
+      }, [formData]);
 
-        Thank you for your order. 
-        Your total amount is ${price}.
-
-        Insurance Option: ${myValues.Insurance}
-        Your Seat Number is ${myValues.SelectedSeat2},
+    const getEmailBody = (formData) => {
         
-        Card Holder: ${CardHolder}
+        return ` 
+            
+            Hello ${myValues.username},
 
-        Regards,
-        Your Oceanic Airlines`;
+            Thank you for your order. 
+            Your total amount is ${price}.
+        
+            Insurance Option: ${myValues.Insurance}
+            Selected Class: ${myValues.selectedClass}
+            Your Seat Number is ${myValues.SelectedSeat},
+            
+            Payment Method 
+            Card Holder: ${formData.CardHolder}
+            Card Number: ${formData.CardNumber}
+            Expiry Month/Year: ${formData.expiryMonth}/${formData.expiryYear}
+            Postal Code: ${formData.POSTAL}
+            
+            
+            Regards,
+            Oceanic Airlines!
+            `;
+        };
+   
 
     const [emailData, setEmailData] = useState({
         to: 'braden11tink@gmail.com',
         subject: 'Booked Ticket!',
-        body: emailBody,
+        body: getEmailBody(formData),
     });
 
     const sendEmail = async () => {
-        console.log(CardHolder)
-        console.log("here")
-       
+        console.log(formData.CardHolder)
+        
         try {
           const response = await fetch('http://localhost:7002/api/send-email', {
             method: 'POST',
@@ -136,16 +167,15 @@ const Payment = (props) => {
                 <h2>Pay Invoice</h2>
 
                 {/* Payment Amount */}
-                <div>
-                <label>Payment amount: </label>
-    
-                <label>{price}</label>
+                <div >
+                    <label>Payment amount: </label>
+                    <label className="p-2">{price}</label>
                 </div>
 
                 {/* Name on Card */}
                 <div>
                     <label>Name on Card:</label>
-                    <input type="text" placeholder='Card Holder' name='CardHolder'  className='form-control' />
+                    <input type="text" placeholder='Card Holder' name='CardHolder' value={formData.CardHolder} onChange={handleInput5} className='form-control' />
                 </div>
 
                 <div>

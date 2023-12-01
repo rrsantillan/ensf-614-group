@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import { Link, useParams } from 'react-router-dom';
-import Footer from './Footer'; 
+import Header from './Header'; 
 
 
 function Home(){
@@ -15,14 +15,13 @@ function Home(){
   
   useEffect(() => {
     // Code to run on page load
-    console.log('Component has mounted!');
-    console.log(Profile1)
+   
    });  
 
   return(
     <div className="d-flex flex-column">
       <div className="p-3 bg-green">
-        <Footer />
+        <Header />
       </div>
       <div classname ="container vh-100 justify-content-center align-items-top">
           
