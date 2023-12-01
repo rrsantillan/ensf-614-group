@@ -1,5 +1,5 @@
 // Payment.js
-import React, { useState, useEffect  } from 'react';
+import React, { useState, useEffect,useCallback   } from 'react';
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
 
@@ -8,12 +8,8 @@ const Payment = (props) => {
     const { price, myValues} = props;
     const navigate = useNavigate();
     
-   
-    const [CardHolder, setCardHolder] = useState('');
-    const [CardNumber, setCardNumber] = useState('');
-    const [expiryMonth, setexpiryMonth] = useState('');
-    const [expiryYear, setexpiryYear] = useState('');
-    
+    const showEmail = myValues.username === 'guest';
+
 
     const [formData, setFormData] = useState({
         CardHolder: '',
@@ -24,13 +20,18 @@ const Payment = (props) => {
         POSTAL: ''
     });
 
+    const [guestEmail, setGuestEmail] = useState('')
+
+    const handleEmailChange = (e) =>{
+        setGuestEmail(e.target.value);
+    }
 
     //Input Format For Credit Card
     const handleInput = (e) => {
         const { name, value } = e.target;
         const formattedValue = value.replace(/\s/g, '').substring(0, 16);
         const formattedCardNumber = formattedValue.replace(/(\d{4})/g, '$1 ').trim();
-        setCardNumber(e.target.value);
+        
         setFormData({
             ...formData,
             [name]: formattedCardNumber,
@@ -74,7 +75,6 @@ const Payment = (props) => {
     };
     const handleInput5 = (e) => {
         const { name, value } = e.target;
-        setCardHolder(e.target.value);
         setFormData({
             ...formData,
             [name]: value,
@@ -91,7 +91,7 @@ const Payment = (props) => {
         .then(res=> {
             if(res.data === "Success"){
                 sendEmail()
-                //navigate(`/home/${'REGUSER'}/${myValues.username}`);
+                navigate(`/home/${'REGUSER'}/${myValues.username}`);
             }else {
                 alert("Unable to book flight");
             }
@@ -101,15 +101,9 @@ const Payment = (props) => {
         
         
     }
-    useEffect(() => {
-        // Update emailData whenever formData changes
-        setEmailData((prevEmailData) => ({
-          ...prevEmailData,
-          body: getEmailBody(formData),
-        }));
-      }, [formData]);
+   
 
-    const getEmailBody = (formData) => {
+    const getEmailBody = useCallback((formData) => {
         
         return ` 
             
@@ -132,11 +126,28 @@ const Payment = (props) => {
             Regards,
             Oceanic Airlines!
             `;
-        };
-   
+    }, [myValues, price]);
+
+    useEffect(() => {
+        console.log("ran")
+        // Fetch the user's email only once when the component mounts
+        axios.post('http://localhost:8081/getUserProfile', { user: myValues.username })
+          .then(res => {
+            setGuestEmail(res.data.user[0].EMAIL);
+          });
+      }, [myValues.username]);  
+
+    // Update emailData whenever formData changes
+    useEffect(() => {
+        setEmailData((prevEmailData) => ({
+        ...prevEmailData,
+        to: guestEmail,
+        body: getEmailBody(formData),
+        }));
+    }, [formData, getEmailBody, guestEmail]);
 
     const [emailData, setEmailData] = useState({
-        to: 'braden11tink@gmail.com',
+        to: guestEmail,
         subject: 'Booked Ticket!',
         body: getEmailBody(formData),
     });
@@ -171,7 +182,19 @@ const Payment = (props) => {
                     <label>Payment amount: </label>
                     <label className="p-2">{price}</label>
                 </div>
-
+                {showEmail && ( 
+                    <div>
+                    <label>Confirmation Email Address</label>
+                    <input
+                        type="text"
+                        placeholder="Email"
+                        name="CardNumber"
+                        value={guestEmail}
+                        onChange = {handleEmailChange}
+                        className ="form-control"
+                    />
+                    </div>
+                )}
                 {/* Name on Card */}
                 <div>
                     <label>Name on Card:</label>

@@ -3,6 +3,8 @@
     display: flex;
     flex-direction: column;
     gap: 2px; /* Adjust the gap between seat rows */
+    max-height: 550px; /* Set your desired max height */
+    overflow-y: auto
   }
   
   .seat-row {

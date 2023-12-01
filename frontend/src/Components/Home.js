@@ -9,9 +9,9 @@ function Home(){
   const shouldShowRegLink = Profile1 === 'REGUSER';
   const shouldShowAgentLink = Profile1 === 'AGENT';
 
-  const [showAdminLink, setShowAdminLink] = useState(shouldShowAdminLink); 
-  const [showRegLink, setShowRegLink] = useState(shouldShowRegLink); 
-  const [showAgentLink, setShowAgentLink] = useState(shouldShowAgentLink); 
+  const [showAdminLink] = useState(shouldShowAdminLink); 
+  const [showRegLink] = useState(shouldShowRegLink); 
+  const [showAgentLink] = useState(shouldShowAgentLink); 
   
   useEffect(() => {
     // Code to run on page load
@@ -23,7 +23,7 @@ function Home(){
       <div className="p-3 bg-green">
         <Header />
       </div>
-      <div classname ="container vh-100 justify-content-center align-items-top">
+      <div className ="container vh-100 justify-content-center align-items-top">
           
         <h2>Home Page</h2>
         <form action=''>
