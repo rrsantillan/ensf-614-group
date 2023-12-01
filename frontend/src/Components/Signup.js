@@ -1,7 +1,8 @@
 import React from "react"
 import axios from 'axios'
-import  { useState } from 'react';
+import  { useState, useEffect } from 'react';
 import { Link, useNavigate  } from 'react-router-dom';
+import { createEmailBody, createEmailData, sendEmail } from './EmailFunctions'; // Adjust the path based on your file structure
 import validation from "./SignupValidation";
 
 function Signup(){
@@ -24,11 +25,41 @@ function Signup(){
         if(errors.user === "" && errors.password === "" && errors.email === ""){
             axios.post('http://localhost:8081/signup', values)
             .then(res=> {
+                console.log("New User Signed up!");
                 navigate('/');
+                handleSendEmail();
             })
             .catch(err=> console.log(err));
         }
     }
+
+    // Email notification on signup
+    const [emailData, setEmailData] = useState({
+        to: 'redgesantillan@hotmail.com',
+        subject: 'Welcome to Oceanic!',
+        body: '', // Initially empty - will be populated dynamically
+    });
+    // Your existing code that sets values
+    const myValues = { username: 'John Doe', Insurance: 'Basic', SelectedSeat2: 'A12' };
+    const price = 100;
+    const CardHolder = 'John Doe';
+
+    // Create email body based on dynamic values
+    const emailBody = createEmailBody(myValues, price, CardHolder);
+
+    // Update emailData with new values
+    useEffect(() => {
+        // Create email body based on dynamic values
+        const emailBody = createEmailBody(myValues, price, CardHolder);
+
+        // Update emailData with new values only once when the component mounts
+        setEmailData(createEmailData(emailData.to, emailData.subject, emailBody));
+    }, []); // Empty dependency array ensures this effect runs only once
+    
+    const handleSendEmail = () => {
+        sendEmail(emailData);
+    };
+
    
     return (
         <div className="d-flex vh-100 justify-content-center align-items-center">
