@@ -27,7 +27,7 @@ const db = mysql.createConnection({
   database: "ensf_614"
 })
 
-// Setup nodemailer
+// EMAIL - Setup nodemailer
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -42,7 +42,8 @@ const transporter = nodemailer.createTransport({
  * SignUp which adds row to user table  
  */
 app.post('/Signup', (req, res) => {
-    const sql = "INSERT INTO TBLUSER (USERNAME, PASSWORD, PROFILE, EMAIL, DOB) VALUES (?, ?, ?, ?, ?)"
+    // const sql = "INSERT INTO TBLUSER (USERNAME, PASSWORD, PROFILE, EMAIL, DOB) VALUES (?, ?, ?, ?, ?)"
+    const sql = "INSERT INTO tblUser (USERNAME, PASSWORD, PROFILE, EMAIL, DOB) VALUES (?, ?, ?, ?, ?)"
     
     const values = [
         req.body.user,
@@ -53,6 +54,8 @@ app.post('/Signup', (req, res) => {
     db.query(sql,  [req.body.user, req.body.password, 'REGUSER', req.body.email, '1982-10-17 00:00:00'], (err, data) => {
       if(err){
         return res.json("Error");
+      } else{
+        console.log("Writing new registered user info to DB...")
       }
       console.log(data)
       return res.json(data);
@@ -387,21 +390,24 @@ app.post('/api/send-email', async (req, res) => {
   
     // Setup email data
     const mailOptions = {
-      from: 'ensf614group@gmail.com',  // Replace with your Gmail email address
-      to: 'braden11tink@gmail.com', 
-      subject: 'test',
-      text: body,
+        from: 'ensf614group@gmail.com',  // Replace with your Gmail email address
+        //   to: 'braden11tink@gmail.com',
+        //   to: 'redgesantillan@hotmail.com',
+        to: to, 
+        subject: subject,
+        text: body,
     };
   
     try {
-      // Send the email
-      await transporter.sendMail(mailOptions);
-  
-      // Respond to the client
-      res.json({ message: 'Email sent successfully' });
+        // Send the email
+        await transporter.sendMail(mailOptions);
+    
+        // Respond to the client
+        res.json({ message: 'Email sent successfully' });
     } catch (error) {
-      console.error('Error sending email:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
+        console.log(error)
+        console.error('Error sending email:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
   });
 

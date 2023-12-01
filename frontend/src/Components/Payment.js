@@ -88,7 +88,6 @@ const Payment = (props) => {
         
     }
     
-    
     const emailBody = `
         Hello ${myValues.username},
 
@@ -104,7 +103,8 @@ const Payment = (props) => {
         Your Oceanic Airlines`;
 
     const [emailData, setEmailData] = useState({
-        to: 'braden11tink@gmail.com',
+        // to: 'braden11tink@gmail.com',
+        to: 'redgesantillan@hotmail.com',
         subject: 'Booked Ticket!',
         body: emailBody,
     });

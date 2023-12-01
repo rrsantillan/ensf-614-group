@@ -1,7 +1,7 @@
 
 import React from 'react';
 import Login from './Components/Login'
-import Signup from './Signup'
+import Signup from './Components/Signup'
 
 import Home from './Components/Home'
 import Adminview from './Components/Adminview'
