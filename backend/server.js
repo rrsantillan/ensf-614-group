@@ -111,6 +111,26 @@ app.post('/checkFlights', (req, res) => {
 })
 
 /**
+ * get all aircraft IDs
+ * used for populating dropdown list in FlightForm.js where flights are added to system
+ */
+app.post('/getAircraftIDs', (req, res) => {
+    const sql = 'SELECT AIRPLANEID, MODEL FROM tblAirplane';
+    db.query(sql, (err, data) => {
+        if (err) {
+            return res.status(500).json({ error: "Internal Server Error" });
+        }
+        if (data.length > 0) {
+            console.log("Data returned from the database:", data);
+            res.status(200).json({ planes: data }); // Send the data as { planes: data }
+        } else {
+            console.log("No data returned from the database.");
+            res.status(200).json({ planes: [] }); // Send an empty array if there's no data
+        }
+    })
+})
+
+/**
  * get flights brings all data back where the dest and source match in the db
  */
 app.post('/getFlights', (req, res) => {
@@ -190,6 +210,7 @@ app.post('/getAllFlights', (req, res) => {
         res.status(200).json({ flights: data });
     })
 })
+
 
 
 
@@ -287,9 +308,9 @@ app.post('/updateCrew', async (req, res) => {
  * get flights brings all data back where the dest and source match in the db
  */
 app.post('/addFlight', (req, res) => {
-    const sql = "INSERT INTO FLIGHTS (SOURCE, DESTINATION, DEPARTURE, LANDING) VALUES(?, ?, ?, ?)"
+    const sql = "INSERT INTO tblFlight ( AIRPLANEID, ORIGIN, DESTINATION, DEPARTURETIME, ARRIVALTIME) VALUES(?, ?, ?, ?, ?)"
    
-    db.query(sql, [req.body.flightid, req.body.aircraftid, req.body.destination, req.body.source,  
+    db.query(sql, [req.body.aircraftid, req.body.destination, req.body.source,  
         req.body.departureTime, req.body.landingTime], (err, data) => {
         
         console.log("SQL Query:", sql); // Log the SQL query
@@ -362,7 +383,6 @@ app.listen(8081, () =>{
 
 
 
-
 //////////////////////////////////////////////////////////
 // Define your route to send an email
 app.post('/api/send-email', async (req, res) => {
@@ -392,4 +412,3 @@ const PORT = process.env.PORT || 7002;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-

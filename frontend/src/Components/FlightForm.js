@@ -1,14 +1,30 @@
 // FlightForm.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const FlightForm = () => {
-  const [flightid, setFlightId] = useState('');
+  // for insert query data
   const [aircraftid, setAircraftId] = useState('');
   const [destination, setDestination] = useState('');
   const [source, setSource] = useState('');
   const [departureTime, setDepartureTime] = useState('');
   const [landingTime, setLandingTime] = useState('');
+
+  const [aircraftList, setAircraftList] = useState([]); // Add state to store the list of aircraft pulled from database
+
+  // pull aircraft from database
+  useEffect(() => {
+    const fetchAircraftList = async () => {
+      try {
+        const response = await axios.post('http://localhost:8081/getAircraftIDs');
+        console.log("Response from server:", response);
+        setAircraftList(response.data.planes); // Make sure to access the correct property
+      } catch (error) {
+        console.error('Error fetching aircraft list:', error);
+      }
+    };
+    fetchAircraftList();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,7 +32,6 @@ const FlightForm = () => {
     // Make an API request to your backend to add the flight to the database
     try {
       axios.post('http://localhost:8081/addFlight', {
-        flightid,
         aircraftid,
         destination,
         source,
@@ -48,22 +63,23 @@ const FlightForm = () => {
         <input type="text" value={source} onChange={(e) => setSource(e.target.value)} />
       </div>
       
-      <div className="form-input" style={{ marginBottom: '10px', display: 'flex', flexDirection: 'column' }}>
-        <label style={{ marginBottom: '5px' }}>
-          Flight ID:
-        </label>
-        <input type="text" value={flightid} onChange={(e) => setFlightId(e.target.value)} />
-      </div>
 
       <div className="form-input" style={{ marginBottom: '10px', display: 'flex', flexDirection: 'column' }}>
         <label style={{ marginBottom: '5px' }}>
-          Aircraft ID:
+          Aircraft ID, Model:
         </label>
-        <input type="number" value={aircraftid} onChange={(e) => setAircraftId(e.target.value)} />
+        <select value={aircraftid} onChange={(e) => setAircraftId(e.target.value)}>
+          <option value="" disabled>Select Aircraft</option>
+           {aircraftList ? (
+              aircraftList.map((aircraft) => (
+              <option key={aircraft.AIRPLANEID} value={aircraft.AIRPLANEID}>
+                {aircraft.AIRPLANEID}, {aircraft.MODEL}
+              </option>
+            ))
+          ) : null}
+        </select>
       </div>
-
       
-
       <div className="form-input" style={{ marginBottom: '10px' }}>
         <label>
           Departure Time:
