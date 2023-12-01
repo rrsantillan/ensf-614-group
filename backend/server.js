@@ -42,7 +42,8 @@ const transporter = nodemailer.createTransport({
  * SignUp which adds (new user) row to user table
  */
 app.post('/Signup', (req, res) => {
-    const sql = "INSERT INTO TBLUSER (USERNAME, PASSWORD, PROFILE, EMAIL, DOB) VALUES (?, ?, ?, ?, ?)"
+    
+    const sql = "INSERT INTO TBLUSER (USERID, USERNAME, PASSWORD, PROFILE, EMAIL, YEARLYPROMO, PROMOCODE) VALUES (?, ?, ?, ?, ?, ?, ?)"
     
     const values = [
         req.body.user,
@@ -50,13 +51,14 @@ app.post('/Signup', (req, res) => {
         req.body.email
     ]
     console.log(values)
-    db.query(sql,  [req.body.user, req.body.password, 'REGUSER', req.body.email, '1982-10-17 00:00:00'], (err, data) => {
-      if(err){
-        return res.json("Error");
-      } else{
-        console.log("Writing new registered user info to DB...")
-      }
-      return res.json(data);
+    db.query(sql,  ['0', req.body.user, req.body.password, 'REGUSER', req.body.email, '0', '50OFF'], (err, data) => {
+        console.log("SQL:", sql);
+        if(err){
+            return res.json("Error");
+        } else{
+            console.log("Writing new registered user info to DB...")
+        }
+        return res.json(data);
      
     })
 });
