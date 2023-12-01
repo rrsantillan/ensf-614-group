@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useCallback } from "react"
 import axios from 'axios'
 import  { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate  } from 'react-router-dom';
@@ -18,6 +18,14 @@ const Signup = (props) => {
     const navigate = useNavigate();
     const [errors, setErrors] = useState({})
     
+    useEffect(() => {
+        setEmailData((prevEmailData) => ({
+            ...prevEmailData,
+            to: values.email,
+            body: getEmailBody(values),
+        }));
+    }, [values]);
+
     // useEffect(() => {
     //     // This useEffect will run whenever 'values' changes
     //     console.log('Updated values:', values);
@@ -36,39 +44,49 @@ const Signup = (props) => {
       }, [values]);
 
     const handleInput = (event) => {
-        setValues(prev => ({...prev,[event.target.name]: event.target.value}))
-        // setValues(prev => ({...prev, [event.target.name]: [event.target.value]}))
-        console.log("values printout:")
-        console.log(values.user)
-        console.log(values.password)
-        console.log(values.email)
+       setValues((prev) => ({
+            ...prev,
+            [event.target.name]: event.target.value,
+        }));
+        
     }
     
-    // // Use useEffect to observe the values state
-    // useEffect(() => {
-    //     console.log(values); // Log values whenever it changes
-    // }, [values]);
+    // Use useEffect to observe the values state
+    //useEffect(() => {
+    //    console.log(values); // Log values whenever it changes
+    //}, [values]);
 
     const handleSumbit =(event)=> {
         event.preventDefault();
         setErrors(validation(values));
         
+        
+
         if(errors.user === "" && errors.password === "" && errors.email === ""){
+            console.log(values.email[0])
+            setEmailData((prevEmailData) => ({
+                ...prevEmailData,
+                to: values.email[0],
+            }));
+            sendEmail()
+           
+            
             axios.post('http://localhost:8081/Signup', values)
             .then(res=> {
-                sendEmail()
                 console.log("New User Signed up!");
                 navigate('/');
             })
             .catch(err=> console.log(err));
+            
         }
     }
+    
 
-    const getEmailBody = (values) => {
-        
-        return ` 
-            
+    const getEmailBody = useCallback((values) => {
+        return `
         Hello ${values.user},
+
+        This is your password: ${values.password}
 
         You are using this email: ${values.email}
 
@@ -77,14 +95,12 @@ const Signup = (props) => {
         Here's your promo code: ${promoCode}
 
         Regards,
-        Your Oceanic Airlines
-            `;
-        };
+        Your Oceanic Airlines`;
+    }, [values]);
 
     const [emailData, setEmailData] = useState({
-        // to: 'braden11tink@gmail.com',
-        to: 'redgesantillan@hotmail.com',
-        // to: values.email.trim(),
+        to: '',
+        // to: values.email,
         subject: 'Welcome!',
         body: getEmailBody(values),
     });
