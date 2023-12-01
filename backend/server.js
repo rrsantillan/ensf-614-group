@@ -116,16 +116,37 @@ app.post('/getUserProfile', (req, res) => {
 })
 /**
  * check flight brings all data back where the dest and source match in the db
+ * used in EditFLightForm.js to look for flights
  */
 app.post('/checkFlights', (req, res) => {
     
-    const sql = "SELECT FLIGHTID, ORIGIN, DESTINATION, DEPARTURETIME, ARRIVALTIME FROM tblFlight WHERE ORIGIN = ? and DESTINATION = ?"
-    db.query(sql, [req.body.Source, req.body.Dest], (err, data) => {
+    const sql = "SELECT FLIGHTID, AIRPLANEID, ORIGIN, DESTINATION, DEPARTURETIME, ARRIVALTIME FROM tblFlight WHERE ORIGIN = ? and DESTINATION = ?"
+    db.query(sql, [req.body.Origin, req.body.Dest], (err, data) => {
         if (err) {
             return res.status(500).json({ error: "Internal Server Error" });
         }
        
         res.status(200).json({ flights: data });
+    })
+})
+
+/**
+ * get all aircraft IDs
+ * used for populating dropdown list in FlightForm.js and EditFlightForm.js where flights are added to system
+ */
+app.post('/getAircraftIDs', (req, res) => {
+    const sql = 'SELECT AIRPLANEVIN, MODEL FROM tblAirplane';
+    db.query(sql, (err, data) => {
+        if (err) {
+            return res.status(500).json({ error: "Internal Server Error" });
+        }
+        if (data.length > 0) {
+            console.log("Data returned from the database:", data);
+            res.status(200).json({ planes: data }); // Send the data as { planes: data }
+        } else {
+            console.log("No data returned from the database.");
+            res.status(200).json({ planes: [] }); // Send an empty array if there's no data
+        }
     })
 })
 
@@ -153,12 +174,11 @@ app.post('/getFlights', (req, res) => {
 
 /**
 * search for flight by flightID
+* used in editflightform.js for getting data for selected flight
 */
 app.post('/getFlightByFlightID', (req, res) => {
   
     const sql = "SELECT * FROM tblFlight WHERE flightID = ?"
- 
- 
     console.log(req.body.flightID2) // displays the currently selected flightID
     db.query(sql, [req.body.flightID2], (err, data) => {
         if (err) {
@@ -171,13 +191,16 @@ app.post('/getFlightByFlightID', (req, res) => {
  
  
  /**
+
  * overwrite flight data based on flightID
+ * used in EditFlightForm.js
  */
  app.post('/overwriteFlightsByFlightID', (req, res) => {
-    const { destination, source, departureTime, landingTime, flightID } = req.body;
-    const sql = "UPDATE tblFlight SET SOURCE = ?, DESTINATION = ?, DEPARTURE = ?, LANDING = ? WHERE FLIGHTID = ?;"
+    const { destination, origin, departureTime, landingTime, flightID, aircraftid } = req.body;
+    const sql = "UPDATE tblFlight SET ORIGIN = ?, DESTINATION = ?, DEPARTURETIME = ?, ARRIVALTIME = ?, AIRPLANEID = ? WHERE FLIGHTID = ?;"
+
     console.log("selected FlightID: ", req.body.flightID)
-    db.query(sql, [source, destination, departureTime, landingTime, flightID], (err, data) => {
+    db.query(sql, [origin, destination, departureTime, landingTime, aircraftid, flightID], (err, data) => {
         if (err) {
              console.error('Error couldn\'t find flight:', err);
              return res.status(500).json({ error: 'Internal Server Error' });
@@ -250,6 +273,7 @@ app.post('/checkPromoCode', (req, res) => {
 })
 
 
+
 /**
  * delete ticket
  */
@@ -282,6 +306,41 @@ app.post('/getCrew', (req, res) => {
         res.status(200).json({ crew: data });
 
     
+    })
+})
+
+/**
+ * Retrive crew members where first and last name match
+ * used in EditCrewForm.js
+ */
+app.post('/getCrewByName', (req, res) => {
+    
+    const sql = "SELECT crewid, fname, lname, position FROM tblCrew WHERE fname = ? and lname = ?"
+    db.query(sql, [req.body.fname, req.body.lname], (err, data) => {
+        if (err) {
+            return res.status(500).json({ error: "Internal Server Error" });
+        }
+       
+        res.status(200).json({ crew: data });
+    })
+})
+
+
+/**
+ * Insert new crew member
+ * used in AddCrewForm.js
+ */
+app.post('/addNewCrew', (req, res) => {
+    const sql = "INSERT INTO tblCrew (FNAME, LNAME, POSITION) VALUES(?, ?, ?)"
+   
+    db.query(sql, [req.body.fname, req.body.lname, req.body.position], (err, data) => {
+        
+        console.log("SQL Query:", sql); // Log the SQL query
+        if(err){
+            return res.json("Error");
+         }
+        return res.json();
+        
     })
 })
 
@@ -343,9 +402,9 @@ app.post('/updateCrew', async (req, res) => {
  * get flights brings all data back where the dest and source match in the db
  */
 app.post('/addFlight', (req, res) => {
-    const sql = "INSERT INTO tblFlight (ORIGIN, DESTINATION, DEPARTURETIME, ARRIVALTIME) VALUES(?, ?, ?, ?)"
+    const sql = "INSERT INTO tblFlight ( AIRPLANEID, ORIGIN, DESTINATION, DEPARTURETIME, ARRIVALTIME) VALUES(?, ?, ?, ?, ?)"
    
-    db.query(sql, [req.body.flightid, req.body.aircraftid, req.body.destination, req.body.source,  
+    db.query(sql, [req.body.aircraftid, req.body.destination, req.body.source,  
         req.body.departureTime, req.body.landingTime], (err, data) => {
         
         console.log("SQL Query:", sql); // Log the SQL query
@@ -361,9 +420,9 @@ app.post('/addFlight', (req, res) => {
  * Insert new aircraft
  */
 app.post('/addAircraft', (req, res) => {
-    const sql = "INSERT INTO AIRCRAFT (AIRCRAFTID, MODEL) VALUES(?, ?)"
+    const sql = "INSERT INTO tblAirplane (AIRPLANEVIN, MODEL, ROWCNT, COLCNT) VALUES(?, ?, ?, ?)"
    
-    db.query(sql, [req.body.aircraftid, req.body.model], (err, data) => {
+    db.query(sql, [req.body.aircraftid, req.body.model, req.body.rows, req.body.columns], (err, data) => {
         
         console.log("SQL Query:", sql); // Log the SQL query
         if(err){
@@ -373,6 +432,23 @@ app.post('/addAircraft', (req, res) => {
         
     })
 })
+
+/**
+ * Insert new aircraft
+ */
+app.post('/removeAircraft', (req, res) => {
+    const sql = "DELETE FROM tblAirplane WHERE AIRPLANEVIN = ?";
+   
+    db.query(sql, [req.body.aircraftid], (err, data) => {
+        console.log("SQL Query:", sql); // Log the SQL query
+        if (err) {
+            console.error('Error executing SQL query:', err);
+            return res.json({ error: 'Error removing aircraft' });
+        }
+        return res.json({ success: true });
+    });
+});
+
 
 /**
  * getUnavailableSeats brings the list of seats taken
@@ -412,6 +488,7 @@ app.listen(8081, () =>{
   console.log("Listening...")
 })
 
+
 //////////////////////////////////////////////////////////
 // Define your route to send an email
 app.post('/api/send-email', async (req, res) => {
@@ -450,4 +527,3 @@ const PORT = process.env.PORT || 7002;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-

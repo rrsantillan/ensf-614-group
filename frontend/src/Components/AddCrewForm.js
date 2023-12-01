@@ -5,7 +5,7 @@ import axios from 'axios';
 const AddCrewForm = () => {
   const [fname, setFirstName] = useState('');
   const [lname, setLastName] = useState('');
-  const [crewid, setCrewId] = useState('');
+  const [position, setPosition] = useState('');
   
 
   const handleSubmit = async (e) => {
@@ -16,7 +16,7 @@ const AddCrewForm = () => {
       axios.post('http://localhost:8081/addNewCrew', {
         fname,
         lname,
-        crewid,
+        position,
       });
 
       console.log('New crew member added successfully:');
@@ -47,12 +47,12 @@ const AddCrewForm = () => {
 
       <div className="form-input" style={{ marginBottom: '10px', display: 'flex', flexDirection: 'column' }}>
         <label style={{ marginBottom: '5px' }}>
-          Unique Crew ID:
+          Position/Title:
         </label>
-        <input type="text" value={crewid} onChange={(e) => setCrewId(e.target.value)} />
+        <input type="text" value={position} onChange={(e) => setPosition(e.target.value)} />
       </div>
 
-      <button type="submit" className="submit-button" style={{ display: 'block', width: '100%' }}>
+      <button type="submit" className="btn btn-success w-100" style={{ display: 'block', width: '100%' }}>
         Add New Crew
       </button>
     </form>
