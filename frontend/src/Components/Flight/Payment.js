@@ -1,5 +1,5 @@
 // Payment.js
-import React, { useState } from 'react';
+import React, { useState, useEffect,useCallback   } from 'react';
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
 
@@ -8,22 +8,30 @@ const Payment = (props) => {
     const { price, myValues} = props;
     const navigate = useNavigate();
     
-   
-    const [CardHolder, setCardHolder] = useState('');
-    const [CardNumber, setCardNumber] = useState('');
+    const showEmail = myValues.username === 'guest';
 
 
     const [formData, setFormData] = useState({
+        CardHolder: '',
         CardNumber: '',
+        expiryMonth: '',
+        expiryYear: '',
+        SIN: '',
+        POSTAL: ''
     });
 
+    const [guestEmail, setGuestEmail] = useState('')
+
+    const handleEmailChange = (e) =>{
+        setGuestEmail(e.target.value);
+    }
 
     //Input Format For Credit Card
     const handleInput = (e) => {
         const { name, value } = e.target;
         const formattedValue = value.replace(/\s/g, '').substring(0, 16);
         const formattedCardNumber = formattedValue.replace(/(\d{4})/g, '$1 ').trim();
-        setCardNumber(e.target.value);
+        
         setFormData({
             ...formData,
             [name]: formattedCardNumber,
@@ -66,12 +74,18 @@ const Payment = (props) => {
         });
     };
     const handleInput5 = (e) => {
-        setCardHolder(e.target.value);
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value,
+          });
+        
+       
     };
 
     const handleSumbit =(event)=> {
         event.preventDefault();
-       
+        console.log(myValues)
         axios.post('http://localhost:8081/bookflight', {values: myValues, price: price})
         
         .then(res=> {
@@ -87,32 +101,63 @@ const Payment = (props) => {
         
         
     }
-    
-    const emailBody = `
-        Hello ${myValues.username},
+   
 
-        Thank you for your order. 
-        Your total amount is ${price}.
-
-        Insurance Option: ${myValues.Insurance}
-        Your Seat Number is ${myValues.SelectedSeat2},
+    const getEmailBody = useCallback((formData) => {
         
-        Card Holder: ${CardHolder}
+        return ` 
+            
+            Hello ${myValues.username},
 
-        Regards,
-        Your Oceanic Airlines`;
+            Thank you for your order. 
+            Your total amount is ${price}.
+        
+            Insurance Option: ${myValues.Insurance}
+            Selected Class: ${myValues.selectedClass}
+            Your Seat Number is ${myValues.SelectedSeat},
+            
+            Payment Method 
+            Card Holder: ${formData.CardHolder}
+            Card Number: ${formData.CardNumber}
+            Expiry Month/Year: ${formData.expiryMonth}/${formData.expiryYear}
+            Postal Code: ${formData.POSTAL}
+            
+            
+            Regards,
+            Oceanic Airlines!
+            `;
+    }, [myValues, price]);
 
+    useEffect(() => {
+        console.log("ran")
+        // Fetch the user's email only once when the component mounts
+        if (myValues.username !== 'guest'){
+            axios.post('http://localhost:8081/getUserProfile', { user: myValues.username })
+            .then(res => {
+                setGuestEmail(res.data.user[0].EMAIL);
+            });
+        }
+      }, [myValues.username]);  
+
+    // Update emailData whenever formData changes
+    useEffect(() => {
+        setEmailData((prevEmailData) => ({
+        ...prevEmailData,
+        to: guestEmail,
+        body: getEmailBody(formData),
+        }));
+    }, [formData, getEmailBody, guestEmail]);
+
+   
     const [emailData, setEmailData] = useState({
-        // to: 'braden11tink@gmail.com',
-        to: 'redgesantillan@hotmail.com',
+        to: guestEmail,
         subject: 'Booked Ticket!',
-        body: emailBody,
+        body: getEmailBody(formData),
     });
 
     const sendEmail = async () => {
-        console.log(CardHolder)
-        console.log("here")
-       
+        console.log(formData.CardHolder)
+        
         try {
           const response = await fetch('http://localhost:7002/api/send-email', {
             method: 'POST',
@@ -136,18 +181,28 @@ const Payment = (props) => {
                 <h2>Pay Invoice</h2>
 
                 {/* Payment Amount */}
-                <div>
-                <label>Payment amount: </label>
-    
-                <label>{price}</label>
+                <div >
+                    <label>Payment amount: </label>
+                    <label className="p-2">{price}</label>
                 </div>
-
+                {showEmail && ( 
+                    <div>
+                    <label>Confirmation Email Address</label>
+                    <input
+                        type="text"
+                        placeholder="Email"
+                        name="CardNumber"
+                        value={guestEmail}
+                        onChange = {handleEmailChange}
+                        className ="form-control"
+                    />
+                    </div>
+                )}
                 {/* Name on Card */}
                 <div>
                     <label>Name on Card:</label>
-                    <input type="text" placeholder='Card Holder' name='CardHolder'  className='form-control' />
+                    <input type="text" placeholder='Card Holder' name='CardHolder' value={formData.CardHolder} onChange={handleInput5} className='form-control' />
                 </div>
-
                 <div>
                     <label>Card number:</label>
                     <input

@@ -5,10 +5,10 @@ import Signup from './Components/Signup'
 
 import Home from './Components/Home'
 import Adminview from './Components/Adminview'
-import FindFlight from './Components/FindFlight'
+import FindFlight from './Components/Flight/FindFlight'
 import CurrentFlight from './Components/CurrentFlight'
-import BookFlight from './Components/BookFlight'
-import Agentview from './Components/Agentview'
+import BookFlight from './Components/Flight/BookFlight'
+import Agentview from './Components/Agent/Agentview'
 
 
 import {BrowserRouter, Routes, Route} from 'react-router-dom'

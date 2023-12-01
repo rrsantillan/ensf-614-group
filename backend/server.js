@@ -42,8 +42,7 @@ const transporter = nodemailer.createTransport({
  * SignUp which adds (new user) row to user table
  */
 app.post('/Signup', (req, res) => {
-    // const sql = "INSERT INTO TBLUSER (USERNAME, PASSWORD, PROFILE, EMAIL, DOB) VALUES (?, ?, ?, ?, ?)"
-    const sql = "INSERT INTO tblUser (USERID, USERNAME, PASSWORD, PROFILE, EMAIL, YEARLYPROMO) VALUES (?, ?, ?, ?, ?, ?)"
+    const sql = "INSERT INTO TBLUSER (USERNAME, PASSWORD, PROFILE, EMAIL, DOB) VALUES (?, ?, ?, ?, ?)"
     
     const values = [
         req.body.user,
@@ -51,13 +50,12 @@ app.post('/Signup', (req, res) => {
         req.body.email
     ]
     console.log(values)
-    db.query(sql,  ['0', req.body.user, req.body.password, 'REGUSER', req.body.email, '0'], (err, data) => {
+    db.query(sql,  [req.body.user, req.body.password, 'REGUSER', req.body.email, '1982-10-17 00:00:00'], (err, data) => {
       if(err){
         return res.json("Error");
       } else{
         console.log("Writing new registered user info to DB...")
       }
-      console.log(data)
       return res.json(data);
      
     })
@@ -69,7 +67,7 @@ app.post('/Signup', (req, res) => {
 
 app.post('/bookflight', (req, res) => {
     const sql = "INSERT tblTicket values (?, ?, ?, ?, ?, ?, ?)"
-    db.query(sql, ['0', req.body.values.username, req.body.values.flight_ID, req.body.values.SelectedSeat2, '1', req.body.price, req.body.values.Insurance], (err, data) => {
+    db.query(sql, ['0', req.body.values.username, req.body.values.flight_ID, req.body.values.SelectedSeat, '1', req.body.price, req.body.values.Insurance], (err, data) => {
        if (err) {
             console.error('Error updating taken seats:', err);
             return res.status(500).json({ error: 'Internal Server Error' });
@@ -97,7 +95,23 @@ app.post('/login', (req, res) => {
     
     })
 })
-
+/**
+ * Login ensures the user is part of the system 
+ */
+app.post('/getUserProfile', (req, res) => {
+    const sql = "SELECT EMAIL FROM TBLUSER WHERE USERNAME = ?"
+    db.query(sql, [req.body.user], (err, data) => {
+        if(err){
+            return res.json("Error");
+        }
+        if(data.length > 0){
+            res.status(200).json({ user: data });
+        } else {
+            return res.json("Failed") 
+        }
+    
+    })
+})
 /**
  * check flight brings all data back where the dest and source match in the db
  */
@@ -197,7 +211,7 @@ app.post('/getAllFlights', (req, res) => {
  */
 app.post('/getAirPlaneSeatMap', (req, res) => {
     const sql = "SELECT tblAirplane.ROWCNT, tblAirplane.COLCNT FROM tblAirplane LEFT JOIN TBLFLIGHT ON tblAirplane.AIRPLANEID = TBLFLIGHT.AIRPLANEID WHERE tblflight.flightid = ?"
-   
+    
     db.query(sql, [req.body.flightID], (err, data) => {
         if (err) {
             return res.status(500).json({ error: "Internal Server Error" });
@@ -209,6 +223,27 @@ app.post('/getAirPlaneSeatMap', (req, res) => {
         }
         
         res.status(200).json({ seatMap: data });
+    })
+})
+/**
+ * Check Promo Code For the given user
+ */
+app.post('/checkPromoCode', (req, res) => {
+    console.log(req.body.User, req.body.Promo)
+    const sql = "SELECT YEARLYPROMO, PROMOCODE FROM TBLUSER WHERE USERNAME = ? and PROMOCODE = ? and YEARLYPROMO = 0"
+    const updateQuery = 'UPDATE TBLUSER SET YEARLYPROMO = 1 where USERNAME = ? and PROMOCODE = ? ';
+    db.query(sql, [req.body.User, req.body.Promo], (err, data) => {
+        if(err){
+            return res.json("Error");
+        }
+        if(data.length > 0){
+            db.query(updateQuery, [req.body.User, req.body.Promo]);
+            return res.json("Yes");
+            
+        } else {
+            return res.json("No") 
+        }
+    
     })
 })
 
@@ -378,6 +413,7 @@ app.listen(8081, () =>{
 //////////////////////////////////////////////////////////
 // Define your route to send an email
 app.post('/api/send-email', async (req, res) => {
+    console.log("Here")
     const { to, subject, body } = req.body;
     
     const validatedTo = String(to).trim();

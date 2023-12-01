@@ -1,13 +1,16 @@
 /* Add or adjust the following CSS in your styles */
-.seat-map {
+ .seat-map {
     display: flex;
     flex-direction: column;
-    gap: 5px; /* Adjust the gap between seat rows */
+    gap: 2px; /* Adjust the gap between seat rows */
+    max-height: 550px; /* Set your desired max height */
+    overflow-y: auto
   }
   
   .seat-row {
     display: flex;
     justify-content: space-around;
+    gap: '8px';
   }
   
   .seat {
@@ -55,7 +58,7 @@
   }
   
   .flight-details-container {
-    max-height: 300px; /* Set the maximum height as needed */
+    max-height: 400px; /* Set the maximum height as needed */
     overflow-y: auto; /* Add a vertical scrollbar when needed */
   }
   
