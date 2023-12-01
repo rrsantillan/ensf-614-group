@@ -137,8 +137,9 @@ app.post('/getFlights', (req, res) => {
 */
 app.post('/getFlightByFlightID', (req, res) => {
   
-    const sql = "SELECT * FROM flights WHERE flightID = ?"
-
+    const sql = "SELECT * FROM tblFlight WHERE flightID = ?"
+ 
+ 
     console.log(req.body.flightID2) // displays the currently selected flightID
     db.query(sql, [req.body.flightID2], (err, data) => {
         if (err) {
@@ -156,7 +157,7 @@ app.post('/getFlightByFlightID', (req, res) => {
  */
  app.post('/overwriteFlightsByFlightID', (req, res) => {
     const { destination, source, departureTime, landingTime, flightID } = req.body;
-    const sql = "UPDATE flights SET SOURCE = ?, DESTINATION = ?, DEPARTURE = ?, LANDING = ? WHERE FLIGHTID = ?;"
+    const sql = "UPDATE tblFlight SET SOURCE = ?, DESTINATION = ?, DEPARTURE = ?, LANDING = ? WHERE FLIGHTID = ?;"
     console.log("selected FlightID: ", req.body.flightID)
     db.query(sql, [source, destination, departureTime, landingTime, flightID], (err, data) => {
         if (err) {
