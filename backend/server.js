@@ -27,7 +27,7 @@ const db = mysql.createConnection({
   database: "ensf_614"
 })
 
-// Setup nodemailer
+// EMAIL - Setup nodemailer
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -39,26 +39,27 @@ const transporter = nodemailer.createTransport({
 
 
 /**
- * SignUp which adds row to user table  
+ * SignUp which adds (new user) row to user table
  */
 app.post('/Signup', (req, res) => {
-    const sql = "INSERT INTO TBLUSER (USERID, USERNAME, PASSWORD, PROFILE, EMAIL, YEARLYPROMO, PROMOCODE) VALUES (?, ?, ?, ?, ?, ?, ?)"
+    const sql = "INSERT INTO TBLUSER (USERNAME, PASSWORD, PROFILE, EMAIL, DOB) VALUES (?, ?, ?, ?, ?)"
     
     const values = [
         req.body.user,
         req.body.password,
         req.body.email
     ]
-
-    db.query(sql,  ['0', req.body.user, req.body.password, 'REGUSER', req.body.email, '0', 'TEST'], (err, data) => {
-    console.log("SQL:", sql);
+    console.log(values)
+    db.query(sql,  [req.body.user, req.body.password, 'REGUSER', req.body.email, '1982-10-17 00:00:00'], (err, data) => {
       if(err){
         return res.json("Error");
+      } else{
+        console.log("Writing new registered user info to DB...")
       }
       return res.json(data);
      
     })
-})
+});
 
 /**
  * Book flight updates row in db to add another seat to the taken seats 
@@ -153,8 +154,9 @@ app.post('/getFlights', (req, res) => {
 */
 app.post('/getFlightByFlightID', (req, res) => {
   
-    const sql = "SELECT * FROM flights WHERE flightID = ?"
-
+    const sql = "SELECT * FROM tblFlight WHERE flightID = ?"
+ 
+ 
     console.log(req.body.flightID2) // displays the currently selected flightID
     db.query(sql, [req.body.flightID2], (err, data) => {
         if (err) {
@@ -167,12 +169,11 @@ app.post('/getFlightByFlightID', (req, res) => {
  
  
  /**
- * WORK IN PROGRESS
  * overwrite flight data based on flightID
  */
  app.post('/overwriteFlightsByFlightID', (req, res) => {
     const { destination, source, departureTime, landingTime, flightID } = req.body;
-    const sql = "UPDATE flights SET SOURCE = ?, DESTINATION = ?, DEPARTURE = ?, LANDING = ? WHERE FLIGHTID = ?;"
+    const sql = "UPDATE tblFlight SET SOURCE = ?, DESTINATION = ?, DEPARTURE = ?, LANDING = ? WHERE FLIGHTID = ?;"
     console.log("selected FlightID: ", req.body.flightID)
     db.query(sql, [source, destination, departureTime, landingTime, flightID], (err, data) => {
         if (err) {
@@ -405,40 +406,41 @@ app.post('/getRegTicket', (req, res) => {
     })
 })
 
-
-
-
-
 app.listen(8081, () =>{
   console.log("Listening...")
 })
-
-
-
 
 //////////////////////////////////////////////////////////
 // Define your route to send an email
 app.post('/api/send-email', async (req, res) => {
     console.log("Here")
     const { to, subject, body } = req.body;
-  
+    
+    const validatedTo = String(to).trim();
+
     // Setup email data
     const mailOptions = {
-      from: 'ensf614group@gmail.com',  // Replace with your Gmail email address
-      to: 'braden11tink@gmail.com', 
-      subject: 'test',
-      text: body,
+        from: 'ensf614group@gmail.com',  // Replace with your Gmail email address
+        //   to: 'braden11tink@gmail.com',
+          to: 'redgesantillan@hotmail.com',
+        // to: validatedTo, 
+        subject: subject,
+        text: body,
     };
-  
+    console.log("API call, to field: ", mailOptions.to)
+
     try {
-      // Send the email
-      await transporter.sendMail(mailOptions);
-  
-      // Respond to the client
-      res.json({ message: 'Email sent successfully' });
+        // res.json({ message: "API call, trying to send..." });
+        // Send the email
+        console.log("API call, trying to send...");
+        await transporter.sendMail(mailOptions);
+    
+        // Respond to the client
+        res.json({ message: 'Email sent successfully' });
     } catch (error) {
-      console.error('Error sending email:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
+        console.log(error)
+        console.error('Error sending email:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
   });
 
