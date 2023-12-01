@@ -5,7 +5,6 @@ import {  } from 'react-router-dom';
 
 function Agentview(){
     const [selectedFlightID, setSelectedFlightID] = useState(null);
-    //const [flightID2, setFlightID] = useState(null);
     const [flightData, setFlightData] = useState(null);
 
     const [fetchedRegisteredTickets, setFetchedRegisteredTickets] = useState([]);
@@ -54,10 +53,10 @@ function Agentview(){
                         <h3>Flight Details</h3>
                         <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
                             {flightData.map((flight, index) => (
-                            <div className="flight-data-container d-flex justify-content-between mb-3" key={index}>
-        
-                                    <p>Source: {flight.SOURCE}</p><p> Destination: {flight.DESTINATION}</p>
-                                    <p>Flight ID: {flight.FLIGHTID} 
+                                <div className="flight-data-container" key={index}>
+                                    <p>Origin: {flight.ORIGIN} Departure Time: {flight.DEPARTURETIME}</p>
+                                    <p>Destination: {flight.DESTINATION} Landing Time: {flight.ARRIVALTIME}</p>
+                                    
                                     <button onClick={() => 
                                         {
                                         handlePassSel(flight.FLIGHTID);
@@ -66,8 +65,8 @@ function Agentview(){
                                         className={selectedFlightID === flight.FLIGHTID ? 'selectedFlight' : "btn btn-outline-secondary"}>
                                         See Passengar List 
                                     </button>
-                                    </p>
-                                </div>
+                                    
+                            </div>
                                
                             ))}  
                         </div>

@@ -1,5 +1,5 @@
 // Payment.js
-import React, { useState } from 'react';
+import React, { useState, useEffect  } from 'react';
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
 
@@ -8,12 +8,20 @@ const Payment = (props) => {
     const { price, myValues} = props;
     const navigate = useNavigate();
     
+   
     const [CardHolder, setCardHolder] = useState('');
     const [CardNumber, setCardNumber] = useState('');
-
+    const [expiryMonth, setexpiryMonth] = useState('');
+    const [expiryYear, setexpiryYear] = useState('');
+    
 
     const [formData, setFormData] = useState({
+        CardHolder: '',
         CardNumber: '',
+        expiryMonth: '',
+        expiryYear: '',
+        SIN: '',
+        POSTAL: ''
     });
 
 
@@ -27,6 +35,7 @@ const Payment = (props) => {
             ...formData,
             [name]: formattedCardNumber,
         });
+
     };
 
     //Input Format for Expiry Date
@@ -64,17 +73,25 @@ const Payment = (props) => {
         });
     };
     const handleInput5 = (e) => {
+        const { name, value } = e.target;
         setCardHolder(e.target.value);
+        setFormData({
+            ...formData,
+            [name]: value,
+          });
+        
+       
     };
 
     const handleSumbit =(event)=> {
         event.preventDefault();
-       
+        console.log(myValues)
         axios.post('http://localhost:8081/bookflight', {values: myValues, price: price})
         
         .then(res=> {
             if(res.data === "Success"){
-                //navigate(`/home/${username}`);
+                sendEmail()
+                //navigate(`/home/${'REGUSER'}/${myValues.username}`);
             }else {
                 alert("Unable to book flight");
             }
@@ -82,33 +99,51 @@ const Payment = (props) => {
         .catch(err=> console.log(err));
         
         
-    }
-    
-    
-    const emailBody = `
-        Hello ${myValues.username},
-
-        Thank you for your order. 
-        Your total amount is ${price}.
-
-        Insurance Option: ${myValues.Insurance}
-        Your Seat Number is ${myValues.SelectedSeat2},
         
-        Card Holder: ${CardHolder}
+    }
+    useEffect(() => {
+        // Update emailData whenever formData changes
+        setEmailData((prevEmailData) => ({
+          ...prevEmailData,
+          body: getEmailBody(formData),
+        }));
+      }, [formData]);
 
-        Regards,
-        Your Oceanic Airlines`;
+    const getEmailBody = (formData) => {
+        
+        return ` 
+            
+            Hello ${myValues.username},
+
+            Thank you for your order. 
+            Your total amount is ${price}.
+        
+            Insurance Option: ${myValues.Insurance}
+            Selected Class: ${myValues.selectedClass}
+            Your Seat Number is ${myValues.SelectedSeat},
+            
+            Payment Method 
+            Card Holder: ${formData.CardHolder}
+            Card Number: ${formData.CardNumber}
+            Expiry Month/Year: ${formData.expiryMonth}/${formData.expiryYear}
+            Postal Code: ${formData.POSTAL}
+            
+            
+            Regards,
+            Oceanic Airlines!
+            `;
+        };
+   
 
     const [emailData, setEmailData] = useState({
         to: 'braden11tink@gmail.com',
         subject: 'Booked Ticket!',
-        body: emailBody,
+        body: getEmailBody(formData),
     });
 
     const sendEmail = async () => {
-        console.log(CardHolder)
-        console.log("here")
-       
+        console.log(formData.CardHolder)
+        
         try {
           const response = await fetch('http://localhost:7002/api/send-email', {
             method: 'POST',
@@ -132,16 +167,15 @@ const Payment = (props) => {
                 <h2>Pay Invoice</h2>
 
                 {/* Payment Amount */}
-                <div>
-                <label>Payment amount: </label>
-    
-                <label>{price}</label>
+                <div >
+                    <label>Payment amount: </label>
+                    <label className="p-2">{price}</label>
                 </div>
 
                 {/* Name on Card */}
                 <div>
                     <label>Name on Card:</label>
-                    <input type="text" placeholder='Card Holder' name='CardHolder'  className='form-control' />
+                    <input type="text" placeholder='Card Holder' name='CardHolder' value={formData.CardHolder} onChange={handleInput5} className='form-control' />
                 </div>
 
                 <div>
@@ -167,7 +201,7 @@ const Payment = (props) => {
                                 value={formData.expiryMonth}
                                 onChange={handleInput2}
                                 maxLength="2"
-                               
+                                className ="form-control"
                             />
                             <input
                                 type="text"
@@ -176,7 +210,7 @@ const Payment = (props) => {
                                 value={formData.expiryYear}
                                 onChange={handleInput2}
                                 maxLength="2"
-                               
+                                className ="form-control"
                             />
                         </div>
 
@@ -208,9 +242,6 @@ const Payment = (props) => {
                 </div>
                 <div>
                     <button onClick={handleSumbit} className="btn btn-primary">Make Payment</button>
-                </div>
-                <div>
-                    <button onClick={sendEmail}>Send Email</button>
                 </div>
             </div>
         </div>
