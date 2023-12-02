@@ -302,7 +302,8 @@ function BookFlight(){
                 <span style={{ fontWeight: 'bold', padding: '0 5px' }}>$</span>
               </div>
               <p></p>
-              <button onClick={changePage} className="btn btn-success w-25">
+              <button onClick={changePage} className="btn btn-success w-25" 
+                disabled={!values.selectedClass}>
                 Go To Payment
               </button>
             </div>
