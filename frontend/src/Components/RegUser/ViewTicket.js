@@ -1,7 +1,7 @@
 import React, {useState, useEffect } from 'react'
 import axios from 'axios'
 import { useParams } from 'react-router-dom';
-import Header from './Header';
+import Header from '../Header';
 
 
 function CurrentFlights(){

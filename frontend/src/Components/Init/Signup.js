@@ -1,8 +1,8 @@
 import axios from 'axios'
 import  { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate  } from 'react-router-dom';
-import { createEmailBody, createEmailData, sendEmail } from './EmailFunctions'; // Adjust the path based on your file structure
-import validation from "./SignupValidation";
+import { createEmailBody, createEmailData, sendEmail } from './Functions/EmailFunctions'; // Adjust the path based on your file structure
+import validation from "./Functions/SignupValidation";
 
 const Signup = (props) => {
    
