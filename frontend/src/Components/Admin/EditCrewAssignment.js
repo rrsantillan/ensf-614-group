@@ -35,17 +35,10 @@ function EditCrewAssignments(){
         });
     };
   
-    const handleFlightSelection = (flight) => {
-        setSelectedFlight(flight);
-        // If you want to load the selected flight's crew members for editing, you can do that here.
-        // For simplicity, I'm resetting the crew selection for demonstration purposes.
-        setSelectedCrew([]);
-    };
-
     
     const handleSubmitCrewAssignment = async (e) => {
       e.preventDefault(); // Prevent the default form submission behavior
-      updateCrew(flightID2);
+      updateCrew(selectedFlightID);
     }; 
 
     const [allCrew, setAllCrew] = useState([
@@ -54,55 +47,82 @@ function EditCrewAssignments(){
 
 
     const onSelectCrew = (crew) => {
-        setAllCrew((prevAllCrew) => prevAllCrew.filter((c) => c.CREWID !== crew.CREWID));
-        setSelectedCrew((prevSelectedCrew) => [...prevSelectedCrew, crew]);
-      };
+      //console.log('Selecting Crew:', crew);
+      setAllCrew((prevAllCrew) => {
+          const filteredCrew = prevAllCrew.filter((c) => c.CREWID !== crew.CREWID);
+          //console.log('Filtered All Crew:', filteredCrew);
+          return filteredCrew;
+      });
+      setSelectedCrew((prevSelectedCrew) => {
+          const updatedSelectedCrew = [...prevSelectedCrew, crew];
+          //console.log('Updated Selected Crew:', updatedSelectedCrew);
+          return updatedSelectedCrew;
+      });
+    };
     
-      const onRemoveCrew = (crew) => {
-        setSelectedCrew((prevSelectedCrew) => prevSelectedCrew.filter((c) => c.CREWID !== crew.CREWID));
-        setAllCrew((prevAllCrew) => [...prevAllCrew, crew]);
-      };
+    const onRemoveCrew = (crew) => {
+      //console.log('Removing Crew:', crew);
+      setSelectedCrew((prevSelectedCrew) => {
+          const filteredSelectedCrew = prevSelectedCrew.filter((c) => c.CREWID !== crew.CREWID);
+          //console.log('Filtered Selected Crew:', filteredSelectedCrew);
+          return filteredSelectedCrew;
+      });
+      setAllCrew((prevAllCrew) => {
+          const updatedAllCrew = [...prevAllCrew, crew];
+          //console.log('Updated All Crew:', updatedAllCrew);
+          return updatedAllCrew;
+      });
+    };
 
-    const fetchCrew = (selectedFlightID) => {
-        axios.post('http://localhost:8081/getCrew')
-        .then((res) => {
-            const fetchedCrewArray = res.data.crew;
-            const fetchedCrew = fetchedCrewArray.map(crew => ({ CREWID: crew.CREWID, FNAME: crew.FNAME }));
-            console.log(fetchedCrew);
-            setAllCrew(fetchedCrew);
-        })
-        .catch((err) => {
-            console.error(err);
+    const fetchCrew =  async (selectedFlightID) => {
+      //console.log('Initial All Crew:', allCrew);
+      try {  
+
+        const crewResponse = await axios.post('http://localhost:8081/getCrew');
+        const fetchedCrewArray = crewResponse.data.crew;
+        const fetchedCrew = fetchedCrewArray.map(crew => ({ CREWID: crew.CREWID, FNAME: crew.FNAME }));
+        //console.log(fetchedCrew);
+        setAllCrew(fetchedCrew);
+
+        // Fetch assigned crew members for the selected flight
+        const assignedCrewResponse = await axios.post('http://localhost:8081/getAssignedCrew', { selectedFlightID });
+        //console.log('Server Response:', assignedCrewResponse);
+        const fetchedAssignedCrewArray = assignedCrewResponse.data.crew;
+        //console.log('Assigned Crew:', fetchedAssignedCrewArray);
+          
+         // Update the states
+         // Update the states
+        setAllCrew((prevAllCrew) => {
+          const updatedAllCrew = prevAllCrew.filter((c) => !fetchedAssignedCrewArray.some((assigned) => assigned.CREWID === c.CREWID));
+          //console.log('Updated All Crew:', updatedAllCrew);
+          return updatedAllCrew;
         });
-        
-        axios.post('http://localhost:8081/getAssignedCrew', { selectedFlightID })
-        .then((res) => {
-          console.log('Server Response:', res);
-            const fetchedAssignedCrewArray = res.data.crew;
-            console.log('Assigned Crew:', fetchedAssignedCrewArray);
-            setFetchedAssignedCrew(fetchedAssignedCrewArray.map(crew => ({ CREWID: crew.CREWID, FNAME: crew.FNAME })));
-            setSelectedCrew(fetchedAssignedCrewArray.map(crew => ({ CREWID: crew.CREWID, FNAME: crew.FNAME })));
-          })
-          .catch((err) => {
+         setFetchedAssignedCrew(fetchedAssignedCrewArray.map(crew => ({ CREWID: crew.CREWID, FNAME: crew.FNAME })));
+         setSelectedCrew(fetchedAssignedCrewArray.map(crew => ({ CREWID: crew.CREWID, FNAME: crew.FNAME })));
+
+         //console.log('All Crew after fetching:', allCrew);
+         //console.log('Assigned Crew after fetching:', fetchedAssignedCrewArray);
+
+        } catch (err) {
             console.error(err);
-          });
+        }
+
 
     }
     const updateCrew = async (selectedFlightID) => {
-        try {
-            console.log('Selected Crew:', selectedCrew);
-
-            const updatedCrew = selectedCrew.map(crew => ({ CREWID: crew.CREWID, FNAME: crew.FNAME }));
-            console.log('Updated Crew:', updatedCrew);
-
+      try {
+          //console.log('Selected Flight ID:', selectedFlightID);
+          //console.log('Selected Crew:', selectedCrew);
+  
+          const updatedCrew = selectedCrew.map(crew => ({ CREWID: crew.CREWID, FNAME: crew.FNAME }));
+          //console.log('Updated Crew:', updatedCrew);
+  
           await axios.post('http://localhost:8081/updateCrew', { selectedFlightID, updatedCrew });
-      
           
-      
-          console.log('Crew updated successfully.');
-        } catch (error) {
-          console.error('Error updating crew:', error);
-        }
+          //console.log('Crew updated successfully.');
+      } catch (err) {
+          console.error('Error updating crew:', err);
+      }
     };
       
      
@@ -110,11 +130,11 @@ function EditCrewAssignments(){
 
     const handleSearch = (e) => {
         e.preventDefault(); // Prevent the default form submission behavior
-        console.log(values)
+        //console.log(values)
         axios.post('http://localhost:8081/checkFlights', values)
         .then((res) => {
             const fetchedFlightData = res.data.flights;
-            console.log('fetchedFlightData:', fetchedFlightData);
+            //console.log('fetchedFlightData:', fetchedFlightData);
             setFlightData(fetchedFlightData);
             setFlightID(fetchedFlightData.flightID);
     
@@ -166,7 +186,6 @@ function EditCrewAssignments(){
                             </div>
                         ))}     
                     </div>
-                    
                 )}
     
                 <div style={{ marginTop: '20px' }}>

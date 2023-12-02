@@ -405,23 +405,23 @@ app.post('/getAssignedCrew', (req, res) => {
  * Update Crew brings all data back where the dest and source match in the db
  */
 app.post('/updateCrew', async (req, res) => {
-    const { FLIGHTID, updatedCrew } = req.body;
-    console.log(FLIGHTID)
+    const { selectedFlightID, updatedCrew } = req.body;
+    
+ 
     // Assuming you have a table named CREW in your database
     const deleteQuery = 'DELETE FROM tblAssignedCrew WHERE FLIGHTID = ?';
     const insertQuery = 'INSERT INTO tblAssignedCrew (FLIGHTID, CREWID) VALUES (?, ?)';
   
     try {
       // Delete all existing crew records for the given FLIGHTID
-        db.query(deleteQuery, [FLIGHTID]);
+        db.query(deleteQuery, [selectedFlightID]);
   
       // Insert the updated crew data
-      console.log('Updated Crew:', updatedCrew);
-
+      
       for (const crew of updatedCrew) {
         const { CREWID, FNAME } = crew;
-        db.query(insertQuery, [FLIGHTID, CREWID]);
-        console.log("HERE")
+        db.query(insertQuery, [selectedFlightID, CREWID]);
+        
       }
   
       // Send a success response
@@ -548,7 +548,7 @@ app.listen(8081, () =>{
 //////////////////////////////////////////////////////////
 // Define your route to send an email
 app.post('/api/send-email', async (req, res) => {
-    console.log("Here")
+    
     const { to, subject, body } = req.body;
     
     const validatedTo = String(to).trim();
