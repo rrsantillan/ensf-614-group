@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import Header from '../Header';
 
 
-function CurrentFlights(){
+function ViewTickets(){
     
     const [flightData, setFlightData] = useState(null);
     
@@ -87,15 +87,16 @@ function CurrentFlights(){
                         <div className='mb-3 d-flex align-items-baseline '>
                             <label htmlFor="user"><strong>User: </strong></label>
                             <p className="ml-2 px-2" >{username}</p>
+                            <button type='submit' className='btn btn-success btn-sm'>Retrieve Flights</button>
                         </div>
-                        <div className="mb-3">
+                        {/* <div className="mb-3">
                             <button type='submit' className='btn btn-success'>Retrieve Flights</button>
-                        </div>
+                        </div> */}
                     </form>
                         
                 </div>
                 {Array.isArray(flightData) && flightData.length > 0 && (
-                    <div className="flight-details-container">
+                    <div className="mx-3 border py-3 px-5 flight-details-container">
                         <h3>Flight Details</h3>
                         <div className="scrollable-flight-details">
                         {flightData.map((flight, index) => (
@@ -113,4 +114,4 @@ function CurrentFlights(){
         </div>
     )
 }
-export default CurrentFlights
+export default ViewTickets
