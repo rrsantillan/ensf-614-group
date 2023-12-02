@@ -6,9 +6,10 @@ import Signup from './Components/Init/Signup'
 import Home from './Components/Home'
 import Adminview from './Components/Admin/Adminview'
 import FindFlight from './Components/Flight/FindFlight'
-import ViewTicket from './Components/RegUser/ViewTicket'
+import ViewTicket from './Components/RegUser/ViewTickets'
 import BookFlight from './Components/Flight/BookFlight'
 import Agentview from './Components/Agent/Agentview'
+import TestPage from './Testing/TestPage.js'
 
 
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
@@ -24,9 +25,12 @@ function App() {
         <Route path='/home/:Profile1/:username' element={<Home/>}> </Route>
         <Route path='/Adminview/:username' element={<Adminview/>}></Route>
         <Route path='/FindFlight/:username' element={<FindFlight/>}> </Route>
-        <Route path='/ViewTicket/:username' element={<ViewTicket/>}> </Route>
+        <Route path='/ViewTickets/:username' element={<ViewTicket/>}> </Route>
         <Route path='/BookFlight/:username/:flightID' element={<BookFlight/>}> </Route>
         <Route path='/Agentview' element={<Agentview/>}> </Route>
+        {/* Testing */}
+        <Route path='/TestPage' element={<TestPage/>}> </Route>
+        {/* Testing */}
       </Routes>
     </BrowserRouter>
   );
