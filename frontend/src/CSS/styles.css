@@ -62,6 +62,16 @@
     overflow-y: auto; /* Add a vertical scrollbar when needed */
   }
   
-  .flight-data-container {
-    /* Your existing styles for flight data container */
+    /* In a CSS file or within your component's style */
+  .custom-container-width {
+    /* max-width: 400px; Set your desired fixed width */
+    margin-left: auto;
+    margin-right: auto;
   }
+
+    /* In a CSS file or within your component's style */
+    .custom-container-width-2 {
+      max-width: 700px; /* Set your desired fixed width */
+      margin-left: auto;
+      margin-right: auto;
+    }
