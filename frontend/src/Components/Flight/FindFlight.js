@@ -57,6 +57,7 @@ function FindFlight(){
 
     const handleSumbit =(event)=> {
         event.preventDefault();
+        console.log(event.target.ORIGIN);
         setErrors({
             Source: '',
             Dest: '',
@@ -106,55 +107,56 @@ function FindFlight(){
  
 
 return(
-    <div className="d-flex flex-column">
-        <div className="p-3 bg-green">
+    <div className="container">
+        {/* <div className="d-flex flex-column p-3 bg-green"> */}
             <Header />
-        </div>
-        <div className="d-flex vh-100 justify-content-center align-items-top">
-        <div className='p-3 bg-white w-75'>
-            <h2>Where To?</h2>
-            <form action='' onSubmit={handleSumbit}>
-                <div>
-                    <input type="text" placeholder='From...' name = 'Source'
-                    onChange={handleInput} className='form-control'/>
-                    {errors.Source && <span className='text-danger'> {errors.Source} </span>}
-                </div>
-                <div>
-                    <input type="text" placeholder='To...' name = 'Dest'
-                    onChange={handleInput} className='form-control'/>
-                    {errors.Dest && <span className='text-danger'> {errors.Dest} </span>}
-                </div>
-               
-                <button type='submit' className='btn btn-success w-100'>Search Flights</button>
-
-
-            </form>
-            {Array.isArray(flightData) && flightData.length > 0 && (
-                <div>
-                    <h3>Flight Details</h3>
-                    {flightData.map((flight, index) => (
-                        <div className="flight-data-container" key={index}>
-                            <p>Origin: {flight.ORIGIN} Departure Time: {flight.DEPARTURETIME}</p>
-                            <p>Destination: {flight.DESTINATION} Landing Time: {flight.ARRIVALTIME}</p>
-
-                            <button onClick={() => {
-                                setFlightID(flight.FLIGHTID);
-                                setSelectedFlightID(flight.FLIGHTID)}}
-                                className={selectedFlightID === flight.FLIGHTID ? 'selectedFlight' : ''}>
-                                Select Flight
-                            </button>
-                            <p></p>
-                        </div>
-                    ))}
-                    
-                    <Link to={`../BookFlight/${username}/${flightID2}`} className='btn btn-default border w-100 bg-light'> Select To Seat... </Link>
-                            
+        {/* </div> */}
+        <div className="d-flex vh-80 justify-content-center align-items-top">
+            <div className='p-3 bg-light border w-75'>
+                <h2>Where To?</h2>
+                <div className="">
+                    <div className="pr-5">
+                        <input type="text" placeholder='From...' name = 'Source'
+                        onChange={handleInput} className='form-control'/>
+                        {errors.Source && <span className='text-danger'> {errors.Source} </span>}
+                    </div>
+                    <p></p>
+                    <div>
+                        <input type="text" placeholder='To...' name = 'Dest'
+                        onChange={handleInput} className='form-control'/>
+                        {errors.Dest && <span className='text-danger'> {errors.Dest} </span>}
+                    </div>
+                    <p></p>
+                    <form action='' onSubmit={handleSumbit}>
+                        
+                        <button type='submit' className='btn btn-success w-100'>Search Flights</button>
+                    </form>
                 </div>
                 
-            )}
-        </div>
+                {Array.isArray(flightData) && flightData.length > 0 && (
+                    <div>
+                        <h3>Flight Details</h3>
+                        {flightData.map((flight, index) => (
+                            <div className="flight-data-container" key={index}>
+                                <p>Origin: {flight.ORIGIN} Departure Time: {flight.DEPARTURETIME}</p>
+                                <p>Destination: {flight.DESTINATION} Landing Time: {flight.ARRIVALTIME}</p>
 
-    </div>
+                                <button onClick={() => {
+                                    setFlightID(flight.FLIGHTID);
+                                    setSelectedFlightID(flight.FLIGHTID)}}
+                                    className={selectedFlightID === flight.FLIGHTID ? 'selectedFlight' : ''}>
+                                    Select Flight
+                                </button>
+                                <p></p>
+                            </div>
+                        ))}
+                        
+                        <Link to={`../BookFlight/${username}/${flightID2}`} className='btn btn-default border w-100 bg-light'> Select To Seat... </Link>
+                                
+                    </div>
+                )}
+            </div>
+        </div>
     </div>
       
 
