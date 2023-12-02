@@ -23,7 +23,7 @@ function Home(){
       <div className="p-3 bg-green">
         <Header />
       </div>
-      <div classname ="container vh-100 justify-content-center align-items-top">
+      <div className ="container vh-100 justify-content-center align-items-top">
           
         <h2>Home Page</h2>
         <form action=''>

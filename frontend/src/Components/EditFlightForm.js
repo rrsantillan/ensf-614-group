@@ -1,33 +1,46 @@
 // EidtFlightForm.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import moment from 'moment';
 
 
 const EditFlightForm = () => {
-
+  const [aircraftid, setAircraftId] = useState('');
+const [aircraftList, setAircraftList] = useState([]); // Add state to store the list of aircraft pulled from database
 
  const [destination, setDestination] = useState('');
  const [source, setSource] = useState('');
  const [departureTime, setDepartureTime] = useState('');
  const [landingTime, setLandingTime] = useState('');
-
-
- const [flightData, setFlightData] = useState(null);
+  const [selectedFlightID, setSelectedFlightID] = useState(null);
  const [selectedFlight, setSelectedFlight] = useState(null);
- const [selectedFlightID, setSelectedFlightID] = useState(null);
- const [flightID2, setFlightID] = useState(null);
  const [fetchedAssignedCrew, setFetchedAssignedCrew] = useState([]);
-
-
+  const [flightData, setFlightData] = useState(null);
+  const [flightID2, setFlightID] = useState(null);
+  
+ // Used to hold destination and source for searching for flights
  const [values, setValues] = useState({
    Source: '',
    Dest: ''
  })
 
+  // called when Search Flights is clicked 
+  const handleSearch = (e) => {
+    e.preventDefault(); // Prevent the default form submission behavior
+    console.log(values)
+    axios.post('http://localhost:8081/checkFlights', values)
+    .then((res) => {
+      const fetchedFlightData = res.data.flights;
+      console.log('fetchedFlightData:', fetchedFlightData);
+      setFlightData(fetchedFlightData);
+      setFlightID(fetchedFlightData.flightID);
+    })
+    .catch((err) => {
+    console.error(err);
+   });
+  };
 
-
-
+// text entery handleing
  const handleInput = (event) => {
    const { name, value } = event.target;
    setValues({
@@ -43,7 +56,7 @@ const EditFlightForm = () => {
 
    // Make an API request to your backend to add the flight to the database
    try {
-     axios.post('http://localhost:8081/checkFlights', {
+     axios.post('http://localhost:8081/checkFlights', { // change me
        destination,
        source,
        departureTime,
@@ -60,31 +73,16 @@ const EditFlightForm = () => {
  };
 
 
- const handleSearch = (e) => {
-   e.preventDefault(); // Prevent the default form submission behavior
-   console.log(values)
-   axios.post('http://localhost:8081/checkFlights', values)
-   .then((res) => {
-       const fetchedFlightData = res.data.flights;
-       console.log('fetchedFlightData:', fetchedFlightData);
-       setFlightData(fetchedFlightData);
-       setFlightID(fetchedFlightData.flightID);
-
-
-   })
-   .catch((err) => {
-       console.error(err);
-   });
-  };
 
 
  /**
-  * Populates the edit flight details
+  * Populates the edit flight details on 'Set Flight' click
+  * 
+  * DO WE NEED TO QUERY WHEN WE HAVE FLIGHT DATA ALREADY? 
+  * TODO: add aircraftid default setting,
   * @param {*} FLIGHTID
   */
  const populateEditFields = (FLIGHTID) => {
-
-
    // flightID2 on the next line must be the same name in the post definition for /getFlightByFlightID
    // specifically the String that goes into db.query(sql, req.body.flightID2)
    const requestData = { flightID2: FLIGHTID }
@@ -94,11 +92,11 @@ const EditFlightForm = () => {
          const fetchedFlightData = res.data.flights;
          console.log('fetchedFlightData before setters:', fetchedFlightData);
          setFlightData(fetchedFlightData);
-         setFlightID(fetchedFlightData.flightID);
+         setFlightID(fetchedFlightData.FLIGHTID);
          setDestination(fetchedFlightData[0].DESTINATION)
-         setSource(fetchedFlightData[0].SOURCE)
-         setDepartureTime(formatDateString(fetchedFlightData[0].DEPARTURE))
-         setLandingTime(formatDateString(fetchedFlightData[0].LANDING))
+         setSource(fetchedFlightData[0].ORIGIN)
+         setDepartureTime(formatDateString(fetchedFlightData[0].DEPARTURETIME))
+         setLandingTime(formatDateString(fetchedFlightData[0].ARRIVALTIME))
          // console.log(fetchedFlightData.DESTINATION)
          console.log('fetchedFlightData[0].DESTINATION after setters:',fetchedFlightData[0].DESTINATION)
     
@@ -107,6 +105,20 @@ const EditFlightForm = () => {
          console.error(err);
      });
  }
+
+// SELECT aircraft info from database
+useEffect(() => {
+  const fetchAircraftList = async () => {
+    try {
+      const response = await axios.post('http://localhost:8081/getAircraftIDs');
+      console.log("Response from server:", response);
+      setAircraftList(response.data.planes); // Make sure to access the correct property
+    } catch (error) {
+      console.error('Error fetching aircraft list:', error);
+    }
+  };
+  fetchAircraftList();
+}, []);
 
 
  /**
@@ -172,10 +184,8 @@ const EditFlightForm = () => {
                        <h3>Flight Details</h3>
                        {flightData.map((flight, index) => (
                            <div className="flight-data-container" key={index}>
-                               <p>Departure: {flight.SOURCE}, {flight.DEPARTURE}</p>
-                               <p>Land: {flight.DESTINATION}, {flight.LANDING}</p>
-
-
+                               <p>Departure: {flight.ORIGIN}, {flight.DEPARTURETIME}</p>
+                               <p>Land: {flight.DESTINATION}, {flight.ARRIVALTIME}</p>
                                <button onClick={() => {
                                    setFlightID(flight.FLIGHTID);
                                    setSelectedFlightID(flight.FLIGHTID)
@@ -197,13 +207,29 @@ const EditFlightForm = () => {
    <div>
        <form className="flight-form" onSubmit={saveChangesToFlight} style={{ maxWidth: '400px', margin: 'auto', textAlign: 'left' }}>
            <h3>Edit Flight Details for FlightID: {selectedFlightID}</h3>
+
            <div className="form-input" style={{ marginBottom: '10px', display: 'flex', flexDirection: 'column' }}>
+             <label style={{ marginBottom: '5px' }}>
+               Aircraft ID, Model:
+            </label>
+           <select value={aircraftid} onChange={(e) => setAircraftId(e.target.value)}>
+            <option value="" disabled>Select Aircraft</option>
+             {aircraftList ? (
+                aircraftList.map((aircraft) => (
+                <option key={aircraft.AIRPLANEID} value={aircraft.AIRPLANEID}>
+                   {aircraft.AIRPLANEID}, {aircraft.MODEL}
+                </option>
+            ))
+            ) : null}
+          </select>
+          </div>
+
+          <div className="form-input" style={{ marginBottom: '10px', display: 'flex', flexDirection: 'column' }}>
                <label style={{ marginBottom: '5px' }}>
                Destination:
                </label>
                <input type="text" value={destination} onChange={(e) => setDestination(e.target.value)} />
            </div>
-
 
            <div className="form-input" style={{ marginBottom: '10px', display: 'flex', flexDirection: 'column' }}>
                <label style={{ marginBottom: '5px' }}>

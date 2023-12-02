@@ -97,10 +97,11 @@ app.post('/login', (req, res) => {
 
 /**
  * check flight brings all data back where the dest and source match in the db
+ * used in EditFLightForm.js to look for flights
  */
 app.post('/checkFlights', (req, res) => {
     
-    const sql = "SELECT FLIGHTID, ORIGIN, DESTINATION, DEPARTURETIME, ARRIVALTIME FROM tblFlight WHERE ORIGIN = ? and DESTINATION = ?"
+    const sql = "SELECT FLIGHTID, AIRPLANEID, ORIGIN, DESTINATION, DEPARTURETIME, ARRIVALTIME FROM tblFlight WHERE ORIGIN = ? and DESTINATION = ?"
     db.query(sql, [req.body.Source, req.body.Dest], (err, data) => {
         if (err) {
             return res.status(500).json({ error: "Internal Server Error" });
@@ -112,10 +113,10 @@ app.post('/checkFlights', (req, res) => {
 
 /**
  * get all aircraft IDs
- * used for populating dropdown list in FlightForm.js where flights are added to system
+ * used for populating dropdown list in FlightForm.js and EditFlightForm.js where flights are added to system
  */
 app.post('/getAircraftIDs', (req, res) => {
-    const sql = 'SELECT AIRPLANEID, MODEL FROM tblAirplane';
+    const sql = 'SELECT AIRPLANEVIN, MODEL FROM tblAirplane';
     db.query(sql, (err, data) => {
         if (err) {
             return res.status(500).json({ error: "Internal Server Error" });
@@ -154,10 +155,11 @@ app.post('/getFlights', (req, res) => {
 
 /**
 * search for flight by flightID
+* used in editflightform.js for getting data for selected flight
 */
 app.post('/getFlightByFlightID', (req, res) => {
   
-    const sql = "SELECT * FROM flights WHERE flightID = ?"
+    const sql = "SELECT * FROM tblFlight WHERE flightID = ?"
 
     console.log(req.body.flightID2) // displays the currently selected flightID
     db.query(sql, [req.body.flightID2], (err, data) => {
@@ -175,10 +177,10 @@ app.post('/getFlightByFlightID', (req, res) => {
  * overwrite flight data based on flightID
  */
  app.post('/overwriteFlightsByFlightID', (req, res) => {
-    const { destination, source, departureTime, landingTime, flightID } = req.body;
-    const sql = "UPDATE flights SET SOURCE = ?, DESTINATION = ?, DEPARTURE = ?, LANDING = ? WHERE FLIGHTID = ?;"
+    const { destination, ORIGIN, departureTime, landingTime, flightID, aircraftid } = req.body;
+    const sql = "UPDATE tblFlight SET ORIGIN = ?, DESTINATION = ?, DEPARTURE = ?, LANDING = ?, AIRPLANEID = ? WHERE FLIGHTID = ?;"
     console.log("selected FlightID: ", req.body.flightID)
-    db.query(sql, [source, destination, departureTime, landingTime, flightID], (err, data) => {
+    db.query(sql, [ORIGIN, destination, departureTime, landingTime, flightID, aircraftid], (err, data) => {
         if (err) {
              console.error('Error couldn\'t find flight:', err);
              return res.status(500).json({ error: 'Internal Server Error' });
@@ -342,9 +344,9 @@ app.post('/addFlight', (req, res) => {
  * Insert new aircraft
  */
 app.post('/addAircraft', (req, res) => {
-    const sql = "INSERT INTO AIRCRAFT (AIRCRAFTID, MODEL) VALUES(?, ?)"
+    const sql = "INSERT INTO tblAirplane (AIRPLANEVIN, MODEL, ROWCNT, COLCNT) VALUES(?, ?, ?, ?)"
    
-    db.query(sql, [req.body.aircraftid, req.body.model], (err, data) => {
+    db.query(sql, [req.body.aircraftid, req.body.model, req.body.rows, req.body.columns], (err, data) => {
         
         console.log("SQL Query:", sql); // Log the SQL query
         if(err){
@@ -354,6 +356,23 @@ app.post('/addAircraft', (req, res) => {
         
     })
 })
+
+/**
+ * Insert new aircraft
+ */
+app.post('/removeAircraft', (req, res) => {
+    const sql = "DELETE FROM tblAirplane WHERE AIRPLANEVIN = ?";
+   
+    db.query(sql, [req.body.aircraftid], (err, data) => {
+        console.log("SQL Query:", sql); // Log the SQL query
+        if (err) {
+            console.error('Error executing SQL query:', err);
+            return res.json({ error: 'Error removing aircraft' });
+        }
+        return res.json({ success: true });
+    });
+});
+
 
 /**
  * getUnavailableSeats brings the list of seats taken

@@ -3,7 +3,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const FlightForm = () => {
-  // for insert query data
+
+  // for INSERT query data
   const [aircraftid, setAircraftId] = useState('');
   const [destination, setDestination] = useState('');
   const [source, setSource] = useState('');
@@ -12,7 +13,7 @@ const FlightForm = () => {
 
   const [aircraftList, setAircraftList] = useState([]); // Add state to store the list of aircraft pulled from database
 
-  // pull aircraft from database
+  // SELECT aircraft info from database
   useEffect(() => {
     const fetchAircraftList = async () => {
       try {
@@ -72,8 +73,8 @@ const FlightForm = () => {
           <option value="" disabled>Select Aircraft</option>
            {aircraftList ? (
               aircraftList.map((aircraft) => (
-              <option key={aircraft.AIRPLANEID} value={aircraft.AIRPLANEID}>
-                {aircraft.AIRPLANEID}, {aircraft.MODEL}
+              <option key={aircraft.AIRPLANEVIN} value={aircraft.AIRPLANEVIN}>
+                {aircraft.AIRPLANEVIN}, {aircraft.MODEL}
               </option>
             ))
           ) : null}

@@ -52,7 +52,7 @@ const AddCrewForm = () => {
         <input type="text" value={crewid} onChange={(e) => setCrewId(e.target.value)} />
       </div>
 
-      <button type="submit" className="submit-button" style={{ display: 'block', width: '100%' }}>
+      <button type="submit" className="btn btn-success w-100" style={{ display: 'block', width: '100%' }}>
         Add New Crew
       </button>
     </form>
