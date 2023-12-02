@@ -15,7 +15,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="">
+    <header className="">
       <div className="">
         <div className="row">
           <div className="col-6">
@@ -30,7 +30,7 @@ const Footer = () => {
           </div>
         </div>
       </div>
-    </footer>
+    </header>
     
   
   );

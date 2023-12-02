@@ -69,9 +69,19 @@
     margin-right: auto;
   }
 
-    /* In a CSS file or within your component's style */
-    .custom-container-width-2 {
-      max-width: 700px; /* Set your desired fixed width */
-      margin-left: auto;
-      margin-right: auto;
-    }
+  /* In a CSS file or within your component's style */
+  .custom-container-2 {
+    max-width: 400px; /* Set your desired fixed width */
+    /* width: 100%; */
+    margin-left: auto;
+    margin-right: auto;
+    /* margin-top: 50%; */
+    /* margin:auto; */
+  }
+
+  
+
+  .box{
+    height: 50px;
+    width: 400px;
+  }
