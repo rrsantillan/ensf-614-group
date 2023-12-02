@@ -9,7 +9,7 @@ import AddAircraftForm from './AddAircraftForm';
 import DeleteAircraftForm from './DeleteAircraftForm'
 
 import AddCrewForm from './AddCrewForm';
-import CrewEditor from './CrewEditor';
+import EditCrewForm from './EditCrewForm';
 import axios from 'axios'
 
 
@@ -46,7 +46,7 @@ function AdminView(){
     const handleFlightSelection = (flight) => {
         setSelectedFlight(flight);
         // If you want to load the selected flight's crew members for editing, you can do that here.
-        // For simplicity, I'm resetting the crew selection for demonstration purposes.
+        // For simplicity, I'm resetting  the crew selection for demonstration purposes.
         setSelectedCrew([]);
     };
 
@@ -169,64 +169,19 @@ function AdminView(){
               return (
                 <div>
                   <h1>Add Crew</h1>
-                  <AddCrewForm selectedCrew={selectedNewCrew} />
+                  <AddCrewForm />
                 </div>
               );
 
-          case 'Crew-Assignments':
-            return (
-              <div>
-                <h1>Crew Assignment: Select Flight</h1>
-                <form action='' onSubmit={handleSearch}>
-                    <div>
-                        <input type="text" placeholder='From...' name = 'Source'
-                        onChange={handleInput} className='form-control'/>
-                        
-                    </div>
-                    <div>
-                        <input type="text" placeholder='To...' name = 'Dest'
-                        onChange={handleInput} className='form-control'/>
-                      
-                    </div>
-                    <button type='submit' className='btn btn-success w-100'>Search Flights</button>
-                </form>
-                {Array.isArray(flightData) && flightData.length > 0 && (
-                    <div className="flight-details-container">
-                        <h3>Flight Details</h3>
-                        {flightData.map((flight, index) => (
-                            <div className="flight-data-container" key={index}>
-                                <p>Departure: {flight.DEPARTURE}</p>
-                                <p>Land: {flight.LANDING}</p>
+            case 'edit-Crew':
+              return (
+                <div>
+                  <h1>Edit Crew</h1>
+                  <EditCrewForm  />
+                </div>
+              );
 
-                                <button onClick={() => {
-                                    setFlightID(flight.FLIGHTID);
-                                    setSelectedFlightID(flight.FLIGHTID)
-                                    fetchCrew(flight.FLIGHTID);
-                                    }}
-                                    
-                                    className={selectedFlightID === flight.FLIGHTID ? 'selectedFlight' : ''}>
-                                    Set Flight
-                                </button>
-                                <p></p>
-                            </div>
-                        ))}     
-                    </div>
-                    
-                )}
-    
-                <div style={{ marginTop: '20px' }}>
-                   <h1>{selectedFlight ? 'Edit Crew' : 'Assign Crew'}</h1>
-                   <CrewEditor
-                     allCrew={allCrew}
-                     selectedCrew={selectedCrew}
-                     onSelectCrew={onSelectCrew}
-                     onRemoveCrew={onRemoveCrew}/>
-                   <form className="flight-form" onSubmit={handleSubmitCrewAssignment} style={{ maxWidth: '400px', margin: 'auto', textAlign: 'left' }}>
-                     <button type='submit' className='btn btn-success w-100'>Update Crew</button>
-                   </form>
-               </div>
-              </div>
-            );
+          
           default:
             return null;
         }
@@ -245,9 +200,11 @@ function AdminView(){
             <li className="nav-item">
                 <button className={`nav-link ${activeTab === 'Crew-Assignments' ? 'active' : ''}`} onClick={() => setActiveTab('Crew-Assignments')}>Edit Crew Flight Assigments</button>
             </li>
-            
             <li className="nav-item">
                 <button className={`nav-link ${activeTab === 'addNewCrew' ? 'active' : ''}`} onClick={() => setActiveTab('addNewCrew')}>Add New Crew Member</button>
+            </li>
+            <li className="nav-item">
+                <button className={`nav-link ${activeTab === 'edit-Crew' ? 'active' : ''}`} onClick={() => setActiveTab('edit-Crew')}>Edit Crew Member</button>
             </li>
             <li className="nav-item">
                 <button className={`nav-link ${activeTab === 'addAircraft' ? 'active' : ''}`} onClick={() => setActiveTab('addAircraft')}>Add New Aircraft</button>
