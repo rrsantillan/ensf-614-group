@@ -363,6 +363,24 @@ app.post('/addNewCrew', (req, res) => {
     })
 })
 
+/**
+ * delete crew member by id
+ */
+app.post('/deleteCrewByCrewId', (req, res) => {
+    const sql = "DELETE FROM tblCrew where CREWID = ?"
+    
+    db.query(sql, [req.body.crewid],(err, data) => {
+        console.log("SQL Query:", req.body.crewid); // Log the SQL query
+        if (err) {
+            console.error('Error deleting crew member:', err);
+            return res.status(500).json({ error: "Internal Server Error" });
+        } else {
+
+            return res.json("Success") 
+        }
+           
+    })
+})
 
 /**
  * get Crew brings all data back where the dest and source match in the db
@@ -436,6 +454,25 @@ app.post('/addFlight', (req, res) => {
 })
 
 /**
+ * delete flight by id
+ */
+app.post('/deleteFlightByFlightId', (req, res) => {
+    const sql = "DELETE FROM tblFlight where FLIGHTID = ?"
+    
+    db.query(sql, [req.body.flightID],(err, data) => {
+        console.log("SQL Query:", sql, "\n PASSES FLIGHTID:", req.body.flightID); // Log the SQL query
+        if (err) {
+            console.error('Error deleting crew member:', err);
+            return res.status(500).json({ error: "Internal Server Error" });
+        } else {
+
+            return res.json("Success") 
+        }
+           
+    })
+})
+
+/**
  * Insert new aircraft
  */
 app.post('/addAircraft', (req, res) => {
@@ -453,7 +490,7 @@ app.post('/addAircraft', (req, res) => {
 })
 
 /**
- * Insert new aircraft
+ * Delete aircraft from fleet
  */
 app.post('/removeAircraft', (req, res) => {
     const sql = "DELETE FROM tblAirplane WHERE AIRPLANEVIN = ?";

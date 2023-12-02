@@ -62,7 +62,7 @@ function AdminView(){
             case 'edit-Crew':
               return (
                 <div>
-                  <h1>Edit Crew</h1>
+                  <h1>Edit or Delete Crew</h1>
                   <EditCrewForm  />
                 </div>
               );
@@ -98,7 +98,7 @@ function AdminView(){
                 <button className={`nav-link ${activeTab === 'addNewCrew' ? 'active' : ''}`} onClick={() => setActiveTab('addNewCrew')}>Add New Crew Member</button>
             </li>
             <li className="nav-item">
-                <button className={`nav-link ${activeTab === 'edit-Crew' ? 'active' : ''}`} onClick={() => setActiveTab('edit-Crew')}>Edit Crew Member</button>
+                <button className={`nav-link ${activeTab === 'edit-Crew' ? 'active' : ''}`} onClick={() => setActiveTab('edit-Crew')}>Edit or Delete Crew Member</button>
             </li>
             <li className="nav-item">
                 <button className={`nav-link ${activeTab === 'addAircraft' ? 'active' : ''}`} onClick={() => setActiveTab('addAircraft')}>Add New Aircraft</button>

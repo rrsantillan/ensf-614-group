@@ -103,6 +103,36 @@ const EditCrewForm = () => {
    }
 
 
+   /**
+   * Deletes the selected crew member
+   */
+  const deleteCrewMember = async (e) => {
+    e.preventDefault();
+    
+    
+     
+
+    console.log(selectedCrewId);
+    axios.post('http://localhost:8081/deleteCrewByCrewId', {crewid: selectedCrewId})
+      .then((res) => {
+        if (res.data === "Success") {
+          // Handle successful deletion, if needed
+          setFirstName('');
+        setLastName('');
+        setPosition('');
+        setSelectedCrewID(null);
+          alert("Crew member deleted successfully.");
+        } else {
+          alert("Unable to delete crew member.");
+        }
+        // Reset the form fields and selectedCrewId after deletion
+        
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
 
 
 
@@ -130,9 +160,6 @@ const EditCrewForm = () => {
                                <p>First Name: {crew.fname}</p>
                                <p>Last Name: {crew.lname}</p>
                                <p>Title: {crew.position}</p>
-
-
-
 
                                <button onClick={() => {
                                    setCrewID(crew.crewid);
@@ -180,6 +207,7 @@ const EditCrewForm = () => {
            </div>
 
            <button type='submit' className='btn btn-success w-100'>Save Changes to Crew Member</button>
+           <button onClick={deleteCrewMember} className='btn btn-danger w-100' style={{ marginTop: '10px' }}>Delete Crew Member</button>
        </form>
      
    </div>
