@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import { Link, useParams } from 'react-router-dom';
+import { useNavigate, Link, useParams } from 'react-router-dom';
 import Header from './Header'; 
 
 
@@ -13,6 +13,16 @@ function Home(){
   const [showRegLink] = useState(shouldShowRegLink); 
   const [showAgentLink] = useState(shouldShowAgentLink); 
   
+  const navigate = useNavigate();
+
+    const handleNavigationCreateAccount = () => {
+        navigate('./Signup');
+    };
+
+    const handleNavigationGuest = () => {
+        navigate(`./FindFlight/${'guest'}`);
+    };
+
   useEffect(() => {
     // Code to run on page load
    
