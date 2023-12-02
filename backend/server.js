@@ -294,7 +294,8 @@ app.post('/deleteTicket', (req, res) => {
  * get Crew brings all data back where the dest and source match in the db
  */
 app.post('/getCrew', (req, res) => {
-    const sql = "SELECT tblCrew.CREWID, tblCrew.FNAME FROM tblCrew LEFT JOIN tblAssignedCrew on tblCrew.CREWID = tblAssignedCrew.CREWID WHERE tblAssignedCrew.FLIGHTID IS null"
+    console.log()
+    const sql = "SELECT CREWID, FNAME FROM tblCrew"
     
     db.query(sql, (err, data) => {
         if (err) {
@@ -325,6 +326,24 @@ app.post('/getCrewByName', (req, res) => {
     })
 })
 
+/**
+ * Overwrite crew member where id matches
+ * used in EditCrewForm.js
+ */
+app.post('/overwriteCrewByCrewId', (req, res) => {
+    const { crewid, fname, lname, position } = req.body;
+    const sql = "UPDATE tblCrew SET FNAME = ?, LNAME = ?, POSITION = ? WHERE CREWID = ?;"
+
+    console.log("selected crew id: ", req.body.crewid)
+    db.query(sql, [fname, lname, position, crewid], (err, data) => {
+        if (err) {
+             console.error('Error couldn\'t find flight:', err);
+             return res.status(500).json({ error: 'Internal Server Error' });
+        } else {
+             return res.json("Success")
+        }
+      })
+ })
 
 /**
  * Insert new crew member
@@ -351,7 +370,7 @@ app.post('/addNewCrew', (req, res) => {
 app.post('/getAssignedCrew', (req, res) => {
     const sql = "SELECT tblCrew.CREWID, tblCrew.FNAME FROM tblCrew LEFT JOIN tblAssignedCrew on tblCrew.CREWID = tblAssignedCrew.CREWID WHERE tblAssignedCrew.FLIGHTID = ?"
     
-    db.query(sql, [req.body.FLIGHTID], (err, data) => {
+    db.query(sql, [req.body.selectedFlightID], (err, data) => {
         if (err) {
             return res.status(500).json({ error: "Internal Server Error" });
         }

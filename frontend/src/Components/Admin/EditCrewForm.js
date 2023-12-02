@@ -72,7 +72,7 @@ const EditCrewForm = () => {
 
  /**
   * Saves edit data and attempts INSERT
-  * @param {*} FLIGHTID
+  * @param {*} selectedCrewId
   */
  const saveChangesToFlight = async (e) => {
    e.preventDefault(); // Prevent the default form submission behavior
@@ -83,12 +83,12 @@ const EditCrewForm = () => {
                         position: position
                         
     }
-   // console.log(FLIGHTID)
+    console.log(requestData)
    axios.post('http://localhost:8081/overwriteCrewByCrewId', requestData)
      .then((res) => {
          // no need to do anything here, just writing to the database
          if(res.data === "Success"){
-           //navigate(`/home/${username}`);
+           // confirm
          }else if (requestData.flightID === null){
            alert("Flight ID was empty.");
          }
