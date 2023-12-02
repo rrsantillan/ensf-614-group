@@ -13,6 +13,14 @@ function Login(){
     const encodedUsername = encodeURIComponent(values.user); 
     const navigate = useNavigate();
 
+    const handleNavigationCreateAccount = () => {
+        navigate('./Signup');
+    };
+
+    const handleNavigationGuest = () => {
+        navigate(`./FindFlight/${'guest'}`);
+    };
+
     const [errors, setErrors] = useState({})
 
     const handleInput = (event) => {
@@ -48,17 +56,18 @@ function Login(){
 
     return(
         <div >
-            <div className="d-high justify-content-center align-items-center" >
+            <div className="mt-3 d-high justify-content-center align-items-center" >
                 <h1 >Welcome Oceanic Airlines </h1>
             </div>
+
             <div className="d-flex vh-100 justify-content-center align-items-center">
                 <div className='p-3 bg-white w-75'>
-                    <h2>Login</h2>
+                    <h2>Log in</h2>
                     <form action='' onSubmit={handleSumbit}>
                         <div className='mb-3'>
-                            <label htmlFor="user"><strong> User </strong></label>
+                            <label htmlFor="user"><strong> Username </strong></label>
                             <div style ={{width: '10px'}}/>
-                            <input type="text" placeholder='Enter UserName' name ='user'
+                            <input type="text" placeholder='Enter Username' name ='user'
                             onChange={handleInput} className='form-control'/>
                             {errors.user && <span className='text-danger'> {errors.user} </span>}
                         </div>
@@ -73,16 +82,15 @@ function Login(){
                         <p></p>
 
                     </form>
-
-                    <Link to='./Signup' className='btn btn-default border w-100 bg-light'> Create Account</Link>
-
-                    <form action='' onSubmit={handleSumbit}>
-                        <button type='submit' className='btn btn-light w-100'>Log In</button>
+                    <p></p>
+                    <form action='' onSubmit={handleNavigationCreateAccount}>
+                        <button type='submit' className='btn btn-light w-100'>Create Account</button>
+                        
                     </form>
-                    <div>
-                        <p></p>
-                        <Link to={`./FindFlight/${'guest'}`} className='btn btn-default border w-100 bg-light'> Continue as Guest</Link>
-                    </div>
+                    <p></p>
+                    <form action='' onSubmit={handleNavigationGuest}>
+                        <button type='submit' className='btn btn-outline-secondary'>Continue as Guest</button>
+                    </form>
                 </div>
             </div>
             
