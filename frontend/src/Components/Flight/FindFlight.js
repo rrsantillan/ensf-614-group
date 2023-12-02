@@ -18,7 +18,7 @@ function FindFlight(){
     const [flightID2, setFlightID] = useState(null);
 
     const [values, setValues] = useState({
-        Source: '',
+        Origin: '',
         Dest: ''
     })
 
@@ -58,20 +58,20 @@ function FindFlight(){
     const handleSumbit =(event)=> {
         event.preventDefault();
         setErrors({
-            Source: '',
+            Origin: '',
             Dest: '',
         });
-        if (values.Source === '') {
+        if (values.Origin === '') {
             setErrors({
                 ...errors,
-                Source: 'Source should not be empty',
+                Origin: 'Origin should not be empty',
             });
             
             return;
         }else{
             setErrors({
                 ...errors,
-                Source: '',
+                Origin: '',
             });
         }
     
@@ -115,9 +115,9 @@ return(
             <h2>Where To?</h2>
             <form action='' onSubmit={handleSumbit}>
                 <div>
-                    <input type="text" placeholder='From...' name = 'Source'
+                    <input type="text" placeholder='From...' name = 'Origin'
                     onChange={handleInput} className='form-control'/>
-                    {errors.Source && <span className='text-danger'> {errors.Source} </span>}
+                    {errors.Origin && <span className='text-danger'> {errors.Origin} </span>}
                 </div>
                 <div>
                     <input type="text" placeholder='To...' name = 'Dest'

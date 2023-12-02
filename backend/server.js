@@ -235,7 +235,7 @@ app.post('/getAllFlights', (req, res) => {
  * get flights brings all data back where the dest and source match in the db
  */
 app.post('/getAirPlaneSeatMap', (req, res) => {
-    const sql = "SELECT tblAirplane.ROWCNT, tblAirplane.COLCNT FROM tblAirplane LEFT JOIN TBLFLIGHT ON tblAirplane.AIRPLANEID = TBLFLIGHT.AIRPLANEID WHERE tblflight.flightid = ?"
+    const sql = "SELECT tblAirplane.ROWCNT, tblAirplane.COLCNT FROM tblAirplane LEFT JOIN TBLFLIGHT ON tblAirplane.AIRPLANEVIN = TBLFLIGHT.AIRPLANEID WHERE tblflight.flightid = ?"
     
     db.query(sql, [req.body.flightID], (err, data) => {
         if (err) {

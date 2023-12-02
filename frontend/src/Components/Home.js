@@ -28,7 +28,7 @@ function Home(){
         <h2>Home Page</h2>
         <form action=''>
             {showRegLink && (
-              <Link to={`../CurrentFlight/${username}`} className='btn btn-default border w-100 bg-light'> Current Flights </Link>
+              <Link to={`../ViewTicket/${username}`} className='btn btn-default border w-100 bg-light'> Current Flights </Link>
             )}
             <Link to={`../FindFlight/${username}`} className='btn btn-default border w-100 bg-light'> FindFlight </Link>
             {showAdminLink && (
