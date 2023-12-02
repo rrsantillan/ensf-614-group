@@ -2,7 +2,7 @@ import axios from 'axios'
 import React, {useState} from 'react'
 import { Link, useNavigate  } from 'react-router-dom';
 import validation from './Functions/LoginValidation';
-import Button from 'react-bootstrap/Button'
+import { Container, Row, Col, Form, Button } from 'react-bootstrap'
 
 
 function Login(){
@@ -56,50 +56,58 @@ function Login(){
         
 
     return(
-        <div >
-            <div className="d-high justify-content-center align-items-center " >
-                <h1 className = "display-2 pl-4 ">Oceanic Airlines </h1>
-            </div>
+        <Container fluid className="d-flex align-items-center justify-content-center" style={{ minHeight: '100vh' }}>
+            <Row className="text-center w-100">
+            <Col>
+                <h1 className="display-2">Oceanic Airlines</h1>
+            </Col>
+            </Row>
+    
+            <Row className="justify-content-center w-100 mt-5">
+            <Col md={6}>
+                <div className='p-4 bg-light'>
+                <h2>Log in</h2>
+                <Form onSubmit={handleSumbit}>
+                    <Form.Group className='mb-3'>
+                        <Form.Label><strong>Username</strong></Form.Label>
+                    <Form.Control
+                        type="text"
+                        placeholder="Enter Username"
+                        name="user"
+                        onChange={handleInput}
+                        className='form-control'
+                    />
+                    {errors.user && <span className='text-danger'>{errors.user}</span>}
+                    </Form.Group>
+    
+                    <Form.Group className='mb-3'>
+                        <Form.Label><strong>Password</strong></Form.Label>
+                    <Form.Control
+                        type="password"
+                        placeholder="Enter Password"
+                        name="password"
+                        onChange={handleInput}
+                        className='form-control'
+                    />
+                    {errors.password && <span className='text-danger'>{errors.password}</span>}
+                    </Form.Group>
+    
+                    <Button type='submit' className='btn btn-success w-100'>Log In</Button>
+                </Form>
+    
+                <div className="mt-3">
+                    <Form onSubmit={handleNavigationCreateAccount}>
+                    <Button type='submit' className='btn btn-secondary w-100'>Create Account</Button>
+                    </Form>
             
-            <div className = "d-block p-5 box align-items-center" sytle="height: 50px;"></div>
-
-            <div className="mt-3 justify-content-center align-items-center custom-container-2">
-                <span className="border-0 "> {/*probably not needed*/}
-                    <div className='p-3 bg-light w-100'>
-                        <h2>Log in</h2>
-                        <form action='' onSubmit={handleSumbit}>
-                            <div className='mb-3'>
-                                <label htmlFor="user"><strong> Username </strong></label>
-                                <div style ={{width: '10px'}}/>
-                                <input type="user" placeholder='Enter Username' name ='user'
-                                onChange={handleInput} className='form-control'/>
-                                {errors.user && <span className='text-danger'> {errors.user} </span>}
-                            </div>
-                            <div className='mb-3'>
-                                <label htmlFor="password"><strong> Password </strong></label>
-                                <div style ={{width: '10px'}}/>
-                                <input type="password" placeholder='Enter Password' name='password'
-                                onChange={handleInput} className='form-control'/>
-                                {errors.password && <span className='text-danger'> {errors.password} </span>}
-                            </div>
-                            <button type='submit' className='btn btn-success w-100'>Log In</button>
-                            <p></p>
-
-                        </form>
-                        <p></p>
-                        
-                        <form action='' onSubmit={handleNavigationCreateAccount}>
-                            <button type='submit' className='btn btn-secondary w-100'>Create Account</button>
-                            
-                        </form>
-                        <p></p>
-                        <form action='' onSubmit={handleNavigationGuest}>
-                            <button type='submit' className='btn btn-outline-secondary'>Continue as Guest</button>
-                        </form>
-                    </div>
-                </span>
-            </div>
-        </div>
+                    <Form onSubmit={handleNavigationGuest}>
+                    <Button type='submit' className='outline-primary mt-3 w-100'>Continue as Guest</Button>
+                    </Form>
+                </div>
+                </div>
+            </Col>
+            </Row>
+     </Container>
     )
 }
 export default Login;

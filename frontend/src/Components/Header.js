@@ -16,12 +16,15 @@ const Footer = () => {
 
   return (
     <header className="">
-      <div className="">
+      <div className="container d-flex flex-column p-3 bg-green">
         <div className="row">
           <div className="col-6">
           <button onClick={handleGoBack} className="btn btn-outline-info">
-            Back
+          ⇦ Back
           </button>
+          </div>
+          <div>
+            Oceanic
           </div>
           <div className="col-6 d-flex justify-content-end">
           <button onClick={handleLogout} className="btn btn-outline-danger mr-2">
