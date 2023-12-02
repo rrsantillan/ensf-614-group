@@ -28,7 +28,7 @@ function CurrentFlights(){
 
        
 
-        axios.post('http://localhost:8081/deleteTicket', updatedValues)
+        axios.post('http://localhost:8081/reguser/deleteTicket', updatedValues)
         .then(() => {
           
             
@@ -46,7 +46,7 @@ function CurrentFlights(){
     const handleSumbit2 = ()=> {
         
 
-        axios.post('http://localhost:8081/getFlights', values)
+        axios.post('http://localhost:8081/agent/getFlights', values)
         .then((res) => {
             
             const fetchedFlightData = res.data.flights;
@@ -61,7 +61,7 @@ function CurrentFlights(){
         event.preventDefault();
         
 
-        axios.post('http://localhost:8081/getFlights', values)
+        axios.post('http://localhost:8081/agent/getFlights', values)
         .then((res) => {
             
             const fetchedFlightData = res.data.flights;

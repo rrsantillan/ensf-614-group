@@ -13,7 +13,7 @@ const AddAircraftForm = () => {
 
     // Make an API request to your backend to add the flight to the database
     try {
-      axios.post('http://localhost:8081/addAircraft', {
+      axios.post('http://localhost:8081/admin/addAircraft', {
         aircraftid,
         model,
         rows,

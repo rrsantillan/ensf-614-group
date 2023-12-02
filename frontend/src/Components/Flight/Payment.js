@@ -86,7 +86,7 @@ const Payment = (props) => {
     const handleSumbit =(event)=> {
         event.preventDefault();
         console.log(myValues)
-        axios.post('http://localhost:8081/bookflight', {values: myValues, price: price})
+        axios.post('http://localhost:8081/init/bookflight', {values: myValues, price: price})
         
         .then(res=> {
             if(res.data === "Success"){
@@ -132,7 +132,7 @@ const Payment = (props) => {
         console.log("ran")
         // Fetch the user's email only once when the component mounts
         if (myValues.username !== 'guest'){
-            axios.post('http://localhost:8081/getUserProfile', { user: myValues.username })
+            axios.post('http://localhost:8081/init/getUserEmail', { user: myValues.username })
             .then(res => {
                 setGuestEmail(res.data.user[0].EMAIL);
             });

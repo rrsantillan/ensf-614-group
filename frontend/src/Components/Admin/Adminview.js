@@ -15,7 +15,7 @@ import EditCrewAssignments from './EditCrewAssignment';
 
 function AdminView(){
     //const { username } = useParams();
-    const [activeTab, setActiveTab] = useState('create-flight'); // 'create-flight'
+    const [activeTab, setActiveTab] = useState('create-flight'); 
 
 
     const renderContent = () => {

@@ -90,7 +90,7 @@ function FindFlight(){
         // Clear previous errors
         
         
-        axios.post('http://localhost:8081/checkFlights', values)
+        axios.post('http://localhost:8081/flight/checkFlights', values)
         .then((res) => {
             const fetchedFlightData = res.data.flights;
             
