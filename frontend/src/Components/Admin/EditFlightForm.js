@@ -93,9 +93,8 @@ const EditFlightForm = () => {
      });
  }
 
- // popualtes aircraft dropdown list to validate aircraft is in fleet
- useEffect(() => {
-  const fetchAircraftList = async () => {
+ 
+const fetchAircraftList = async () => {
     try {
       const response = await axios.post('http://localhost:8081/admin/getAircraftIDs');
       console.log("Response from server:", response);
@@ -104,6 +103,8 @@ const EditFlightForm = () => {
       console.error('Error fetching aircraft list:', error);
     }
   };
+ // popualtes aircraft dropdown list to validate aircraft is in fleet
+ useEffect(() => {
   fetchAircraftList();
 }, []);
 
@@ -127,7 +128,7 @@ const EditFlightForm = () => {
          // no need to do anything here, just writing to the database
          if(res.data === "Success"){
           alert("Flight changes saved");
-           //navigate(`/home/${username}`);
+          fetchAircraftList();
          }else if (requestData.flightID === null){
            alert("Flight ID was empty.");
          }
@@ -157,6 +158,7 @@ const EditFlightForm = () => {
           setDepartureTime(formatDateString(null))
           setLandingTime(formatDateString(null))
           alert("Flight deleted successfully.");
+          fetchAircraftList();
         } else {
           alert("Unable to delete flight.");
         }
