@@ -15,7 +15,7 @@ function CurrentFlights() {
     console.log("useEffect ran");
 
     if (values.username !== 'guest') {
-      axios.post('http://localhost:8081/getUserProfile', { user: values.username })
+      axios.post('http://localhost:8081/reguser/getUserProfile', { user: values.username })
         .then(res => {
           console.log(res.data.user[0].EMAIL);
           if (res.data.user && res.data.user[0]) {
@@ -34,19 +34,11 @@ function CurrentFlights() {
     console.log("Guest Email:", guestEmail);
   }, [guestEmail]); // Log guestEmail whenever it changes
 
-
-        axios.post('http://localhost:8081/reguser/deleteTicket', updatedValues)
-        .then(() => {
-          
-            
-            handleSumbit2();
-
   const getEmailBody = useCallback((seatNumber, flightId) => {
     if (!flightData) {
       console.log('Flight data not available:', flightData);
       return 'Flight details not available.';
     }
-
 
     return `
       Hello ${values.username},
@@ -92,49 +84,21 @@ function CurrentFlights() {
       FLIGHTID: FLIGHTID,
     };
 
-        axios.post('http://localhost:8081/agent/getFlights', values)
-        .then((res) => {
-            
-            const fetchedFlightData = res.data.flights;
-            setFlightData(fetchedFlightData);
-        })
-        .catch((err) => {
-            console.error(err);       
-        });
-      
-    };
-    const handleSumbit = (event)=> {
-        event.preventDefault();
-        
-
-        axios.post('http://localhost:8081/agent/getFlights', values)
-        .then((res) => {
-            
-            const fetchedFlightData = res.data.flights;
-            setFlightData(fetchedFlightData);
-        })
-        .catch((err) => {
-            console.error(err);       
-        });
-      
-    };
-
     setGuestEmail(prevGuestEmail => prevGuestEmail || '');
     
     await sendEmail();
 
     try {
-      await axios.post('http://localhost:8081/deleteTicket', updatedValues);
+      await axios.post('http://localhost:8081/reguser/deleteTicket', updatedValues);
       handleSumbit2();
     } catch (err) {
       console.error(err);
     }
   };
 
-
   const handleSumbit2 = async () => {
     try {
-      const res = await axios.post('http://localhost:8081/getFlights', values);
+      const res = await axios.post('http://localhost:8081/reguser/getFlights', values);
       const fetchedFlightData = res.data.flights;
       setFlightData(fetchedFlightData);
     } catch (err) {

@@ -73,7 +73,7 @@ function BookFlight(){
   const checkPromo = (e) => {
     e.preventDefault();
     console.log(promoCode)
-    axios.post('http://localhost:8081/init/checkPromoCode', { User: username, Promo: promoCode })
+    axios.post('http://localhost:8081/flight/checkPromoCode', { User: username, Promo: promoCode })
     .then((res) => {
         if(res.data === "Yes"){
           setPrice(price - (price*0.5))
@@ -102,7 +102,7 @@ function BookFlight(){
   };
 
   const getSeatSelection  = () => {
-    axios.post('http://localhost:8081/init/getAirPlaneSeatMap', { flightID: flightID })
+    axios.post('http://localhost:8081/flight/getAirPlaneSeatMap', { flightID: flightID })
     .then((res) => {
       const seatMap = res.data.seatMap;
     
@@ -124,7 +124,7 @@ function BookFlight(){
    */
   const isSeatAvailable = async (seat) => {
     try {
-      const response = await axios.post('http://localhost:8081/init/getUnavailableSeats', values);
+      const response = await axios.post('http://localhost:8081/flight/getUnavailableSeats', values);
       const fetchedSeatsArray = response.data.unSeats;
       const fetchedSeats = fetchedSeatsArray[0].TakenSeats;
       const takenSeatsArray = fetchedSeats.split(',').map((seat) => seat.trim());

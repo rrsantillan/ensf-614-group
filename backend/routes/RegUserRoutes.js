@@ -43,6 +43,24 @@ router.post('/getFlights', (req, res) => {
     })
 })
 
+/**
+ * Login ensures the user is part of the system 
+ */
+router.post('/getUserProfile', (req, res) => {
+    const sql = "SELECT EMAIL FROM TBLUSER WHERE USERNAME = ?"
+    db.query(sql, [req.body.user], (err, data) => {
+        if(err){
+            return res.json("Error");
+        }
+        if(data.length > 0){
+            res.status(200).json({ user: data });
+        } else {
+            return res.json("Failed") 
+        }
+    
+    })
+})
+
 
 return router;
 };
