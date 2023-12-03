@@ -123,28 +123,35 @@ return(
         <div className="container">
             {/* <div className="d-flex flex-column p-3 bg-green"> */}
             {/* </div> */}
-            <Row className="pt-5 justify-content-center">
-                <div className='p-3 bg-light border w-75'>
-                    <h2>Where to?</h2>
-                    <div className="">
-                        <div className="pr-5">
-                            <input type="text" placeholder='From' name = 'Origin'
-                            onChange={handleInput} className='form-control'/>
-                            {errors.Origin && <span className='text-danger'> {errors.Origin} </span>}
-                        </div>
-                        <p></p>
-                        <div>
-                            <input type="text" placeholder='To' name = 'Dest'
-                            onChange={handleInput} className='form-control'/>
-                            {errors.Dest && <span className='text-danger'> {errors.Dest} </span>}
-                        </div>
-                        <p></p>
-                        <form action='' onSubmit={handleSumbit}>
-                            
-                            <button type='submit' className='btn btn-success w-100'>Search Flights</button>
-                        </form>
+            <Row className="py-5">
+                <Col></Col>
+                <Col className="px-5" xs={6}>
+                    <div className="d-flex p-0 vh-90 justify-content-center"> 
+                        <div className='m-2 p-3 bg-light border w-75'>
+                            <h2>Where to?</h2>
+                            <div className="">
+                                <div className="pr-5">
+                                    <input type="text" placeholder='From' name = 'Origin'
+                                    onChange={handleInput} className='form-control'/>
+                                    {errors.Origin && <span className='text-danger'> {errors.Origin} </span>}
+                                </div>
+                                <p></p>
+                                <div>
+                                    <input type="text" placeholder='To' name = 'Dest'
+                                    onChange={handleInput} className='form-control'/>
+                                    {errors.Dest && <span className='text-danger'> {errors.Dest} </span>}
+                                </div>
+                                <p></p>
+                                <form action='' onSubmit={handleSumbit}>
+                                    
+                                    <button type='submit' className='btn btn-success w-100'>Search Flights</button>
+                                </form>
+                            </div>
+                        </div> 
                     </div>
-                </div> 
+                </Col>
+                <Col></Col>
+                
             </Row>
             <Row>
                 <div className="d-flex p-5 vh-90 justify-content-center">
