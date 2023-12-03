@@ -1,6 +1,8 @@
 import React, {useState} from 'react'
 import { useParams } from 'react-router-dom';
+import { Container, Row, Col, Form, Button } from 'react-bootstrap'
 
+import Header from '../Header'; 
 
 import FlightForm from './AddFlightForm';
 import EditFlightForm from './EditFlightForm';
@@ -14,7 +16,7 @@ import EditCrewAssignments from './EditCrewAssignment';
 
 
 function AdminView(){
-    //const { username } = useParams();
+    const {Profile1, username } = useParams();
     const [activeTab, setActiveTab] = useState('create-flight'); 
 
 
@@ -82,6 +84,8 @@ function AdminView(){
       };
     
     return(
+      <div className="p-0 container-fluid">
+            <Header className="" Profile1={Profile1} username={username}/>{/* Assuming Header is your component for the header */}
      <div className="container mt-4">
         <div className="mb-4">
             <ul className="nav nav-tabs">
@@ -108,8 +112,9 @@ function AdminView(){
             </li>
             </ul>
       </div>
-
       {renderContent()}
+      </div>
+
     </div>
     );
 };
