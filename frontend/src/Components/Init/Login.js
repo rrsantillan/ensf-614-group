@@ -2,6 +2,7 @@ import axios from 'axios'
 import React, {useState} from 'react'
 import { Link, useNavigate  } from 'react-router-dom';
 import validation from './Functions/LoginValidation';
+import { Container, Row, Col, Form, Button } from 'react-bootstrap'
 
 
 function Login(){
@@ -12,6 +13,14 @@ function Login(){
     
     const encodedUsername = encodeURIComponent(values.user); 
     const navigate = useNavigate();
+
+    const handleNavigationCreateAccount = () => {
+        navigate('./Signup');
+    };
+
+    const handleNavigationGuest = () => {
+        navigate(`./FindFlight/${'guest'}`);
+    };
 
     const [errors, setErrors] = useState({})
 
@@ -47,46 +56,58 @@ function Login(){
         
 
     return(
-        <div >
-            <div className="d-high justify-content-center align-items-center" >
-                <h1 >Welcome Oceanic Airlines </h1>
-            </div>
-            <div className="d-flex vh-100 justify-content-center align-items-center">
-                <div className='p-3 bg-white w-75'>
-                    <h2>Login</h2>
-                    <form action='' onSubmit={handleSumbit}>
-                        <div className='mb-3'>
-                            <label htmlFor="user"><strong> User </strong></label>
-                            <div style ={{width: '10px'}}/>
-                            <input type="text" placeholder='Enter UserName' name ='user'
-                            onChange={handleInput} className='form-control'/>
-                            {errors.user && <span className='text-danger'> {errors.user} </span>}
-                        </div>
-                        <div className='mb-3'>
-                            <label htmlFor="password"><strong> Password </strong></label>
-                            <div style ={{width: '10px'}}/>
-                            <input type="password" placeholder='Enter Password' name='password'
-                            onChange={handleInput} className='form-control'/>
-                            {errors.password && <span className='text-danger'> {errors.password} </span>}
-                        </div>
-                        <button type='submit' className='btn btn-success w-100'>Log In</button>
-                        <p></p>
-
-                    </form>
-
-                    <Link to='./Signup' className='btn btn-default border w-100 bg-light'> Create Account</Link>
-
-                    <form action='' onSubmit={handleSumbit}>
-                        <button type='submit' className='btn btn-light w-100'>Log In</button>
-                    </form>
-                    <div>
-                        <p></p>
-                        <Link to={`./FindFlight/${'guest'}`} className='btn btn-default border w-100 bg-light'> Continue as Guest</Link>
-                    </div>
-                </div>
-            </div>
+        <Container fluid className="d-flex align-items-center justify-content-center" style={{ minHeight: '100vh' }}>
+            <Row className="text-center w-100">
+            <Col>
+                <h1 className="display-2">Oceanic Airlines</h1>
+            </Col>
+            </Row>
+    
+            <Row className="justify-content-center w-100 mt-5">
+            <Col md={6}>
+                <div className='p-4 bg-light'>
+                <h2>Log in</h2>
+                <Form onSubmit={handleSumbit}>
+                    <Form.Group className='mb-3'>
+                        <Form.Label><strong>Username</strong></Form.Label>
+                    <Form.Control
+                        type="text"
+                        placeholder="Enter Username"
+                        name="user"
+                        onChange={handleInput}
+                        className='form-control'
+                    />
+                    {errors.user && <span className='text-danger'>{errors.user}</span>}
+                    </Form.Group>
+    
+                    <Form.Group className='mb-3'>
+                        <Form.Label><strong>Password</strong></Form.Label>
+                    <Form.Control
+                        type="password"
+                        placeholder="Enter Password"
+                        name="password"
+                        onChange={handleInput}
+                        className='form-control'
+                    />
+                    {errors.password && <span className='text-danger'>{errors.password}</span>}
+                    </Form.Group>
+    
+                    <Button type='submit' className='btn btn-success w-100'>Log In</Button>
+                </Form>
+    
+                <div className="mt-3">
+                    <Form onSubmit={handleNavigationCreateAccount}>
+                    <Button type='submit' className='btn btn-secondary w-100'>Create Account</Button>
+                    </Form>
             
-        </div>
+                    <Form onSubmit={handleNavigationGuest}>
+                    <Button type='submit' className='outline-primary mt-3 w-100'>Continue as Guest</Button>
+                    </Form>
+                </div>
+                </div>
+            </Col>
+            </Row>
+     </Container>
     )
 }
 export default Login;

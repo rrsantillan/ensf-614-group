@@ -2,23 +2,21 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { Stack, Row, Col, NavDropdown, Button } from 'react-bootstrap';
-import { useParams, useNavigate, useLocation, useState } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 
-function Header(props) {
+function BasicExample (props) {
+    const { Profile1, username } = useParams(); // used for navigatine to home page
     const location = useLocation();
     // const { Profile1, username } = location.state || {};
     const navigate = useNavigate();
 
-    const { Profile1, username } = props; // used for navigating to home page
+    const Profile1_text = `${Profile1}`;
+    const username_text = `${username}`;
 
-    const toHome = `/home/${Profile1}/${username}`
 
     const handleHome = () => {
-        // if (username === 'guest'){
-
-        // }
-        console.log(toHome)
-        navigate(`../home/${Profile1}/${username}`);
+   
+        navigate(`/home/${Profile1}/${username}`);
     };
     
     const handleLogout = () => {
@@ -43,8 +41,7 @@ function Header(props) {
                     <div className='box'></div> */}
                 </Col>
                 <Col>
-                    <Navbar.Brand className="pr-2" href={toHome} >Oceanic Airlines</Navbar.Brand>
-                    {/* <Navbar.Brand className="pr-2" to={`/home/${Profile1}/${username}`} >Oceanic Airlines</Navbar.Brand> */}
+                    <Navbar.Brand className="pr-2" href="./">Oceanic Airlines</Navbar.Brand>
                 </Col>
                 
             </Row>
@@ -81,13 +78,17 @@ function Header(props) {
                             Separated link
                         </NavDropdown.Item>
                     </NavDropdown> */}
-                    <Stack direction="horizontal" gap={5}>
-                        <div className="px-2"><Nav.Link onClick={handleHome}>Home</Nav.Link></div>
+                    <Stack direction="horizontal" gap={3}>
+                        <div className="p-2"><Nav.Link onClick={handleHome}>Home</Nav.Link></div>
                         {/* <div className="p-2 ms-auto"><Nav.Link href="#link">Link</Nav.Link></div> */}
                         <div className="p-2 ms-auto">Second Item</div>
                         <div className="p-2">
                             <Button onClick={handleLogout} className = "d-none d-lg-block px-3" variant="outline-danger">Logout</Button>
                         </div>
+                        {/* <div className="p-2">
+                            <p>Profile: {Profile1_text}</p>
+                            <p>username: {Profile1_text}</p>
+                        </div> */}
                     </Stack>
                     
                 </Nav>
@@ -100,4 +101,4 @@ function Header(props) {
   );
 }
 
-export default Header;
+export default BasicExample;

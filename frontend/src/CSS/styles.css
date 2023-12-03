@@ -62,6 +62,34 @@
     overflow-y: auto; /* Add a vertical scrollbar when needed */
   }
   
-  .flight-data-container {
-    /* Your existing styles for flight data container */
+    /* In a CSS file or within your component's style */
+  .custom-container-width {
+    /* max-width: 400px; Set your desired fixed width */
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* In a CSS file or within your component's style */
+  .custom-container-2 {
+    max-width: 400px; /* Set your desired fixed width */
+    /* width: 100%; */
+    margin-left: auto;
+    margin-right: auto;
+    /* margin-top: 50%; */
+    /* margin:auto; */
+  }
+
+  
+
+  .flat-box-20h-400h{
+    height: 20px;
+    width: 400px;
+  }
+  .flat-box-400h-20h{
+    height: 400px;
+    width: 20px;
+  }
+  .navbar-spacer{
+    height: 50px;
+    width: 400px;
   }

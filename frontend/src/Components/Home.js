@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react'
-import { Link, useParams } from 'react-router-dom';
+import { useNavigate, Link, useParams } from 'react-router-dom';
 import Header from './Header'; 
+import { Container, Row, Col, Form, Button } from 'react-bootstrap'
 
 
 function Home(){
@@ -13,40 +14,74 @@ function Home(){
   const [showRegLink] = useState(shouldShowRegLink); 
   const [showAgentLink] = useState(shouldShowAgentLink); 
   
+  const navigate = useNavigate();
+
+    const handleNavigationViewTickets = () => {
+        navigate(`../ViewTickets/${Profile1}/${username}`);
+    };
+
+    const handleNavigationFindFlight = () => {
+        navigate(`../FindFlight/${Profile1}/${username}`);
+    };
+
+    const handleNavigationAdminView = () => {
+      navigate(`../Adminview/${Profile1}/${username}`);
+    };
+
+    const handleNavigationAgentView = () => {
+      navigate(`../Agentview/${Profile1}/${username}`);
+    };
+
+    const handleNavigationTestPage = () => {
+      navigate(`../TestPage/${Profile1}/${username}`);
+    };
+
   useEffect(() => {
     // Code to run on page load
    
    });  
 
-  return(
-    <div className="d-flex flex-column">
-      <div className="p-3 bg-green">
-        <Header />
-      </div>
-      <div className ="container vh-100 justify-content-center align-items-top">
-          
-        <h2>Home Page</h2>
-        <form action=''>
+   return (
+    <div className="container-fluid">
+      <Header Profile1={Profile1} username={username}/>{/* Assuming Header is your component for the header */}
+      {/* <div className="container vh-100 justify-content-center align-items-start"> */}
+        <div className="my-3">
+          <h2>
+            Home Page
+          </h2>
+        </div>
+        <Container className="pt-6">
+          {/* test page */}
+          <Button type='submit' className='' variant="danger w-100" onClick={handleNavigationTestPage}>*Test Page*</Button>
+          <p></p>
+           {/* test page */}
+          <form action=''>
             {showRegLink && (
-              <Link to={`../ViewTicket/${username}`} className='btn btn-default border w-100 bg-light'> Current Flights </Link>
+              <Button type='submit' className='btn btn-secondary w-100' onClick={handleNavigationViewTickets}>
+                View Tickets
+              </Button>
             )}
-            <Link to={`../FindFlight/${username}`} className='btn btn-default border w-100 bg-light'> FindFlight </Link>
+            <p></p>
+            <Button type='submit' className='btn btn-primary w-100' onClick={handleNavigationFindFlight}>
+              Find Flights
+            </Button>
+            <p></p>
             {showAdminLink && (
-                <Link to={`../Adminview/${username}`} className='btn btn-default border w-100 bg-light'>Admin View</Link>
+              <Button type='submit' className='btn btn-secondary w-100' onClick={handleNavigationAdminView}>
+                Admin View
+              </Button>
             )}
-             {showAgentLink && (
-                <Link to={`../Agentview`} className='btn btn-default border w-100 bg-light'>Agent View</Link>
+            <p></p>
+            {showAgentLink && (
+              <Button type='submit' className='btn btn-secondary w-100' onClick={handleNavigationAgentView}>
+                Agent View
+              </Button>
             )}
-           
-        </form>
-
-      </div>
-      
+          </form>
+        </Container>
+      {/* </div> */}
     </div>
-      
-
-      
-  )
+  );
 
 }
 export default Home
