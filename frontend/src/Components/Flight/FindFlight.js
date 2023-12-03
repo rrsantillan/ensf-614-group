@@ -151,7 +151,7 @@ return(
                             </div>
                         ))}
                         
-                        <Link to={`../BookFlight/${username}/${flightID2}`} className='btn btn-default border w-100 bg-light'> Select To Seat... </Link>
+                        <Link to={`../BookFlight/${Profile1}/${username}/${flightID2}`} className='btn btn-default border w-100 bg-light'> Select To Seat... </Link>
                                 
                     </div>
                 )}
