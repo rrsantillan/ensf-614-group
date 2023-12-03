@@ -63,7 +63,7 @@ function Agentview(){
                                         //setFlightID(flight.FLIGHTID);
                                         setSelectedFlightID(flight.FLIGHTID)}}
                                         className={selectedFlightID === flight.FLIGHTID ? 'selectedFlight' : "btn btn-outline-secondary"}>
-                                        See Passengar List 
+                                        See Passenger List 
                                     </button>
                                     
                             </div>
