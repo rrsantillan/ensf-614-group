@@ -17,7 +17,7 @@ const FlightForm = () => {
   useEffect(() => {
     const fetchAircraftList = async () => {
       try {
-        const response = await axios.post('http://localhost:8081/getAircraftIDs');
+        const response = await axios.post('http://localhost:8081/admin/getAircraftIDs');
         console.log("Response from server:", response);
         setAircraftList(response.data.planes); // Make sure to access the correct property
       } catch (error) {
@@ -32,7 +32,7 @@ const FlightForm = () => {
 
     // Make an API request to your backend to add the flight to the database
     try {
-      axios.post('http://localhost:8081/addFlight', {
+      axios.post('http://localhost:8081/admin/addFlight', {
         aircraftid,
         destination,
         source,

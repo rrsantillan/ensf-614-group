@@ -54,7 +54,7 @@ const Signup = (props) => {
             sendEmail()
            
             
-            axios.post('http://localhost:8081/Signup', values)
+            axios.post('http://localhost:8081/init/signup', values)
             .then(res=> {
                 console.log("New User Signed up!");
                 navigate('/');

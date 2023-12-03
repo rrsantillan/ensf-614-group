@@ -41,7 +41,7 @@ const EditCrewForm = () => {
  const handleSearch = (e) => {
    e.preventDefault(); // Prevent the default form submission behavior
    console.log(values)
-   axios.post('http://localhost:8081/getCrewByName', values)
+   axios.post('http://localhost:8081/admin/getCrewByName', values)
    .then((res) => {
        
        const fetchedCrewData = res.data.crew;
@@ -72,7 +72,7 @@ const EditCrewForm = () => {
 
  /**
   * Saves edit data and attempts INSERT
-  * @param {*} FLIGHTID
+  * @param {*} selectedCrewId
   */
  const saveChangesToFlight = async (e) => {
    e.preventDefault(); // Prevent the default form submission behavior
@@ -83,12 +83,12 @@ const EditCrewForm = () => {
                         position: position
                         
     }
-   // console.log(FLIGHTID)
-   axios.post('http://localhost:8081/overwriteCrewByCrewId', requestData)
+    console.log(requestData)
+   axios.post('http://localhost:8081/admin/overwriteCrewByCrewId', requestData)
      .then((res) => {
          // no need to do anything here, just writing to the database
          if(res.data === "Success"){
-           //navigate(`/home/${username}`);
+           // confirm
          }else if (requestData.flightID === null){
            alert("Flight ID was empty.");
          }
@@ -102,6 +102,36 @@ const EditCrewForm = () => {
      });
    }
 
+
+   /**
+   * Deletes the selected crew member
+   */
+  const deleteCrewMember = async (e) => {
+    e.preventDefault();
+    
+    
+     
+
+    console.log(selectedCrewId);
+    axios.post('http://localhost:8081/admin/deleteCrewByCrewId', {crewid: selectedCrewId})
+      .then((res) => {
+        if (res.data === "Success") {
+          // Handle successful deletion, if needed
+          setFirstName('');
+        setLastName('');
+        setPosition('');
+        setSelectedCrewID(null);
+          alert("Crew member deleted successfully.");
+        } else {
+          alert("Unable to delete crew member.");
+        }
+        // Reset the form fields and selectedCrewId after deletion
+        
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
 
 
 
@@ -130,9 +160,6 @@ const EditCrewForm = () => {
                                <p>First Name: {crew.fname}</p>
                                <p>Last Name: {crew.lname}</p>
                                <p>Title: {crew.position}</p>
-
-
-
 
                                <button onClick={() => {
                                    setCrewID(crew.crewid);
@@ -180,6 +207,7 @@ const EditCrewForm = () => {
            </div>
 
            <button type='submit' className='btn btn-success w-100'>Save Changes to Crew Member</button>
+           <button onClick={deleteCrewMember} className='btn btn-danger w-100' style={{ marginTop: '10px' }}>Delete Crew Member</button>
        </form>
      
    </div>

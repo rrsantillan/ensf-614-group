@@ -1,361 +1,225 @@
-// EidtFlightForm.js
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import moment from 'moment';
-
-
-
-
-const EditFlightForm = () => {
-
-  const [aircraftList, setAircraftList] = useState([]);
-
- const [aircraftid, setAircraftId] = useState('');
- const [destination, setDestination] = useState('');
- const [origin, setOrigin] = useState('');
- const [departureTime, setDepartureTime] = useState('');
- const [landingTime, setLandingTime] = useState('');
-
-
-
-
- const [flightData, setFlightData] = useState(null);
- const [selectedFlight, setSelectedFlight] = useState(null);
- const [selectedFlightID, setSelectedFlightID] = useState(null);
- const [flightID2, setFlightID] = useState(null);
- const [fetchedAssignedCrew, setFetchedAssignedCrew] = useState([]);
-
-
-
-
- const [values, setValues] = useState({
-   Origin: '',
-   Dest: ''
- })
-
-
- const handleInput = (event) => {
-   const { name, value } = event.target;
-   setValues({
-   ...values,
-   [name]: value,
-   });
- };
-
-
-
-// populates list of flights matching criteria
- const handleSearch = (e) => {
-   e.preventDefault(); // Prevent the default form submission behavior
-   console.log(values)
-   axios.post('http://localhost:8081/checkFlights', values)
-   .then((res) => {
-       const fetchedFlightData = res.data.flights;
-       console.log('fetchedFlightData:', fetchedFlightData);
-       setFlightData(fetchedFlightData);
-       setFlightID(fetchedFlightData.flightID);
-   })
-   .catch((err) => {
-       console.error(err);
-   });
-  };
-
-
-
-
- /**
-  * Populates the edit flight details base on selection
-  * @param {*} FLIGHTID
-  */
- const populateEditFields = (FLIGHTID) => {
-
-   // flightID2 on the next line must be the same name in the post definition for /getFlightByFlightID
-   // specifically the String that goes into db.query(sql, req.body.flightID2)
-   const requestData = { flightID2: FLIGHTID }
-   // console.log(FLIGHTID)
-   axios.post('http://localhost:8081/getFlightByFlightID', requestData)
-     .then((res) => {
-         const fetchedFlightData = res.data.flights;
-         console.log('fetchedFlightData before setters:', fetchedFlightData);
-         setFlightData(fetchedFlightData);
-         setFlightID(fetchedFlightData.flightID);
-         setAircraftId(fetchedFlightData[0].AIRPLANEID)
-         setDestination(fetchedFlightData[0].DESTINATION)
-         setOrigin(fetchedFlightData[0].ORIGIN)
-         setDepartureTime(formatDateString(fetchedFlightData[0].DEPARTURETIME))
-         setLandingTime(formatDateString(fetchedFlightData[0].ARRIVALTIME))
-         // console.log(fetchedFlightData.DESTINATION)
-         console.log('fetchedFlightData[0].DESTINATION after setters:',fetchedFlightData[0].DESTINATION)
-   
-     })
-     .catch((err) => {
-         console.error(err);
-     });
- }
-
- // popualtes aircraft dropdown list to validate aircraft is in fleet
- useEffect(() => {
-  const fetchAircraftList = async () => {
-    try {
-      const response = await axios.post('http://localhost:8081/getAircraftIDs');
-      console.log("Response from server:", response);
-      setAircraftList(response.data.planes);
-    } catch (error) {
-      console.error('Error fetching aircraft list:', error);
-    }
-  };
-  fetchAircraftList();
-}, []);
-
-
- /**
-  * Saves edit data and attempts INSERT
-  * @param {*} FLIGHTID
-  */
- const saveChangesToFlight = async (e) => {
-   e.preventDefault(); // Prevent the default form submission behavior
-   const requestData = { flightID: selectedFlightID,
-                         aircraftid: aircraftid,
-                         origin: origin,
-                         destination: destination,
-                         departureTime: departureTime,
-                         landingTime: landingTime
-    }
-   // console.log(FLIGHTID)
-   axios.post('http://localhost:8081/overwriteFlightsByFlightID', requestData)
-     .then((res) => {
-         // no need to do anything here, just writing to the database
-         if(res.data === "Success"){
-           //navigate(`/home/${username}`);
-         }else if (requestData.flightID === null){
-           alert("Flight ID was empty.");
-         }
-         else {
-           alert("Unable to edit flight.");
-         }
-         console.log(res)
-     })
-     .catch((err) => {
-         console.error(err);
-     });
-   }
-
-
-
-
- /**
-  * Converts the date/time string into the required format of'YYYY-MM-DDTHH:mm:ss.SSS'
-  * @param {*} dateString
-  * @returns
-  */
- const formatDateString = (dateString) => {
-   const formattedDate = moment.utc(dateString).format('YYYY-MM-DDTHH:mm:ss.SSS');
-   return formattedDate;
- };
-
-
-
-
- return (
-   <div>
-       <form action='' onSubmit={handleSearch}>
-                   <div>
-                       <input type="text" placeholder='From...' name = 'Origin'
-                       onChange={handleInput} className='form-control'/>
-                     
-                   </div>
-                   <div>
-                       <input type="text" placeholder='To...' name = 'Dest'
-                       onChange={handleInput} className='form-control'/>
-                   
-                   </div>
-                   <button type='submit' className='btn btn-success w-100'>Search Flights</button>
-               </form>
-               {Array.isArray(flightData) && flightData.length > 0 && (
-                   <div className="flight-details-container">
-                       <h3>Flight Details</h3>
-                       {flightData.map((flight, index) => (
-                           <div className="flight-data-container" key={index}>
-                               <p>Departure: {flight.ORIGIN}, {flight.DEPARTURETIME}</p>
-                               <p>Land: {flight.DESTINATION}, {flight.ARRIVALTIME}</p>
-
-
-
-
-                               <button onClick={() => {
-                                   setFlightID(flight.FLIGHTID);
-                                   setSelectedFlightID(flight.FLIGHTID)
-                                   populateEditFields(flight.FLIGHTID);
-                                  
-                                   setDestination(flight.DESTINATION)
-                                   setOrigin(flight.ORIGIN)
-                                   setDepartureTime(formatDateString(flight.DEPARTURETIME))
-                                   setLandingTime(formatDateString(flight.ARRIVALTIME))
-                                   }}
-                                 
-                                   className={selectedFlightID === flight.FLIGHTID ? 'selectedFlight' : ''}>
-                                   Set Flight
-                               </button>
-                               <p></p>
-                           </div>
-                       ))}    
-                   </div>
-                 
-               )}
-
-
-
-
-   <div>
-       <form className="flight-form" onSubmit={saveChangesToFlight} style={{ maxWidth: '400px', margin: 'auto', textAlign: 'left' }}>
-           <h3>Edit Flight Details for FlightID: {selectedFlightID}</h3>
-
-
-           <div className="form-control" style={{ marginBottom: '10px', display: 'flex', flexDirection: 'column' }}>
-            <label style={{ marginBottom: '5px' }}>
-             Aircraft ID, Model:
-            </label>
-            <select value={aircraftid} onChange={(e) => setAircraftId(e.target.value)}>
-              <option value="" disabled>Select Aircraft</option>
-                 {aircraftList ? (
-                  aircraftList.map((aircraft) => (
-              <option key={aircraft.AIRPLANEVIN} value={aircraft.AIRPLANEVIN}>
-                {aircraft.AIRPLANEVIN}, {aircraft.MODEL}
-              </option>
-            ))
-          ) : null}
-        </select>
-      </div>
-
-
-           <div className="form-control" style={{ marginBottom: '10px', display: 'flex', flexDirection: 'column' }}>
-               <label style={{ marginBottom: '5px' }}>
-               Destination:
-               </label>
-               <input type="text" value={destination} onChange={(e) => setDestination(e.target.value)} />
-           </div>
-
-
-
-
-           <div className="form-control" style={{ marginBottom: '10px', display: 'flex', flexDirection: 'column' }}>
-               <label style={{ marginBottom: '5px' }}>
-               Source:
-               </label>
-               <input type="text" value={origin} onChange={(e) => setOrigin(e.target.value)} />
-           </div>
-
-
-
-
-           <div className="form-control" style={{ marginBottom: '10px' }}>
-               <label>
-               Departure Time:
-               <input type="datetime-local" value={departureTime} onChange={(e) => setDepartureTime(e.target.value)} />
-               </label>
-           </div>
-
-
-
-
-           <div className="form-control" style={{ marginBottom: '10px' }}>
-               <label>
-               Landing Time:
-               <input type="datetime-local" value={landingTime} onChange={(e) => setLandingTime(e.target.value)} />
-               </label>
-           </div>
-
-
-
-
-           <button type='submit' className='btn btn-success w-100'>Save Changes to Flight</button>
-       </form>
-     
-   </div>
-   </div>
- 
- );
-};
-
-
-
-
-export default EditFlightForm;
-
-
-
-
-
-return (
-  <div>
-    <h1>Add Crew</h1>
-    <AddCrewForm />
-  </div>
-);
-
-case 'Edit-Crew':
-return (
-  <div>
-    <h1>Edit Crew</h1>
-    <EditCrewForm  />
-  </div>
-);
-
-case 'Crew-Assignments':
-return (
-<div>
-  <h1>Crew Assignment: Select Flight</h1>
-  <form action='' onSubmit={handleSearch}>
-      <div>
-          <input type="text" placeholder='From...' name = 'Source'
-          onChange={handleInput} className='form-control'/>
+import React, {useState} from 'react'
+
+import CrewEditor from './CrewEditor';
+
+import axios from 'axios'
+
+
+function EditCrewAssignments(){
+    //const { username } = useParams();
+    const [activeTab, setActiveTab] = useState('browse'); 
+
+    const [flightData, setFlightData] = useState(null);
+    const [selectedFlight, setSelectedFlight] = useState(null);
+    const [selectedFlightID, setSelectedFlightID] = useState(null);
+    const [flightID2, setFlightID] = useState(null);
+    const [fetchedAssignedCrew, setFetchedAssignedCrew] = useState([]);
+
+    //for add aircraft
+    const [selectedAircraft, setSelectedAircarft] = useState([]);
+
+    //for add new crew
+    const [selectedNewCrew, setSelectedNewCrewTab] = useState([]);
+
+    
+
+    const [values, setValues] = useState({
+        Origin: '',
+        Dest: ''
+    })
+    const handleInput = (event) => {
+        const { name, value } = event.target;
+        setValues({
+        ...values,
+        [name]: value,
+        });
+    };
+  
+    
+    const handleSubmitCrewAssignment = async (e) => {
+      e.preventDefault(); 
+      updateCrew(selectedFlightID);
+    }; 
+
+    const [allCrew, setAllCrew] = useState([
+       ]);
+    const [selectedCrew, setSelectedCrew] = useState([]);
+
+
+    const onSelectCrew = (crew) => {
+      //console.log('Selecting Crew:', crew);
+      setAllCrew((prevAllCrew) => {
+          const filteredCrew = prevAllCrew.filter((c) => c.CREWID !== crew.CREWID);
+          //console.log('Filtered All Crew:', filteredCrew);
+          return filteredCrew;
+      });
+      setSelectedCrew((prevSelectedCrew) => {
+          const updatedSelectedCrew = [...prevSelectedCrew, crew];
+          //console.log('Updated Selected Crew:', updatedSelectedCrew);
+          return updatedSelectedCrew;
+      });
+    };
+    
+    const onRemoveCrew = (crew) => {
+      //console.log('Removing Crew:', crew);
+      setSelectedCrew((prevSelectedCrew) => {
+          const filteredSelectedCrew = prevSelectedCrew.filter((c) => c.CREWID !== crew.CREWID);
+          //console.log('Filtered Selected Crew:', filteredSelectedCrew);
+          return filteredSelectedCrew;
+      });
+      setAllCrew((prevAllCrew) => {
+          const updatedAllCrew = [...prevAllCrew, crew];
+          //console.log('Updated All Crew:', updatedAllCrew);
+          return updatedAllCrew;
+      });
+    };
+
+    const fetchCrew =  async (selectedFlightID) => {
+      //console.log('Initial All Crew:', allCrew);
+      try {  
+
+        const crewResponse = await axios.post('http://localhost:8081/admin/getCrew');
+        const fetchedCrewArray = crewResponse.data.crew;
+        const fetchedCrew = fetchedCrewArray.map(crew => ({ CREWID: crew.CREWID, FNAME: crew.FNAME }));
+        //console.log(fetchedCrew);
+        setAllCrew(fetchedCrew);
+
+        // Fetch assigned crew members for the selected flight
+        const assignedCrewResponse = await axios.post('http://localhost:8081/admin/getAssignedCrew', { selectedFlightID });
+        //console.log('Server Response:', assignedCrewResponse);
+        const fetchedAssignedCrewArray = assignedCrewResponse.data.crew;
+        //console.log('Assigned Crew:', fetchedAssignedCrewArray);
           
-      </div>
-      <div>
-          <input type="text" placeholder='To...' name = 'Dest'
-          onChange={handleInput} className='form-control'/>
-        
-      </div>
-      <button type='submit' className='btn btn-success w-100'>Search Flights</button>
-  </form>
-  {Array.isArray(flightData) && flightData.length > 0 && (
-      <div className="flight-details-container">
-          <h3>Flight Details</h3>
-          {flightData.map((flight, index) => (
-              <div className="flight-data-container" key={index}>
-                  <p>Departure: {flight.DEPARTURE}</p>
-                  <p>Land: {flight.LANDING}</p>
+         // Update the states
+         // Update the states
+        setAllCrew((prevAllCrew) => {
+          const updatedAllCrew = prevAllCrew.filter((c) => !fetchedAssignedCrewArray.some((assigned) => assigned.CREWID === c.CREWID));
+          //console.log('Updated All Crew:', updatedAllCrew);
+          return updatedAllCrew;
+        });
+         setFetchedAssignedCrew(fetchedAssignedCrewArray.map(crew => ({ CREWID: crew.CREWID, FNAME: crew.FNAME })));
+         setSelectedCrew(fetchedAssignedCrewArray.map(crew => ({ CREWID: crew.CREWID, FNAME: crew.FNAME })));
 
-                  <button onClick={() => {
-                      setFlightID(flight.FLIGHTID);
-                      setSelectedFlightID(flight.FLIGHTID)
-                      fetchCrew(flight.FLIGHTID);
-                      }}
-                      
-                      className={selectedFlightID === flight.FLIGHTID ? 'selectedFlight' : ''}>
-                      Set Flight
-                  </button>
-                  <p></p>
-              </div>
-          ))}     
-      </div>
+         //console.log('All Crew after fetching:', allCrew);
+         //console.log('Assigned Crew after fetching:', fetchedAssignedCrewArray);
+
+        } catch (err) {
+            console.error(err);
+        }
+
+
+    }
+    const updateCrew = async (selectedFlightID) => {
+      try {
+          //console.log('Selected Flight ID:', selectedFlightID);
+          //console.log('Selected Crew:', selectedCrew);
+  
+          const updatedCrew = selectedCrew.map(crew => ({ CREWID: crew.CREWID, FNAME: crew.FNAME }));
+          //console.log('Updated Crew:', updatedCrew);
+  
+          await axios.post('http://localhost:8081/admin/updateCrew', { selectedFlightID, updatedCrew });
+          
+          //console.log('Crew updated successfully.');
+      } catch (err) {
+          console.error('Error updating crew:', err);
+      }
+    };
       
-  )}
+     
+     
 
-  <div style={{ marginTop: '20px' }}>
-     <h1>{selectedFlight ? 'Edit Crew' : 'Assign Crew'}</h1>
-     <CrewEditor
-       allCrew={allCrew}
-       selectedCrew={selectedCrew}
-       onSelectCrew={onSelectCrew}
-       onRemoveCrew={onRemoveCrew}/>
-     <form className="flight-form" onSubmit={handleSubmitCrewAssignment} style={{ maxWidth: '400px', margin: 'auto', textAlign: 'left' }}>
-       <button type='submit' className='btn btn-success w-100'>Update Crew</button>
-     </form>
- </div>
-</div>
-);
-default:
-return null;
-}
+    const handleSearch = (e) => {
+        e.preventDefault(); // Prevent the default form submission behavior
+        //console.log(values)
+        axios.post('http://localhost:8081/flight/checkFlights', values)
+        .then((res) => {
+            const fetchedFlightData = res.data.flights;
+            //console.log('fetchedFlightData:', fetchedFlightData);
+            setFlightData(fetchedFlightData);
+            setFlightID(fetchedFlightData.flightID);
+    
+        })
+        .catch((err) => {
+            console.error(err);
+        });
+      
+    };
+
+    const renderContent = () => {
+        switch (activeTab) {
+          
+
+          case 'browse':
+            return (
+              <div>
+                <form action='' onSubmit={handleSearch}>
+                    <div>
+                        <input type="text" placeholder='From...' name = 'Origin'
+                        onChange={handleInput} className='form-control'/>
+                        
+                    </div>
+                    <div>
+                        <input type="text" placeholder='To...' name = 'Dest'
+                        onChange={handleInput} className='form-control'/>
+                      
+                    </div>
+                    <button type='submit' className='btn btn-success w-100'>Search Flights</button>
+                </form>
+                {Array.isArray(flightData) && flightData.length > 0 && (
+                    <div className="flight-details-container">
+                        <h3>Flight Details</h3>
+                        {flightData.map((flight, index) => (
+                            <div className="flight-data-container" key={index}>
+                                <p>Departure: {flight.ORIGIN}, {flight.DEPARTURETIME}</p>
+                                <p>Land: {flight.DESTINATION}, {flight.ARRIVALTIME}</p>
+
+                                <button onClick={() => {
+                                    setFlightID(flight.FLIGHTID);
+                                    setSelectedFlightID(flight.FLIGHTID)
+                                    fetchCrew(flight.FLIGHTID);
+                                    }}
+                                    
+                                    className={selectedFlightID === flight.FLIGHTID ? 'selectedFlight' : ''}>
+                                    Set Flight
+                                </button>
+                                <p></p>
+                            </div>
+                        ))}     
+                    </div>
+                )}
+    
+                <div style={{ marginTop: '20px' }}>
+                   <h1>{selectedFlight ? 'Edit Crew' : 'Assign Crew'}</h1>
+                   <CrewEditor
+                     allCrew={allCrew}
+                     selectedCrew={selectedCrew}
+                     onSelectCrew={onSelectCrew}
+                     onRemoveCrew={onRemoveCrew}/>
+                   <form className="flight-form" onSubmit={handleSubmitCrewAssignment} style={{ maxWidth: '400px', margin: 'auto', textAlign: 'left' }}>
+                     <button type='submit' className='btn btn-success w-100'>Update Crew</button>
+                   </form>
+               </div>
+              </div>
+            );
+          default:
+            return null;
+        }
+      };
+    
+    return(
+     <div className="container mt-4">
+        <div className="mb-4">
+            <ul className="nav nav-tabs">
+            <li className="nav-item">
+                <button className={`nav-link ${activeTab === 'browse' ? 'active' : ''}`} onClick={() => setActiveTab('browse')}>Edit Crew Flight Assigments</button>
+            </li>
+           
+            </ul>
+      </div>
+
+      {renderContent()}
+    </div>
+    );
 };
+
+export default EditCrewAssignments;

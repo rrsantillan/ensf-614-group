@@ -48,7 +48,7 @@ const EditFlightForm = () => {
  const handleSearch = (e) => {
    e.preventDefault(); // Prevent the default form submission behavior
    console.log(values)
-   axios.post('http://localhost:8081/checkFlights', values)
+   axios.post('http://localhost:8081/flight/checkFlights', values)
    .then((res) => {
        const fetchedFlightData = res.data.flights;
        console.log('fetchedFlightData:', fetchedFlightData);
@@ -73,7 +73,7 @@ const EditFlightForm = () => {
    // specifically the String that goes into db.query(sql, req.body.flightID2)
    const requestData = { flightID2: FLIGHTID }
    // console.log(FLIGHTID)
-   axios.post('http://localhost:8081/getFlightByFlightID', requestData)
+   axios.post('http://localhost:8081/admin/getFlightByFlightID', requestData)
      .then((res) => {
          const fetchedFlightData = res.data.flights;
          console.log('fetchedFlightData before setters:', fetchedFlightData);
@@ -97,7 +97,7 @@ const EditFlightForm = () => {
  useEffect(() => {
   const fetchAircraftList = async () => {
     try {
-      const response = await axios.post('http://localhost:8081/getAircraftIDs');
+      const response = await axios.post('http://localhost:8081/admin/getAircraftIDs');
       console.log("Response from server:", response);
       setAircraftList(response.data.planes);
     } catch (error) {
@@ -122,7 +122,7 @@ const EditFlightForm = () => {
                          landingTime: landingTime
     }
    // console.log(FLIGHTID)
-   axios.post('http://localhost:8081/overwriteFlightsByFlightID', requestData)
+   axios.post('http://localhost:8081/admin/overwriteFlightsByFlightID', requestData)
      .then((res) => {
          // no need to do anything here, just writing to the database
          if(res.data === "Success"){
@@ -141,6 +141,31 @@ const EditFlightForm = () => {
    }
 
 
+   /**
+   * Deletes the selected Flight
+   */
+  const deleteFlight = async (e) => {
+    e.preventDefault();
+  
+    axios.post('http://localhost:8081/admin/deleteFlightByFlightId', {flightID: selectedFlightID})
+      .then((res) => {
+        if (res.data === "Success") {
+          // Handle successful deletion, if needed
+          setDestination("")
+          setOrigin("")
+          setDepartureTime(formatDateString(null))
+          setLandingTime(formatDateString(null))
+          alert("Flight deleted successfully.");
+        } else {
+          alert("Unable to delete flight.");
+        }
+        // Reset the form fields and selectedCrewId after deletion
+        
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
 
 
  /**
@@ -227,6 +252,13 @@ const EditFlightForm = () => {
         </select>
       </div>
 
+<div className="form-control" style={{ marginBottom: '10px', display: 'flex', flexDirection: 'column' }}>
+               <label style={{ marginBottom: '5px' }}>
+               Source:
+               </label>
+               <input type="text" value={origin} onChange={(e) => setOrigin(e.target.value)} />
+           </div>
+
 
            <div className="form-control" style={{ marginBottom: '10px', display: 'flex', flexDirection: 'column' }}>
                <label style={{ marginBottom: '5px' }}>
@@ -238,12 +270,7 @@ const EditFlightForm = () => {
 
 
 
-           <div className="form-control" style={{ marginBottom: '10px', display: 'flex', flexDirection: 'column' }}>
-               <label style={{ marginBottom: '5px' }}>
-               Source:
-               </label>
-               <input type="text" value={origin} onChange={(e) => setOrigin(e.target.value)} />
-           </div>
+           
 
 
 
@@ -269,6 +296,7 @@ const EditFlightForm = () => {
 
 
            <button type='submit' className='btn btn-success w-100'>Save Changes to Flight</button>
+           <button onClick={deleteFlight} className='btn btn-danger w-100' style={{ marginTop: '10px' }}>Delete Flight</button>
        </form>
      
    </div>

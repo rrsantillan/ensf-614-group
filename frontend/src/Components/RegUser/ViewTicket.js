@@ -1,77 +1,126 @@
-import React, {useState, useEffect } from 'react'
-import axios from 'axios'
+import React, { useState, useEffect, useCallback } from 'react';
+import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import Header from '../Header';
 
+function CurrentFlights() {
+  const [values] = useState({
+    username: username || '', // Set default value to empty string
+  });
+  const [guestEmail, setGuestEmail] = useState('');
+  const [flightData, setFlightData] = useState(null);
 
-function ViewTickets(){
+// <<<<<<< HEAD
+
     
-    const [flightData, setFlightData] = useState(null);
     
     const { Profile1, username } = useParams();
-    const [values, setValues] = useState({
-        username: ''
-    })
 
-    useEffect(() => {
-        setValues({ username });
-    }, [username]);
+
+
+
     
 
-    const handleDeleteTicket = (SEATNUMBER, FLIGHTID) => {
-       
-        const updatedValues = {
-            ...values,
-            SEATNUMBER: SEATNUMBER,
-            FLIGHTID: FLIGHTID,
-        };
+//
+  useEffect(() => {
+    console.log("useEffect ran");
 
-       
-
-        axios.post('http://localhost:8081/deleteTicket', updatedValues)
-        .then(() => {
-          
-            
-            handleSumbit2();
-
+    if (values.username !== 'guest') {
+      axios.post('http://localhost:8081/reguser/getUserProfile', { user: values.username })
+        .then(res => {
+          console.log(res.data.user[0].EMAIL);
+          if (res.data.user && res.data.user[0]) {
+            setGuestEmail(res.data.user[0].EMAIL);
+          } else {
+            console.error("User data is undefined or empty.");
+          }
         })
-        .catch((err) => {
-            console.error(err)
-        })
-        
-      
-
-
-    };
-    const handleSumbit2 = ()=> {
-        
-
-        axios.post('http://localhost:8081/getFlights', values)
-        .then((res) => {
-            
-            const fetchedFlightData = res.data.flights;
-            setFlightData(fetchedFlightData);
-        })
-        .catch((err) => {
-            console.error(err);       
+        .catch(error => {
+          console.error("Error fetching user profile:", error);
         });
-      
-    };
-    const handleSumbit = (event)=> {
-        event.preventDefault();
-        
+    }
+  }, [values.username, setGuestEmail]);
 
-        axios.post('http://localhost:8081/getFlights', values)
-        .then((res) => {
-            
-            const fetchedFlightData = res.data.flights;
-            setFlightData(fetchedFlightData);
-        })
-        .catch((err) => {
-            console.error(err);       
-        });
-      
+  useEffect(() => {
+    console.log("Guest Email:", guestEmail);
+  }, [guestEmail]); // Log guestEmail whenever it changes
+
+  const getEmailBody = useCallback((seatNumber, flightId) => {
+    if (!flightData) {
+      console.log('Flight data not available:', flightData);
+      return 'Flight details not available.';
+    }
+
+    return `
+      Hello ${values.username},
+  
+      Cancellation confirmed for your flight. Please see details below:
+  
+      Flight Details:
+      Origin: ${flightData[0].ORIGIN} Departure Time: ${flightData[0].DEPARTURETIME}
+      Destination: ${flightData[0].DESTINATION} Arrival Time: ${flightData[0].ARRIVALTIME}
+        
+      Regards,
+      Oceanic Airlines!
+    `;
+  }, [flightData, values.username]);
+  
+  
+  
+  const sendEmail = async () => {
+    try {
+      const response = await fetch('http://localhost:7002/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          to: guestEmail,
+          subject: 'Ticket Cancellation',
+          body: getEmailBody(),
+        }),
+      });
+
+      const result = await response.json();
+      console.log(result.message);
+    } catch (error) {
+      console.error('Error sending email:', error);
+    }
+  };
+
+  const handleDeleteTicket = async (SEATNUMBER, FLIGHTID) => {
+    const updatedValues = {
+      ...values,
+      SEATNUMBER: SEATNUMBER,
+      FLIGHTID: FLIGHTID,
     };
+
+    setGuestEmail(prevGuestEmail => prevGuestEmail || '');
+    
+    await sendEmail();
+
+    try {
+      await axios.post('http://localhost:8081/reguser/deleteTicket', updatedValues);
+      handleSumbit2();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleSumbit2 = async () => {
+    try {
+      const res = await axios.post('http://localhost:8081/reguser/getFlights', values);
+      const fetchedFlightData = res.data.flights;
+      setFlightData(fetchedFlightData);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleSumbit = (event) => {
+    event.preventDefault();
+    handleSumbit2();
+  };
 
 
     return(
@@ -110,8 +159,9 @@ function ViewTickets(){
                         </div>
                     </div>
                 )}
-            </div>
-        </div>
-    )
+      </div>
+    </div>
+  );
 }
-export default ViewTickets
+
+export default CurrentFlights;

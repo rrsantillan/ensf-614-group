@@ -14,8 +14,8 @@ function Agentview(){
     
         const requestData = { flightID2: FLIGHTID };
 
-        axios.post('http://localhost:8081/getRegTicket', requestData)
-        .then((response) => {  // Change 'res' to 'response' or any other variable name you prefer
+        axios.post('http://localhost:8081/agent/getRegTicket', requestData)
+        .then((response) => { 
             const fetchedTickets = response.data.registeredTickets;
             setFetchedRegisteredTickets(fetchedTickets);
         })
@@ -31,7 +31,7 @@ function Agentview(){
         event.preventDefault();
         
 
-        axios.post('http://localhost:8081/getAllFlights')
+        axios.post('http://localhost:8081/agent/getAllFlights')
         .then((res) => {
             const fetchedFlightData = res.data.flights;
             setFlightData(fetchedFlightData);
@@ -63,7 +63,7 @@ function Agentview(){
                                         //setFlightID(flight.FLIGHTID);
                                         setSelectedFlightID(flight.FLIGHTID)}}
                                         className={selectedFlightID === flight.FLIGHTID ? 'selectedFlight' : "btn btn-outline-secondary"}>
-                                        See Passengar List 
+                                        See Passenger List 
                                     </button>
                                     
                             </div>

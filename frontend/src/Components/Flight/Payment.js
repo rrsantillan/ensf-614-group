@@ -1,5 +1,5 @@
 // Payment.js
-import React, { useState, useEffect,useCallback   } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
 
@@ -86,12 +86,16 @@ const Payment = (props) => {
     const handleSumbit =(event)=> {
         event.preventDefault();
         console.log(myValues)
-        axios.post('http://localhost:8081/bookflight', {values: myValues, price: price})
+        axios.post('http://localhost:8081/flight/bookflight', {values: myValues, price: price})
         
         .then(res=> {
             if(res.data === "Success"){
                 sendEmail()
-                navigate(`/home/${'REGUSER'}/${myValues.username}`);
+                if(myValues.username === 'guest'){
+                    navigate('/')
+                }else {
+                    navigate(`/home/${'REGUSER'}/${myValues.username}`);
+                }
             }else {
                 alert("Unable to book flight");
             }
@@ -132,7 +136,7 @@ const Payment = (props) => {
         console.log("ran")
         // Fetch the user's email only once when the component mounts
         if (myValues.username !== 'guest'){
-            axios.post('http://localhost:8081/getUserProfile', { user: myValues.username })
+            axios.post('http://localhost:8081/flight/getUserEmail', { user: myValues.username })
             .then(res => {
                 setGuestEmail(res.data.user[0].EMAIL);
             });
