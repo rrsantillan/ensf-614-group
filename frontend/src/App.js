@@ -28,8 +28,10 @@ function App() {
         <Route path='/home/:Profile1/:username' element={<Home/>}> </Route>
         <Route path='/Adminview/:Profile1/:username' element={<Adminview/>}></Route>
         <Route path='/FindFlight/:Profile1/:username' element={<FindFlight/>}> </Route>
+        <Route path='/FindFlight/:username' element={<FindFlight/>}> </Route>
         <Route path='/ViewTicket/:Profile1/:username' element={<ViewTicket/>}> </Route>
         <Route path='/BookFlight/:Profile1/:username/:flightID' element={<BookFlight/>}> </Route>
+        <Route path='/BookFlight/:username/:flightID' element={<BookFlight/>}> </Route>
         <Route path='/Agentview/:Profile1/:username' element={<Agentview/>}> </Route>
         {/* Testing */}
         <Route path='/TestPage' element={<TestPage/>}> </Route>

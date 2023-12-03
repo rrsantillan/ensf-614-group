@@ -58,7 +58,12 @@ function FindFlight(){
     };
 
     const handleNavigationBookFlight = () => {
-        navigate(`../BookFlight/${Profile1}/${username}/${flightID2}`);
+        if(username === "guest"){
+            navigate(`../BookFlight/${username}/${flightID2}`);
+        }else{
+            navigate(`../BookFlight/${Profile1}/${username}/${flightID2}`);
+        }
+       
     };
 
     const handleSumbit =(event)=> {

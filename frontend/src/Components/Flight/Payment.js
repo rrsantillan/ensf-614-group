@@ -91,7 +91,12 @@ const Payment = (props) => {
         .then(res=> {
             if(res.data === "Success"){
                 sendEmail()
-                navigate(`/home/${'REGUSER'}/${myValues.username}`);
+                if(myValues.username === 'guest'){
+                    navigate(`/`);
+                }else{
+                    navigate(`/home/${'REGUSER'}/${myValues.username}`);
+                }
+                
             }else {
                 alert("Unable to book flight");
             }
