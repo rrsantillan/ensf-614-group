@@ -37,7 +37,7 @@ function EditCrewAssignments(){
   
     
     const handleSubmitCrewAssignment = async (e) => {
-      e.preventDefault(); // Prevent the default form submission behavior
+      e.preventDefault(); 
       updateCrew(selectedFlightID);
     }; 
 
@@ -78,14 +78,14 @@ function EditCrewAssignments(){
       //console.log('Initial All Crew:', allCrew);
       try {  
 
-        const crewResponse = await axios.post('http://localhost:8081/getCrew');
+        const crewResponse = await axios.post('http://localhost:8081/admin/getCrew');
         const fetchedCrewArray = crewResponse.data.crew;
         const fetchedCrew = fetchedCrewArray.map(crew => ({ CREWID: crew.CREWID, FNAME: crew.FNAME }));
         //console.log(fetchedCrew);
         setAllCrew(fetchedCrew);
 
         // Fetch assigned crew members for the selected flight
-        const assignedCrewResponse = await axios.post('http://localhost:8081/getAssignedCrew', { selectedFlightID });
+        const assignedCrewResponse = await axios.post('http://localhost:8081/admin/getAssignedCrew', { selectedFlightID });
         //console.log('Server Response:', assignedCrewResponse);
         const fetchedAssignedCrewArray = assignedCrewResponse.data.crew;
         //console.log('Assigned Crew:', fetchedAssignedCrewArray);
@@ -117,7 +117,7 @@ function EditCrewAssignments(){
           const updatedCrew = selectedCrew.map(crew => ({ CREWID: crew.CREWID, FNAME: crew.FNAME }));
           //console.log('Updated Crew:', updatedCrew);
   
-          await axios.post('http://localhost:8081/updateCrew', { selectedFlightID, updatedCrew });
+          await axios.post('http://localhost:8081/admin/updateCrew', { selectedFlightID, updatedCrew });
           
           //console.log('Crew updated successfully.');
       } catch (err) {
@@ -131,7 +131,7 @@ function EditCrewAssignments(){
     const handleSearch = (e) => {
         e.preventDefault(); // Prevent the default form submission behavior
         //console.log(values)
-        axios.post('http://localhost:8081/checkFlights', values)
+        axios.post('http://localhost:8081/flight/checkFlights', values)
         .then((res) => {
             const fetchedFlightData = res.data.flights;
             //console.log('fetchedFlightData:', fetchedFlightData);

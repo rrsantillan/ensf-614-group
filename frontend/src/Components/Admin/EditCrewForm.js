@@ -41,7 +41,7 @@ const EditCrewForm = () => {
  const handleSearch = (e) => {
    e.preventDefault(); // Prevent the default form submission behavior
    console.log(values)
-   axios.post('http://localhost:8081/getCrewByName', values)
+   axios.post('http://localhost:8081/admin/getCrewByName', values)
    .then((res) => {
        
        const fetchedCrewData = res.data.crew;
@@ -84,7 +84,7 @@ const EditCrewForm = () => {
                         
     }
     console.log(requestData)
-   axios.post('http://localhost:8081/overwriteCrewByCrewId', requestData)
+   axios.post('http://localhost:8081/admin/overwriteCrewByCrewId', requestData)
      .then((res) => {
          // no need to do anything here, just writing to the database
          if(res.data === "Success"){
@@ -113,7 +113,7 @@ const EditCrewForm = () => {
      
 
     console.log(selectedCrewId);
-    axios.post('http://localhost:8081/deleteCrewByCrewId', {crewid: selectedCrewId})
+    axios.post('http://localhost:8081/admin/deleteCrewByCrewId', {crewid: selectedCrewId})
       .then((res) => {
         if (res.data === "Success") {
           // Handle successful deletion, if needed

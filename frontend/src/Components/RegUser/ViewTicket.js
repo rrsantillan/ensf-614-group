@@ -34,11 +34,19 @@ function CurrentFlights() {
     console.log("Guest Email:", guestEmail);
   }, [guestEmail]); // Log guestEmail whenever it changes
 
+
+        axios.post('http://localhost:8081/reguser/deleteTicket', updatedValues)
+        .then(() => {
+          
+            
+            handleSumbit2();
+
   const getEmailBody = useCallback((seatNumber, flightId) => {
     if (!flightData) {
       console.log('Flight data not available:', flightData);
       return 'Flight details not available.';
     }
+
 
     return `
       Hello ${values.username},
@@ -84,6 +92,33 @@ function CurrentFlights() {
       FLIGHTID: FLIGHTID,
     };
 
+        axios.post('http://localhost:8081/agent/getFlights', values)
+        .then((res) => {
+            
+            const fetchedFlightData = res.data.flights;
+            setFlightData(fetchedFlightData);
+        })
+        .catch((err) => {
+            console.error(err);       
+        });
+      
+    };
+    const handleSumbit = (event)=> {
+        event.preventDefault();
+        
+
+        axios.post('http://localhost:8081/agent/getFlights', values)
+        .then((res) => {
+            
+            const fetchedFlightData = res.data.flights;
+            setFlightData(fetchedFlightData);
+        })
+        .catch((err) => {
+            console.error(err);       
+        });
+      
+    };
+
     setGuestEmail(prevGuestEmail => prevGuestEmail || '');
     
     await sendEmail();
@@ -95,6 +130,7 @@ function CurrentFlights() {
       console.error(err);
     }
   };
+
 
   const handleSumbit2 = async () => {
     try {

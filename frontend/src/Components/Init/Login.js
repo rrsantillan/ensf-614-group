@@ -23,7 +23,7 @@ function Login(){
         setErrors(validation(values));
     
         if(errors.user === "" && errors.password === ""){
-            axios.post('http://localhost:8081/login', values)
+            axios.post('http://localhost:8081/init/login', values)
             .then(res=> {
         
                if(res.data === "Failed"){

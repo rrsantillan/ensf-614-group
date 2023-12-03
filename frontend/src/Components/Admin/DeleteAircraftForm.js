@@ -8,7 +8,7 @@ const DeleteAircraftForm = () => {
   useEffect(() => {
     const fetchAircraftList = async () => {
       try {
-        const response = await axios.post('http://localhost:8081/getAircraftIDs');
+        const response = await axios.post('http://localhost:8081/admin/getAircraftIDs');
         console.log("Response from server:", response);
         setAircraftList(response.data.planes);
       } catch (error) {
@@ -22,14 +22,14 @@ const DeleteAircraftForm = () => {
     e.preventDefault();
 
     try {
-      await axios.post('http://localhost:8081/removeAircraft', {
+      await axios.post('http://localhost:8081/admin/removeAircraft', {
         aircraftid
       });
 
       console.log('Aircraft deleted successfully:');
       // You can add additional logic here, such as showing a success message to the user
       // Fetch the updated list after deletion
-      const updatedAircraftList = await axios.post('http://localhost:8081/getAircraftIDs');
+      const updatedAircraftList = await axios.post('http://localhost:8081/admin/getAircraftIDs');
       setAircraftList(updatedAircraftList.data.planes);
 
     } catch (error) {
