@@ -39,31 +39,6 @@ const Signup = (props) => {
     //    console.log(values); // Log values whenever it changes
     //}, [values]);
 
-    const handleSumbit =(event)=> {
-        event.preventDefault();
-        setErrors(validation(values));
-        
-        
-
-        if(errors.user === "" && errors.password === "" && errors.email === ""){
-            console.log(values.email[0])
-            setEmailData((prevEmailData) => ({
-                ...prevEmailData,
-                to: values.email[0],
-            }));
-            sendEmail()
-           
-            
-            axios.post('http://localhost:8081/init/signup', values)
-            .then(res=> {
-                console.log("New User Signed up!");
-                navigate('/');
-            })
-            .catch(err=> console.log(err));
-            
-        }
-    }
-    
 
     const getEmailBody = useCallback((values) => {
         return `
@@ -81,12 +56,40 @@ const Signup = (props) => {
         Your Oceanic Airlines`;
     }, [values]);
 
+
+    
     const [emailData, setEmailData] = useState({
         to: '',
         // to: values.email,
         subject: 'Welcome!',
         body: getEmailBody(values),
     });
+
+
+    useEffect(() => {
+        if (errors.user === '' && errors.password === '' && errors.email === '') {
+          setEmailData((prevEmailData) => ({
+            ...prevEmailData,
+            to: values.email[0],
+          }));
+          sendEmail();
+    
+          axios
+            .post('http://localhost:8081/init/signup', values)
+            .then((res) => {
+              console.log('New User Signed up!');
+              alert('Congratulations on sign up!');
+              navigate('/');
+            })
+            .catch((err) => console.log(err));
+        }
+      }, [errors, navigate, values]);
+    
+      const handleSumbit = (event) => {
+        event.preventDefault();
+        setErrors(validation(values));
+      };
+
 
     const sendEmail = async () => {
         console.log("frontend sendEmail call (async)")
@@ -112,7 +115,7 @@ const Signup = (props) => {
     return (
         <div className="d-flex vh-100 justify-content-center align-items-center">
             <div className='p-3 bg-white w-75'>
-                <h2>Sign</h2>
+                <h2>Signup</h2>
                  <form action='' onSubmit={handleSumbit}>
                     <div className='mb-3'>
                         <label htmlFor="user"><strong> New UserName </strong></label>
@@ -143,4 +146,4 @@ const Signup = (props) => {
 };
 
 
-export default Signup
+export default Signup;
