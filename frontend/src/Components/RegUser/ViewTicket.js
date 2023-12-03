@@ -129,9 +129,8 @@ function CurrentFlights() {
       <Row>
         <Col>
         </Col>
-      </Row>
-      <Row>
-              <div className="d-flex flex-column">
+        
+          <div className="d-flex flex-column">
                       <div className="p-3 bg-green">
                           
                       </div>
@@ -168,6 +167,12 @@ function CurrentFlights() {
                           )}
                 </div>
               </div>
+        
+        <Col>
+        </Col>
+      </Row>
+      <Row>
+              
         </Row>
     </div>
   );

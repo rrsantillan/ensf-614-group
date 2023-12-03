@@ -352,7 +352,7 @@ function BookFlight(){
                 <p></p>
                 <button onClick={changePage} className="btn btn-success w-25" 
                   disabled={!values.selectedClass}>
-                  Go To Payment
+                  Go to payment
                 </button>
               </div>
             ) : (

@@ -52,7 +52,7 @@ function Home(){
         </div>
         <Container className="pt-6">
           {/* test page */}
-          <Button type='submit' className='' variant="danger w-100" onClick={handleNavigationTestPage}>*Test Page*</Button>
+          {/* <Button type='submit' className='' variant="danger w-100" onClick={handleNavigationTestPage}>*Test Page*</Button> */}
           <p></p>
            {/* test page */}
           <form action=''>
@@ -63,7 +63,8 @@ function Home(){
             )}
             <p></p>
             <Row>
-              <Col>
+              {/** Test card */}
+              {/* <Col> 
               <div class="m-3 p-2 card">
                 <img src="..." class="card-img-top" alt="..."/>
                 <div class="card-body">
@@ -72,7 +73,8 @@ function Home(){
                   <a href="#" class="btn btn-primary">Go somewhere</a>
                 </div>
               </div>
-              </Col>
+              </Col> */}
+              {/** Test card */}
               <Col>
               </Col>
             </Row>
