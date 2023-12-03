@@ -92,7 +92,7 @@ router.post('/getUnavailableSeats', (req, res) => {
  */
 router.post('/bookflight', (req, res) => {
     const sql = "INSERT tblTicket values (?, ?, ?, ?, ?, ?, ?)"
-    db.query(sql, ['0', req.body.values.username, req.body.values.flight_ID, req.body.values.SelectedSeat, '1', req.body.price, req.body.values.Insurance], (err, data) => {
+    db.query(sql, ['0', req.body.email, req.body.values.flight_ID, req.body.values.SelectedSeat, '1', req.body.price, req.body.values.Insurance], (err, data) => {
        if (err) {
             console.error('Error updating taken seats:', err);
             return res.status(500).json({ error: 'Internal Server Error' });

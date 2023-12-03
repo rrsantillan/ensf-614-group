@@ -86,7 +86,7 @@ const Payment = (props) => {
     const handleSumbit =(event)=> {
         event.preventDefault();
         console.log(myValues)
-        axios.post('http://localhost:8081/flight/bookflight', {values: myValues, price: price})
+        axios.post('http://localhost:8081/flight/bookflight', {values: myValues, price: price, email: guestEmail})
         
         .then(res=> {
             if(res.data === "Success"){
