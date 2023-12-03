@@ -104,7 +104,7 @@ router.post('/bookflight', (req, res) => {
 
 
   /**
- * getUserProfile gets users email 
+ * getUserEmail gets users email 
  * used in: Payment.js
  */
 router.post('/getUserEmail', (req, res) => {

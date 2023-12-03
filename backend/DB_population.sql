@@ -9,7 +9,8 @@ CREATE TABLE tblUser (
 	PASSWORD			VARCHAR(25) NOT null,
 	PROFILE 			VARCHAR(25) NOT NULL,
 	EMAIL				VARCHAR(25) NOT NULL,
-	YEARLYPROMO 	BOOLEAN		
+	YEARLYPROMO 	BOOLEA,
+	PROMOCODE 		VARCHST(5)		
 );
 
 
@@ -61,11 +62,11 @@ CREATE TABLE tblAssignedCrew (
 	FOREIGN KEY (CREWID) REFERENCES tblCrew(CREWID)
 );
 
-INSERT INTO tblUser ( USERNAME, PASSWORD, PROFILE, EMAIL, YEARLYPROMO)
+INSERT INTO tblUser ( USERNAME, PASSWORD, PROFILE, EMAIL, YEARLYPROMO, PROMOCODE)
 VALUES
-( 'Kate', 'kate', 'AGENT', 'braden@gmail.com', 0),
-( 'Jack', 'jack', 'ADMIN', 'fred@gmail.com', 1),
-( 'James', 'james', 'REGUSER', 'bob@gmail.com', 1);
+( 'Kate', 'kate', 'AGENT', 'braden@gmail.com', 0, ''),
+( 'Jack', 'jack', 'ADMIN', 'fred@gmail.com', 1, ''),
+( 'James', 'james', 'REGUSER', 'bob@gmail.com', 0, '50OFF');
 
 
 INSERT INTO tblAirplane (AIRPLANEVIN, MODEL, ROWCNT, COLCNT)
