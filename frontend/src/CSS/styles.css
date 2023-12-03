@@ -28,7 +28,11 @@
     background-color: #3498db;
     color: #fff;
   }
-
+  
+  .taken {
+    text-decoration: line-through; /* Add a red line through taken seats */
+    color: #ff0000; /* Set the color for taken seats */
+  }
 
   .selectedFlight {
     background-color: yellow; /* or any other highlighting style */
