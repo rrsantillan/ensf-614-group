@@ -3,6 +3,7 @@ import  { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate  } from 'react-router-dom';
 import { createEmailBody, createEmailData, sendEmail } from './Functions/EmailFunctions'; // Adjust the path based on your file structure
 import validation from "./Functions/SignupValidation";
+import { Container, Row, Col, Form, Button } from 'react-bootstrap'
 
 const Signup = (props) => {
    
@@ -114,12 +115,14 @@ const Signup = (props) => {
    
     return (
         <div className="d-flex vh-100 justify-content-center align-items-center">
-            <div className='p-3 bg-white w-75'>
+            
+            <div className='p-4 bg-light border w-75'>
                 <h2>Signup</h2>
+                <p></p>
                  <form action='' onSubmit={handleSumbit}>
                     <div className='mb-3'>
-                        <label htmlFor="user"><strong> New UserName </strong></label>
-                        <input type="text" placeholder='Enter UserName' name ='user'
+                        <label htmlFor="user"><strong> New Username </strong></label>
+                        <input type="text" placeholder='Enter Username' name ='user'
                         onChange={handleInput} className='form-control'/>
                         {errors.user && <span className='text-danger'> {errors.user} </span>}
                     </div>
@@ -135,8 +138,8 @@ const Signup = (props) => {
                         onChange={handleInput} className='form-control'/>
                         {errors.email && <span className='text-danger'> {errors.email} </span>}
                     </div>
-                    <button type='submit' className='btn btn-success w-100'>Sign Up</button>
-
+                    <button type='submit' className='btn btn-success w-100'>Sign up</button>
+                    <p></p>
                     <Link to='/' className='btn btn-default border w-100 bg-light'>Back To Login</Link>
 
                 </form>

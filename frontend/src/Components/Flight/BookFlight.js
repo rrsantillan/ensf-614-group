@@ -3,14 +3,15 @@ import axios from 'axios'
 import { useParams } from 'react-router-dom';
 import Payment from './Payment'
 import '../../CSS/styles.css';
-import Header from '../Header'; 
+import Header from '../Header';
+import { Container, Row, Col, Form, Button } from 'react-bootstrap'
 
 
 function BookFlight(){
   //Variables used to hold states of objects for the view
   //The setters are used inorder to change the values
   
-  const { username, flightID } = useParams();
+  const { Profile1, username, flightID } = useParams();
 
   const showPromoCode = username !== 'guest';
 
@@ -208,113 +209,136 @@ function BookFlight(){
    * View is shows below 
    */
   return (
-    <div className="d-flex flex-column">
-      <div className="p-3 bg-green">
-        <Header />
-      </div>
-      <div className="d-flex vh-100 justify-content-center align-items-top">
-        <div className="p-3 bg-white w-75">
-          <h2>Book Flight</h2>
-          {!showPayment ? (
-            <div>
-              <h4>Departing Flight</h4>
-              <div className="d-flex justify-content-left align-items-top">
-                <label htmlFor="Class">Select Class: </label>
-                <div style={{ width: '10px' }} />
-                <select
-                  id="Class"
-                  onChange={(e) => {
-                    handleClassChange(e);
-                    getSeatSelection(e);
-                  }}
-                >
-                  <option value="">Select...</option>
-                  <option value="Ordinary">Ordinary</option>
-                  <option value="Comfort">Comfort</option>
-                  <option value="Business">Business</option>
-                </select>
-              </div>
-              <p></p>
+    <Container fluid className="p-0 container-fluid">
+      <Header Profile1={Profile1} username={username}/>
+      <div className="d-flex flex-column">
+        <div className="d-flex vh-100 justify-content-center align-items-top">
+          <div className="p-3 bg-white w-75">
+
+            <h2>Book Flight</h2>
+            {!showPayment ? (
               <div>
-                <h4>Seat Selection</h4>
-                <div className="seat-map">
-                  {seatMap.map((row, rowIndex) => (
-                    <div key={rowIndex} className="seat-row">
-                      {row.map((seat) => (
-                        <div
-                          key={seat}
-                          className={`seat ${checkSeat === seat ? 'selected' : ''}`}
-                          onClick={() => handleSeatSelect(seat)}
-                        >
-                          {seat}
-                        </div>
-                      ))}
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <p></p>
-              {seatMessage && <div className="text-danger">{seatMessage}</div>}
-              <p></p>
-              <div>
-                <h4>Flight Insurance</h4>
-                <div className="d-flex justify-content-left align-items-top p-2">
-                  <input
-                    type="checkbox"
-                    onChange={() => {
-                      setChecked(!isChecked);
-                      editPayment();
+                <h4>Departing Flight</h4>
+                <div className="d-flex justify-content-left align-items-top">
+                  <label htmlFor="Class">Select Class: </label>
+                  <div style={{ width: '10px' }} />
+                  <select
+                    id="Class"
+                    onChange={(e) => {
+                      handleClassChange(e);
+                      getSeatSelection(e);
                     }}
-                    aria-label="Checkbox for following text input"
+                  >
+                    <option value="">Select...</option>
+                    <option value="Ordinary">Ordinary</option>
+                    <option value="Comfort">Comfort</option>
+                    <option value="Business">Business</option>
+                  </select>
+                </div>
+                <p></p>
+                <h4>Seat Selection</h4>
+                <div className="p-3 border">
+                  
+                  <div className="seat-map">
+                    {seatMap.map((row, rowIndex) => (
+                      <div key={rowIndex} className="seat-row">
+                        {row.map((seat) => (
+                          <div
+                            key={seat}
+                            className={`seat ${checkSeat === seat ? 'selected' : ''}`}
+                            onClick={() => handleSeatSelect(seat)}
+                          >
+                            {seat}
+                          </div>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <p></p>
+                {seatMessage && <div className="text-danger">{seatMessage}</div>}
+                <p></p>
+                <div>
+                  <h4>Flight Insurance</h4>
+                  <div className="d-flex justify-content-left align-items-top p-2">
+                    <input
+                      type="checkbox"
+                      onChange={() => {
+                        setChecked(!isChecked);
+                        editPayment();
+                      }}
+                      aria-label="Checkbox for following text input"
+                    />
+                    <text className="p-2"> Would you like Flight Insurance?</text>
+                  </div>
+                </div>
+                {showPromoCode && ( 
+                  <div className="row">
+                    <form onSubmit={checkPromo} className="col-auto">
+                      <div className="d-flex">
+                        <input
+                          type="text"
+                          placeholder="Promo Code"
+                          value={promoCode}
+                          onChange={handlePromoCodeChange}
+                          maxLength="5"
+                          className="form-control"
+                        />
+                        <button type="submit" className="btn btn-outline-success ml-2">
+                          Apply
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                )}
+                <p></p>
+                {/* sample input */}
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">$</span>
+                  </div>
+                  <input 
+                    readOnly 
+                    type="text" 
+                    class="form-control" 
+                    aria-label="Amount (to the nearest dollar)"
+                    style={{ maxWidth: '150px' }}
+                    id="outputTextarea"
+                    value={price !== undefined ? price.toFixed(2) : ''}/>
+                  {/* <div class="input-group-append">
+                    <span class="input-group-text">.00</span>
+                  </div> */}
+                </div>
+                {/* actual input */}
+                {/* <div className="d-flex justify-content-left align-items-center">
+                  <span className ="p-2">Price: </span>
+                  <div class="input-group-prepend">
+                    <span class="input-group-text px-3"> Price:       $</span>
+                  </div>
+                  <input 
+                    id="outputTextarea"
+                    className="form-control"
+                    value={price !== undefined ? price.toFixed(2) : ''}
+                    readOnly 
+                    style={{ maxWidth: '150px' }}
                   />
-                  <text className="p-2"> Would you like Flight Insurance?</text>
-                </div>
+                  <span style={{ fontWeight: 'bold', padding: '0 5px' }}>$</span>
+                </div> */}
+                <p></p>
+                <button onClick={changePage} className="btn btn-success w-25" 
+                  disabled={!values.selectedClass}>
+                  Go To Payment
+                </button>
               </div>
-              {showPromoCode && ( 
-                <div className="row">
-                  <form onSubmit={checkPromo} className="col-auto">
-                    <div className="d-flex">
-                      <input
-                        type="text"
-                        placeholder="Promo Code"
-                        value={promoCode}
-                        onChange={handlePromoCodeChange}
-                        maxLength="5"
-                        className="form-control"
-                      />
-                      <button type="submit" className="btn btn-outline-success ml-2">
-                        Apply
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              )}
-              <p></p>
-              <div className="d-flex justify-content-left align-items-center">
-                <text className ="p-2">Price: </text>
-                <input 
-                  id="outputTextarea"
-                  className="form-control"
-                  value={price !== undefined ? price.toFixed(2) : ''}
-                  readOnly 
-                  style={{ maxWidth: '150px' }}
-                />
-                <span style={{ fontWeight: 'bold', padding: '0 5px' }}>$</span>
+            ) : (
+              <div>
+                <Payment price={price} myValues={values} />
               </div>
-              <p></p>
-              <button onClick={changePage} className="btn btn-success w-25" 
-                disabled={!values.selectedClass}>
-                Go To Payment
-              </button>
-            </div>
-          ) : (
-            <div>
-              <Payment price={price} myValues={values} />
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </Container>
   );
   
 }

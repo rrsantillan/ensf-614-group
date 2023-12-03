@@ -1,10 +1,11 @@
 import React from "react"
 import axios from 'axios'
 import  { useState } from 'react';
-import { Link, useParams  } from 'react-router-dom';
+import { Link, useParams, useNavigate  } from 'react-router-dom';
 import Header from '../Header'; 
 import 'react-calendar/dist/Calendar.css';
 import '../../CSS/styles.css';
+import { Container, Row, Col, Form, Button } from 'react-bootstrap'
 
 // import dayjs from 'dayjs';
 // import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
@@ -14,6 +15,7 @@ import '../../CSS/styles.css';
 
 function FindFlight(){
     const { Profile1, username } = useParams();
+    const navigate = useNavigate();
     const [selectedFlightID, setSelectedFlightID] = useState(null);
     const [flightID2, setFlightID] = useState(null);
 
@@ -53,6 +55,10 @@ function FindFlight(){
         ...values,
         [name]: value,
         });
+    };
+
+    const handleNavigationBookFlight = () => {
+        navigate(`../BookFlight/${Profile1}/${username}/${flightID2}`);
     };
 
     const handleSumbit =(event)=> {
@@ -107,57 +113,66 @@ function FindFlight(){
  
 
 return(
-    <div className="container">
-        {/* <div className="d-flex flex-column p-3 bg-green"> */}
+    <Container fluid className="p-0 container-fluid">
         <Header Profile1={Profile1} username={username}/>
-        {/* </div> */}
-        <div className="d-flex vh-80 justify-content-center align-items-top">
-            <div className='p-3 bg-light border w-75'>
-                <h2>Where To?</h2>
-                <div className="">
-                    <div className="pr-5">
-                        <input type="text" placeholder='From...' name = 'Origin'
-                        onChange={handleInput} className='form-control'/>
-                        {errors.Origin && <span className='text-danger'> {errors.Origin} </span>}
+        <div className="container">
+            {/* <div className="d-flex flex-column p-3 bg-green"> */}
+            {/* </div> */}
+            <Row className="pt-5 justify-content-center">
+                <div className='p-3 bg-light border w-75'>
+                    <h2>Where to?</h2>
+                    <div className="">
+                        <div className="pr-5">
+                            <input type="text" placeholder='From' name = 'Origin'
+                            onChange={handleInput} className='form-control'/>
+                            {errors.Origin && <span className='text-danger'> {errors.Origin} </span>}
+                        </div>
+                        <p></p>
+                        <div>
+                            <input type="text" placeholder='To' name = 'Dest'
+                            onChange={handleInput} className='form-control'/>
+                            {errors.Dest && <span className='text-danger'> {errors.Dest} </span>}
+                        </div>
+                        <p></p>
+                        <form action='' onSubmit={handleSumbit}>
+                            
+                            <button type='submit' className='btn btn-success w-100'>Search Flights</button>
+                        </form>
                     </div>
-                    <p></p>
-                    <div>
-                        <input type="text" placeholder='To...' name = 'Dest'
-                        onChange={handleInput} className='form-control'/>
-                        {errors.Dest && <span className='text-danger'> {errors.Dest} </span>}
-                    </div>
-                    <p></p>
-                    <form action='' onSubmit={handleSumbit}>
-                        
-                        <button type='submit' className='btn btn-success w-100'>Search Flights</button>
-                    </form>
-                </div>
-                
-                {Array.isArray(flightData) && flightData.length > 0 && (
-                    <div>
-                        <h3>Flight Details</h3>
-                        {flightData.map((flight, index) => (
-                            <div className="flight-data-container" key={index}>
-                                <p>Origin: {flight.ORIGIN} Departure Time: {flight.DEPARTURETIME}</p>
-                                <p>Destination: {flight.DESTINATION} Landing Time: {flight.ARRIVALTIME}</p>
+                </div> 
+            </Row>
+            <Row>
+                <div className="d-flex p-5 vh-90 justify-content-center">
+                    
+                        {Array.isArray(flightData) && flightData.length > 0 && (
+                            <div>
+                                <h3>Flight Details</h3>
+                                {flightData.map((flight, index) => (
+                                    <div className="flight-data-container" key={index}>
+                                        <p>Origin: {flight.ORIGIN} Departure Time: {flight.DEPARTURETIME}</p>
+                                        <p>Destination: {flight.DESTINATION} Landing Time: {flight.ARRIVALTIME}</p>
 
-                                <button onClick={() => {
-                                    setFlightID(flight.FLIGHTID);
-                                    setSelectedFlightID(flight.FLIGHTID)}}
-                                    className={selectedFlightID === flight.FLIGHTID ? 'selectedFlight' : ''}>
-                                    Select Flight
-                                </button>
-                                <p></p>
-                            </div>
-                        ))}
-                        
-                        <Link to={`../BookFlight/${Profile1}/${username}/${flightID2}`} className='btn btn-default border w-100 bg-light'> Select To Seat... </Link>
+                                        <button onClick={() => {
+                                            setFlightID(flight.FLIGHTID);
+                                            setSelectedFlightID(flight.FLIGHTID)}}
+                                            className={selectedFlightID === flight.FLIGHTID ? 'selectedFlight' : ''}>
+                                            Select Flight
+                                        </button>
+                                        <p></p>
+                                    </div>
+                                ))}
                                 
-                    </div>
-                )}
-            </div>
+                                <Button type='submit' className='btn btn-primary w-100' onClick={handleNavigationBookFlight}>
+                                    Proceed to seat selection
+                                </Button>
+                                        
+                            </div>
+                        )}
+                    {/* </div> */}
+                </div>
+            </Row>
         </div>
-    </div>
+    </Container>
       
 
       

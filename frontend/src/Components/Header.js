@@ -84,7 +84,7 @@ function Header(props) {
                     <Stack direction="horizontal" gap={5}>
                         <div className="px-2"><Nav.Link onClick={handleHome}>Home</Nav.Link></div>
                         {/* <div className="p-2 ms-auto"><Nav.Link href="#link">Link</Nav.Link></div> */}
-                        <div className="p-2 ms-auto">Second Item</div>
+                        <div className="p-2 ms-auto"></div>
                         <div className="p-2">
                             <Button onClick={handleLogout} className = "d-none d-lg-block px-3" variant="outline-danger">Logout</Button>
                         </div>
