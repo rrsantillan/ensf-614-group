@@ -6,7 +6,7 @@ import Signup from './Components/Init/Signup'
 import Home from './Components/Home'
 import Adminview from './Components/Admin/Adminview'
 import FindFlight from './Components/Flight/FindFlight'
-import ViewTicket from './Components/RegUser/ViewTickets'
+import ViewTicket from './Components/RegUser/ViewTicket.js'
 import BookFlight from './Components/Flight/BookFlight'
 import Agentview from './Components/Agent/Agentview'
 import TestPage from './Testing/TestPage.js'
@@ -26,7 +26,7 @@ function App() {
         <Route path='/home/:Profile1/:username' element={<Home/>}> </Route>
         <Route path='/Adminview/:username' element={<Adminview/>}></Route>
         <Route path='/FindFlight/:Profile1/:username' element={<FindFlight/>}> </Route>
-        <Route path='/ViewTickets/:Profile1/:username' element={<ViewTicket/>}> </Route>
+        <Route path='/ViewTicket/:Profile1/:username' element={<ViewTicket/>}> </Route>
         <Route path='/BookFlight/:Profile1/:username/:flightID' element={<BookFlight/>}> </Route>
         <Route path='/Agentview/:Profile1/:username' element={<Agentview/>}> </Route>
         {/* Testing */}
