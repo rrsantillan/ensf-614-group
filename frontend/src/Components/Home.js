@@ -42,10 +42,14 @@ function Home(){
    });  
 
    return (
-    <Container className="d-flex flex-column">
-      <div className="container vh-100 justify-content-center align-items-start">
+    <div className="container-fluid">
       <Header Profile1={Profile1} username={username}/>{/* Assuming Header is your component for the header */}
-        <h2>Home Page</h2>
+      {/* <div className="container vh-100 justify-content-center align-items-start"> */}
+        <div className="my-3">
+          <h2>
+            Home Page
+          </h2>
+        </div>
         <Container className="pt-6">
           {/* test page */}
           <Button type='submit' className='' variant="danger w-100" onClick={handleNavigationTestPage}>*Test Page*</Button>
@@ -75,8 +79,8 @@ function Home(){
             )}
           </form>
         </Container>
-      </div>
-    </Container>
+      {/* </div> */}
+    </div>
   );
 
 }

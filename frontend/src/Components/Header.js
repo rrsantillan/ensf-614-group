@@ -81,8 +81,8 @@ function Header(props) {
                             Separated link
                         </NavDropdown.Item>
                     </NavDropdown> */}
-                    <Stack direction="horizontal" gap={3}>
-                        <div className="p-2"><Nav.Link onClick={handleHome}>Home</Nav.Link></div>
+                    <Stack direction="horizontal" gap={5}>
+                        <div className="px-2"><Nav.Link onClick={handleHome}>Home</Nav.Link></div>
                         {/* <div className="p-2 ms-auto"><Nav.Link href="#link">Link</Nav.Link></div> */}
                         <div className="p-2 ms-auto">Second Item</div>
                         <div className="p-2">
