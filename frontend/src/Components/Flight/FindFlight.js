@@ -6,6 +6,7 @@ import Header from '../Header';
 import 'react-calendar/dist/Calendar.css';
 import '../../CSS/styles.css';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap'
+import moment from 'moment'
 
 // import dayjs from 'dayjs';
 // import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
@@ -106,7 +107,8 @@ function FindFlight(){
         .then((res) => {
             const fetchedFlightData = res.data.flights;
             
-            setFlightData(fetchedFlightData);
+            const fetchedFlightDataTimeFormatted = formatFlightTime(fetchedFlightData)
+            setFlightData(fetchedFlightDataTimeFormatted);
             setFlightID(fetchedFlightData.flightID);
     
         })
@@ -116,6 +118,13 @@ function FindFlight(){
       
     };
  
+    const formatFlightTime = (data) => {
+        return data.map(flight => ({
+          ...flight,
+          DEPARTURETIME: moment.utc(flight.DEPARTURETIME).format('MMMM Do YYYY, h:mm a'),
+          ARRIVALTIME: moment.utc(flight.ARRIVALTIME).format('MMMM Do YYYY, h:mm a')
+        }));
+    };
 
 return(
     <Container fluid className="p-0 container-fluid">
@@ -161,8 +170,8 @@ return(
                                 <h3>Flight Details</h3>
                                 {flightData.map((flight, index) => (
                                     <div className="flight-data-container" key={index}>
-                                        <p>Origin: {flight.ORIGIN} Departure Time: {flight.DEPARTURETIME}</p>
-                                        <p>Destination: {flight.DESTINATION} Landing Time: {flight.ARRIVALTIME}</p>
+                                        <p><strong>Origin:</strong> {flight.ORIGIN} <strong>Departure Time:</strong> {flight.DEPARTURETIME}</p>
+                                        <p><strong>Destination:</strong> {flight.DESTINATION} <strong>Landing Time:</strong> {flight.ARRIVALTIME}</p>
 
                                         <button onClick={() => {
                                             setFlightID(flight.FLIGHTID);

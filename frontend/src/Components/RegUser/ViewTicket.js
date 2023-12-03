@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import Header from '../Header';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap'
+import moment from 'moment'
 
 function CurrentFlights() {
   const { Profile1, username } = useParams();
@@ -112,7 +113,8 @@ function CurrentFlights() {
     try {
       const res = await axios.post('http://localhost:8081/reguser/getFlights', values);
       const fetchedFlightData = res.data.flights;
-      setFlightData(fetchedFlightData);
+      const fetchedFlightDataTimeFormatted = formatFlightTime(fetchedFlightData)
+      setFlightData(fetchedFlightDataTimeFormatted);
     } catch (err) {
       console.error(err);
     }
@@ -123,6 +125,14 @@ function CurrentFlights() {
     handleSumbit2();
   };
 
+  const formatFlightTime = (data) => {
+    return data.map(flight => ({
+      ...flight,
+      DEPARTURETIME: moment.utc(flight.DEPARTURETIME).format('MMMM Do YYYY, h:mm a'),
+      ARRIVALTIME: moment.utc(flight.ARRIVALTIME).format('MMMM Do YYYY, h:mm a')
+    }));
+  };  
+
   return (
     <div className="p-0 container-fluid">
       <Header Profile1={Profile1} username={username}/>
@@ -131,42 +141,40 @@ function CurrentFlights() {
         </Col>
         
           <div className="d-flex flex-column">
-                      <div className="p-3 bg-green">
-                          
-                      </div>
-                      <div className="flex-column vh-100 justify-content-center align-items-top">
-                          <div className='p-3 bg-white w-75'>
-                              <h2>Current Flights</h2>
-                              
-                              <form action='' onSubmit={handleSumbit} className="d-flex flex-column">
-                                  <div className='mb-3 d-flex align-items-baseline '>
-                                      <label htmlFor="user"><strong>User: </strong></label>
-                                      <p className="ml-2 px-2" >{username}</p>
-                                      <button type='submit' className='btn btn-success btn-sm'>Retrieve Flights</button>
-                                  </div>
-                                  {/* <div className="mb-3">
-                                      <button type='submit' className='btn btn-success'>Retrieve Flights</button>
-                                  </div> */}
-                              </form>
-                                  
-                          </div>
-                          {Array.isArray(flightData) && flightData.length > 0 && (
-                              <div className="mx-3 border py-3 px-5 flight-details-container">
-                                  <h3>Flight Details</h3>
-                                  <div className="scrollable-flight-details">
-                                  {flightData.map((flight, index) => (
-                                      <div className="flight-data-container" key={index}>
-                                      <p>Origin: {flight.ORIGIN} Departure Time: {flight.DEPARTURETIME}</p>
-                                      <p>Destination: {flight.DESTINATION} Landing Time: {flight.ARRIVALTIME}</p>
-                                      <p>Seat Stlye: {flight.SEATTYPE} Seat: {flight.SEATNUMBER}</p>
-                                      <button onClick={() => handleDeleteTicket(flight.SEATNUMBER, flight.FLIGHTID)}>Delete Ticket</button>
-                                      </div>
-                                  ))}
-                                  </div>
-                              </div>
-                          )}
+                <div className="flex-column vh-100 justify-content-center align-items-top">
+                    <div className='p-3 bg-white w-75'>
+                        <h2>Current Flights</h2>
+                        
+                        <form action='' onSubmit={handleSumbit} className="d-flex flex-column">
+                            <div className='mb-3 d-flex align-items-baseline '>
+                                <label htmlFor="user"><strong>User: </strong></label>
+                                <p className="ml-2 px-2" >{username}</p>
+                                <button type='submit' className='btn btn-success btn-sm'>Retrieve Flights</button>
+                            </div>
+                            {/* <div className="mb-3">
+                                <button type='submit' className='btn btn-success'>Retrieve Flights</button>
+                            </div> */}
+                        </form>
+                            
+                    </div>
+                    <div></div>
+                    {Array.isArray(flightData) && flightData.length > 0 && (
+                        <div className="mx-3 border py-3 px-5 flight-details-container">
+                            <h3>Flight Details</h3>
+                            <div className="scrollable-flight-details">
+                            {flightData.map((flight, index) => (
+                                <div className="flight-data-container" key={index}>
+                                <p><strong>Origin:</strong> {flight.ORIGIN} <strong>Departure Time:</strong> {flight.DEPARTURETIME}</p>
+                                        <p><strong>Destination:</strong> {flight.DESTINATION} <strong>Landing Time:</strong> {flight.ARRIVALTIME}</p>
+                                <p><strong>Seat Stlye:</strong> {flight.SEATTYPE} <strong>Seat:</strong> {flight.SEATNUMBER}</p>
+                                <button onClick={() => handleDeleteTicket(flight.SEATNUMBER, flight.FLIGHTID)}>Delete Ticket</button>
+                                </div>
+                            ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
-              </div>
+            </div>
         
         <Col>
         </Col>
