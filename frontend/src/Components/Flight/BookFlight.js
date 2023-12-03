@@ -1,4 +1,4 @@
-import React, {useState } from 'react'
+import React, {useState, useEffect } from 'react'
 import axios from 'axios'
 import { useParams } from 'react-router-dom';
 import Payment from './Payment'
@@ -20,7 +20,9 @@ function BookFlight(){
   const [seatMessage, setSeatMessage] = useState('');
   const [seatMap, setSeatMap] = useState([]);  
   const [price, setPrice] = useState();
+  const [seatAvailability, setSeatAvailability] = useState([]);
 
+  const [takenSeats, setTakenSeats] = useState([]);
   const [isChecked, setChecked] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
 
@@ -129,7 +131,8 @@ function BookFlight(){
       const fetchedSeatsArray = response.data.unSeats;
       const fetchedSeats = fetchedSeatsArray[0].TakenSeats;
       const takenSeatsArray = fetchedSeats.split(',').map((seat) => seat.trim());
-  
+      setTakenSeats(takenSeatsArray);
+
       return !takenSeatsArray.includes(seat);
     } catch (error) {
       console.error('Error fetching unavailable seats:', error);
@@ -137,6 +140,23 @@ function BookFlight(){
     }
   };
 
+  useEffect(() => {
+    const fetchSeatAvailability = async () => {
+      try {
+        const response = await axios.post('http://localhost:8081/flight/getUnavailableSeats', values);
+        const fetchedSeatsArray = response.data.unSeats;
+        const fetchedSeats = fetchedSeatsArray[0].TakenSeats;
+        const takenSeatsArray = fetchedSeats.split(',').map((seat) => seat.trim());
+        setTakenSeats(takenSeatsArray);
+        setSeatAvailability(takenSeatsArray);
+      } catch (error) {
+        console.error('Error fetching unavailable seats:', error);
+        // Handle error appropriately based on your application's requirements
+      }
+    };
+
+    fetchSeatAvailability();
+  }, [values]);
   
   /**
    * handle seat selection checks seat selection against taken 
@@ -242,15 +262,20 @@ function BookFlight(){
                   <div className="seat-map">
                     {seatMap.map((row, rowIndex) => (
                       <div key={rowIndex} className="seat-row">
-                        {row.map((seat) => (
-                          <div
-                            key={seat}
-                            className={`seat ${checkSeat === seat ? 'selected' : ''}`}
-                            onClick={() => handleSeatSelect(seat)}
-                          >
-                            {seat}
-                          </div>
-                        ))}
+                        {row.map((seat) => {
+                          const isTaken = takenSeats.includes(seat);
+                          const isSeatAvailable = !seatAvailability.includes(seat);
+
+                          return (
+                            <div
+                              key={seat}
+                              className={`seat ${checkSeat === seat ? 'selected' : ''} ${isTaken ? 'taken' : ''}`}
+                              onClick={() => handleSeatSelect(seat)}
+                            >
+                              {seat}
+                            </div>
+                          );
+                        })}
                       </div>
                     ))}
                   </div>
