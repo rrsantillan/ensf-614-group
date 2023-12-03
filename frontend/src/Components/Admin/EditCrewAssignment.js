@@ -120,6 +120,7 @@ function EditCrewAssignments(){
           await axios.post('http://localhost:8081/admin/updateCrew', { selectedFlightID, updatedCrew });
           
           //console.log('Crew updated successfully.');
+          alert("Crew updated");
       } catch (err) {
           console.error('Error updating crew:', err);
       }
