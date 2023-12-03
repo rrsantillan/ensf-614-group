@@ -13,6 +13,7 @@ import TestPage from './Testing/TestPage.js'
 import TestPage2 from './Testing/TestPage2.js'
 
 
+
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
 import './App.css';
 
@@ -24,7 +25,7 @@ function App() {
         <Route path='/' element={<Login/>}> </Route>
         <Route path='/Signup' element={<Signup/>}> </Route>
         <Route path='/home/:Profile1/:username' element={<Home/>}> </Route>
-        <Route path='/Adminview/:username' element={<Adminview/>}></Route>
+        <Route path='/Adminview/:Profile1/:username' element={<Adminview/>}></Route>
         <Route path='/FindFlight/:Profile1/:username' element={<FindFlight/>}> </Route>
         <Route path='/ViewTicket/:Profile1/:username' element={<ViewTicket/>}> </Route>
         <Route path='/BookFlight/:Profile1/:username/:flightID' element={<BookFlight/>}> </Route>

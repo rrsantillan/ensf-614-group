@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import Header from '../Header';
 
 function CurrentFlights() {
+  const { Profile1, username } = useParams();
   const [values] = useState({
     username: username || '', // Set default value to empty string
   });
@@ -14,7 +15,6 @@ function CurrentFlights() {
 
     
     
-    const { Profile1, username } = useParams();
 
 
 
@@ -122,9 +122,8 @@ function CurrentFlights() {
     handleSumbit2();
   };
 
-
-    return(
-        <div className="d-flex flex-column">
+  return (
+    <div className="d-flex flex-column">
             <div className="p-3 bg-green">
                 <Header Profile1={Profile1} username={username}/>
             </div>

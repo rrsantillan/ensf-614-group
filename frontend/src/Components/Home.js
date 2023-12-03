@@ -17,7 +17,7 @@ function Home(){
   const navigate = useNavigate();
 
     const handleNavigationViewTickets = () => {
-        navigate(`../ViewTickets/${Profile1}/${username}`);
+        navigate(`../ViewTicket/${Profile1}/${username}`);
     };
 
     const handleNavigationFindFlight = () => {
@@ -41,7 +41,7 @@ function Home(){
    
    });  
 
-   return (
+  return(
     <div className="container-fluid">
       <Header Profile1={Profile1} username={username}/>{/* Assuming Header is your component for the header */}
       {/* <div className="container vh-100 justify-content-center align-items-start"> */}
