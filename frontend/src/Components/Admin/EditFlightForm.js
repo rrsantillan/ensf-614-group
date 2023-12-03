@@ -126,6 +126,7 @@ const EditFlightForm = () => {
      .then((res) => {
          // no need to do anything here, just writing to the database
          if(res.data === "Success"){
+          alert("Flight changes saved");
            //navigate(`/home/${username}`);
          }else if (requestData.flightID === null){
            alert("Flight ID was empty.");
@@ -179,8 +180,6 @@ const EditFlightForm = () => {
  };
 
 
-
-
  return (
    <div>
        <form action='' onSubmit={handleSearch}>
@@ -228,9 +227,6 @@ const EditFlightForm = () => {
                  
                )}
 
-
-
-
    <div>
        <form className="flight-form" onSubmit={saveChangesToFlight} style={{ maxWidth: '400px', margin: 'auto', textAlign: 'left' }}>
            <h3>Edit Flight Details for FlightID: {selectedFlightID}</h3>
@@ -268,13 +264,6 @@ const EditFlightForm = () => {
            </div>
 
 
-
-
-           
-
-
-
-
            <div className="form-control" style={{ marginBottom: '10px' }}>
                <label>
                Departure Time:
@@ -283,17 +272,12 @@ const EditFlightForm = () => {
            </div>
 
 
-
-
            <div className="form-control" style={{ marginBottom: '10px' }}>
                <label>
                Landing Time:
                <input type="datetime-local" value={landingTime} onChange={(e) => setLandingTime(e.target.value)} />
                </label>
            </div>
-
-
-
 
            <button type='submit' className='btn btn-success w-100'>Save Changes to Flight</button>
            <button onClick={deleteFlight} className='btn btn-danger w-100' style={{ marginTop: '10px' }}>Delete Flight</button>

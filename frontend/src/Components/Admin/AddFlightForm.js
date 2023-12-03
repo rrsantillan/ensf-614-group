@@ -39,9 +39,9 @@ const FlightForm = () => {
         departureTime,
         landingTime,
       });
-
-      console.log('Flight added successfully:');
       // You can add additional logic here, such as showing a success message to the user
+      console.log('Flight added successfully:');
+      alert("Flight added successfully!");
     } catch (error) {
       console.error('Error adding flight:', error);
       // Handle error and show an error message to the user
