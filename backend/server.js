@@ -98,7 +98,8 @@ app.post('/login', (req, res) => {
     })
 })
 /**
- * Login ensures the user is part of the system 
+ * Login ensures the user is part of the system
+ * Returns the email based on username
  */
 app.post('/getUserProfile', (req, res) => {
     const sql = "SELECT EMAIL FROM TBLUSER WHERE USERNAME = ?"
@@ -114,6 +115,27 @@ app.post('/getUserProfile', (req, res) => {
     
     })
 })
+
+/**
+ * Redge's changes
+ * Login ensures the user is part of the system
+ * Returns the email based on username
+ */
+app.post('/getProfileByUsername', (req, res) => {
+    const sql = "SELECT PROFILE FROM TBLUSER WHERE USERNAME = ?"
+    db.query(sql, [req.body.user], (err, data) => {
+        if(err){
+            return res.json("Error");
+        }
+        if(data.length > 0){
+            res.status(200).json({ user: data });
+        } else {
+            return res.json("Failed") 
+        }
+    
+    })
+})
+
 /**
  * check flight brings all data back where the dest and source match in the db
  * used in EditFLightForm.js to look for flights
@@ -235,7 +257,7 @@ app.post('/getAllFlights', (req, res) => {
  * get flights brings all data back where the dest and source match in the db
  */
 app.post('/getAirPlaneSeatMap', (req, res) => {
-    const sql = "SELECT tblAirplane.ROWCNT, tblAirplane.COLCNT FROM tblAirplane LEFT JOIN TBLFLIGHT ON tblAirplane.AIRPLANEID = TBLFLIGHT.AIRPLANEID WHERE tblflight.flightid = ?"
+    const sql = "SELECT tblAirplane.ROWCNT, tblAirplane.COLCNT FROM tblAirplane LEFT JOIN TBLFLIGHT ON tblAirplane.AIRPLANEVIN = TBLFLIGHT.AIRPLANEID WHERE tblflight.flightid = ?"
     
     db.query(sql, [req.body.flightID], (err, data) => {
         if (err) {

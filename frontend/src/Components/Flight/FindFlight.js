@@ -13,12 +13,12 @@ import '../../CSS/styles.css';
 // import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
 
 function FindFlight(){
-    const { username } = useParams();
+    const { Profile1, username } = useParams();
     const [selectedFlightID, setSelectedFlightID] = useState(null);
     const [flightID2, setFlightID] = useState(null);
 
     const [values, setValues] = useState({
-        Source: '',
+        Origin: '',
         Dest: ''
     })
 
@@ -59,20 +59,20 @@ function FindFlight(){
         event.preventDefault();
         console.log(event.target.ORIGIN);
         setErrors({
-            Source: '',
+            Origin: '',
             Dest: '',
         });
-        if (values.Source === '') {
+        if (values.Origin === '') {
             setErrors({
                 ...errors,
-                Source: 'Source should not be empty',
+                Origin: 'Origin should not be empty',
             });
             
             return;
         }else{
             setErrors({
                 ...errors,
-                Source: '',
+                Origin: '',
             });
         }
     
@@ -109,16 +109,16 @@ function FindFlight(){
 return(
     <div className="container">
         {/* <div className="d-flex flex-column p-3 bg-green"> */}
-            <Header />
+        <Header Profile1={Profile1} username={username}/>
         {/* </div> */}
         <div className="d-flex vh-80 justify-content-center align-items-top">
             <div className='p-3 bg-light border w-75'>
                 <h2>Where To?</h2>
                 <div className="">
                     <div className="pr-5">
-                        <input type="text" placeholder='From...' name = 'Source'
+                        <input type="text" placeholder='From...' name = 'Origin'
                         onChange={handleInput} className='form-control'/>
-                        {errors.Source && <span className='text-danger'> {errors.Source} </span>}
+                        {errors.Origin && <span className='text-danger'> {errors.Origin} </span>}
                     </div>
                     <p></p>
                     <div>

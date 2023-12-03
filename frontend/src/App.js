@@ -10,6 +10,7 @@ import ViewTicket from './Components/RegUser/ViewTickets'
 import BookFlight from './Components/Flight/BookFlight'
 import Agentview from './Components/Agent/Agentview'
 import TestPage from './Testing/TestPage.js'
+import TestPage2 from './Testing/TestPage2.js'
 
 
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
@@ -24,12 +25,13 @@ function App() {
         <Route path='/Signup' element={<Signup/>}> </Route>
         <Route path='/home/:Profile1/:username' element={<Home/>}> </Route>
         <Route path='/Adminview/:username' element={<Adminview/>}></Route>
-        <Route path='/FindFlight/:username' element={<FindFlight/>}> </Route>
-        <Route path='/ViewTickets/:username' element={<ViewTicket/>}> </Route>
-        <Route path='/BookFlight/:username/:flightID' element={<BookFlight/>}> </Route>
-        <Route path='/Agentview' element={<Agentview/>}> </Route>
+        <Route path='/FindFlight/:Profile1/:username' element={<FindFlight/>}> </Route>
+        <Route path='/ViewTickets/:Profile1/:username' element={<ViewTicket/>}> </Route>
+        <Route path='/BookFlight/:Profile1/:username/:flightID' element={<BookFlight/>}> </Route>
+        <Route path='/Agentview/:Profile1/:username' element={<Agentview/>}> </Route>
         {/* Testing */}
         <Route path='/TestPage' element={<TestPage/>}> </Route>
+        <Route path='/TestPage2' element={<TestPage2/>}> </Route>
         {/* Testing */}
       </Routes>
     </BrowserRouter>

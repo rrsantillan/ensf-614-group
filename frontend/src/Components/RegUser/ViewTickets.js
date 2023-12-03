@@ -8,7 +8,7 @@ function ViewTickets(){
     
     const [flightData, setFlightData] = useState(null);
     
-    const { username } = useParams();
+    const { Profile1, username } = useParams();
     const [values, setValues] = useState({
         username: ''
     })
@@ -77,7 +77,7 @@ function ViewTickets(){
     return(
         <div className="d-flex flex-column">
             <div className="p-3 bg-green">
-                <Header />
+                <Header Profile1={Profile1} username={username}/>
             </div>
             <div className="flex-column vh-100 justify-content-center align-items-top">
                 <div className='p-3 bg-white w-75'>

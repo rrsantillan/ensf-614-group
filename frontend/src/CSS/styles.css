@@ -81,7 +81,15 @@
 
   
 
-  .box{
+  .flat-box-20h-400h{
+    height: 20px;
+    width: 400px;
+  }
+  .flat-box-400h-20h{
+    height: 400px;
+    width: 20px;
+  }
+  .navbar-spacer{
     height: 50px;
     width: 400px;
   }
