@@ -21,6 +21,7 @@ const AddAircraftForm = () => {
       });
 
       console.log('Aircraft added successfully:');
+      alert("Aircraft added successfully");
       // You can add additional logic here, such as showing a success message to the user
     } catch (error) {
       console.error('Error adding Aircraft:', error);

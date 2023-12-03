@@ -17,6 +17,7 @@
     "mysql": "^2.18.1",
     "mysql2": "^3.6.3",
     "nodemailer": "^6.9.7",
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "react-bootstrap-validation": "^0.1.11"
   }
 }

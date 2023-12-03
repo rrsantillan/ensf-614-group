@@ -8,15 +8,10 @@ const EditCrewForm = () => {
  const [lname, setLastName] = useState('');
  const [position, setPosition] = useState('');
 
-
  const [crewData, setCrewData] = useState(null);
  const [crewId2, setCrewID] = useState(null);
  
  const [selectedCrewId, setSelectedCrewID] = useState(null);
-
-
-
-
 
 
  const [values, setValues] = useState({
@@ -37,7 +32,7 @@ const EditCrewForm = () => {
 
 
 
-// populates list of flights matching criteria
+// populates list of crew matching first name and last name
  const handleSearch = (e) => {
    e.preventDefault(); // Prevent the default form submission behavior
    console.log(values)
@@ -56,8 +51,6 @@ const EditCrewForm = () => {
   };
 
 
-
-
  /**
   * Populates the edit crew details based on selection
   * @param {*} selectedCrewId
@@ -68,8 +61,6 @@ const EditCrewForm = () => {
  }
 
  
-
-
  /**
   * Saves edit data and attempts INSERT
   * @param {*} selectedCrewId
@@ -89,6 +80,15 @@ const EditCrewForm = () => {
          // no need to do anything here, just writing to the database
          if(res.data === "Success"){
            // confirm
+           alert("Details sucessfully saved!");
+           // Fetch updated crew data after overwrite.
+          axios.post('http://localhost:8081/admin/getCrewByName', values).then((res) => {
+            const fetchedCrewData = res.data.crew;
+            setCrewData(fetchedCrewData);
+          }).catch((err) => {
+            console.error(err);
+          });
+           
          }else if (requestData.flightID === null){
            alert("Flight ID was empty.");
          }
@@ -109,19 +109,24 @@ const EditCrewForm = () => {
   const deleteCrewMember = async (e) => {
     e.preventDefault();
     
-    
-     
-
     console.log(selectedCrewId);
     axios.post('http://localhost:8081/admin/deleteCrewByCrewId', {crewid: selectedCrewId})
       .then((res) => {
         if (res.data === "Success") {
-          // Handle successful deletion, if needed
-          setFirstName('');
-        setLastName('');
-        setPosition('');
-        setSelectedCrewID(null);
+          // Handle successful deletion
           alert("Crew member deleted successfully.");
+          setFirstName('');
+          setLastName('');
+          setPosition('');
+          setSelectedCrewID(null);
+        
+          // Fetch updated crew data after deletion
+          axios.post('http://localhost:8081/admin/getCrewByName', values).then((res) => {
+          const fetchedCrewData = res.data.crew;
+          setCrewData(fetchedCrewData);
+        }).catch((err) => {
+          console.error(err);
+        });
         } else {
           alert("Unable to delete crew member.");
         }
@@ -132,8 +137,6 @@ const EditCrewForm = () => {
         console.error(err);
       });
   };
-
-
 
 
  return (
