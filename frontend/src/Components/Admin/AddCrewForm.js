@@ -20,6 +20,7 @@ const AddCrewForm = () => {
       });
 
       console.log('New crew member added successfully:');
+      alert("New crew member added successfully");
       // You can add additional logic here, such as showing a success message to the user
     } catch (error) {
       console.error('Error adding new crew member:', error);

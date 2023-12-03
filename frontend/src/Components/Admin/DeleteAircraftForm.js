@@ -27,7 +27,7 @@ const DeleteAircraftForm = () => {
       });
 
       console.log('Aircraft deleted successfully:');
-      // You can add additional logic here, such as showing a success message to the user
+      alert("Aircraft deleted successfully");
       // Fetch the updated list after deletion
       const updatedAircraftList = await axios.post('http://localhost:8081/admin/getAircraftIDs');
       setAircraftList(updatedAircraftList.data.planes);
