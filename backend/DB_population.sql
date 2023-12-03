@@ -54,8 +54,8 @@ CREATE TABLE tblCrew (
 	POSITION			VARCHAR(25) NOT NULL
 );
 
-DROP TABLE IF EXISTS tblAassignedCrew; 
-CREATE TABLE tblAassignedCrew (
+DROP TABLE IF EXISTS tblAssignedCrew; 
+CREATE TABLE tblAssignedCrew (
 	CREWID 			INT,		
 	FLIGHTID			varchar(25) NOT NULL,
 	FOREIGN KEY (CREWID) REFERENCES tblCrew(CREWID)
@@ -98,7 +98,7 @@ VALUES
 ( 'Nancy', 'Drew', 'PILOT'),
 ( 'Bob', 'Tim', 'ATTENDANT');
 
-INSERT INTO tblAassignedCrew(FLIGHTID, CREWID)
+INSERT INTO tblAssignedCrew(FLIGHTID, CREWID)
 VALUES
 (1, 1),
 (1, 2);

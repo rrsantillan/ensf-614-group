@@ -242,6 +242,7 @@ router.post('/getCrew', (req, res) => {
  * used in: EditCrewAssignment.js
  */
 router.post('/getAssignedCrew', (req, res) => {
+    console.log(req.body.selectedFlightID)
     const sql = "SELECT tblCrew.CREWID, tblCrew.FNAME FROM tblCrew LEFT JOIN tblAssignedCrew on tblCrew.CREWID = tblAssignedCrew.CREWID WHERE tblAssignedCrew.FLIGHTID = ?"
     
     db.query(sql, [req.body.selectedFlightID], (err, data) => {
