@@ -209,14 +209,7 @@ function EditCrewAssignments(){
     
     return(
      <div className="container mt-4">
-        <div className="mb-4">
-            <ul className="nav nav-tabs">
-            <li className="nav-item">
-                <button className={`nav-link ${activeTab === 'browse' ? 'active' : ''}`} onClick={() => setActiveTab('browse')}>Edit Crew Flight Assigments</button>
-            </li>
-           
-            </ul>
-      </div>
+          
 
       {renderContent()}
     </div>

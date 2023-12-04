@@ -50,10 +50,11 @@ const EditFlightForm = () => {
    console.log(values)
    axios.post('http://localhost:8081/flight/checkFlights', values)
    .then((res) => {
-       const fetchedFlightData = res.data.flights;
-       console.log('fetchedFlightData:', fetchedFlightData);
-       setFlightData(fetchedFlightData);
-       setFlightID(fetchedFlightData.flightID);
+        const fetchedFlightData = res.data.flights;
+        console.log('fetchedFlightData:', fetchedFlightData);
+        const fetchedFlightDataTimeFormatted = formatFlightTime(fetchedFlightData)
+        setFlightData(fetchedFlightDataTimeFormatted);
+        setFlightID(fetchedFlightData.flightID);
    })
    .catch((err) => {
        console.error(err);
@@ -171,65 +172,72 @@ const fetchAircraftList = async () => {
   };
 
 
- /**
-  * Converts the date/time string into the required format of'YYYY-MM-DDTHH:mm:ss.SSS'
-  * @param {*} dateString
-  * @returns
-  */
- const formatDateString = (dateString) => {
-   const formattedDate = moment.utc(dateString).format('YYYY-MM-DDTHH:mm:ss.SSS');
-   return formattedDate;
- };
-
+  /**
+    * Converts the date/time string into the required format of'YYYY-MM-DDTHH:mm:ss.SSS'
+    * @param {*} dateString
+    * @returns
+    */
+  const formatDateString = (dateString) => {
+    const formattedDate = moment.utc(dateString).format('YYYY-MM-DDTHH:mm:ss.SSS');
+    return formattedDate;
+  };
+ 
+  const formatFlightTime = (data) => {
+    return data.map(flight => ({
+      ...flight,
+      DEPARTURETIME: moment.utc(flight.DEPARTURETIME).format('MMMM Do YYYY, h:mm a'),
+      ARRIVALTIME: moment.utc(flight.ARRIVALTIME).format('MMMM Do YYYY, h:mm a')
+    }));
+  };
 
  return (
    <div>
        <form action='' onSubmit={handleSearch}>
                    <div>
-                       <input type="text" placeholder='From...' name = 'Origin'
+                       <input type="text" placeholder='From' name = 'Origin'
                        onChange={handleInput} className='form-control'/>
                      
                    </div>
+                   <p></p>
                    <div>
-                       <input type="text" placeholder='To...' name = 'Dest'
+                       <input type="text" placeholder='To' name = 'Dest'
                        onChange={handleInput} className='form-control'/>
                    
                    </div>
+                   <p></p>
                    <button type='submit' className='btn btn-success w-100'>Search Flights</button>
                </form>
                {Array.isArray(flightData) && flightData.length > 0 && (
-                   <div className="flight-details-container">
-                       <h3>Flight Details</h3>
-                       {flightData.map((flight, index) => (
-                           <div className="flight-data-container" key={index}>
-                               <p>Departure: {flight.ORIGIN}, {flight.DEPARTURETIME}</p>
-                               <p>Land: {flight.DESTINATION}, {flight.ARRIVALTIME}</p>
-
-
-
-
-                               <button onClick={() => {
-                                   setFlightID(flight.FLIGHTID);
-                                   setSelectedFlightID(flight.FLIGHTID)
-                                   populateEditFields(flight.FLIGHTID);
-                                  
-                                   setDestination(flight.DESTINATION)
-                                   setOrigin(flight.ORIGIN)
-                                   setDepartureTime(formatDateString(flight.DEPARTURETIME))
-                                   setLandingTime(formatDateString(flight.ARRIVALTIME))
-                                   }}
-                                 
-                                   className={selectedFlightID === flight.FLIGHTID ? 'selectedFlight' : ''}>
-                                   Set Flight
-                               </button>
-                               <p></p>
-                           </div>
-                       ))}    
+                   <div className="mt-3 p-2 border">
+                      <h3>Flight Details</h3>
+                      <div className='p-2 flight-details-container'>
+                          {flightData.map((flight, index) => (
+                              <div className="flight-data-container" key={index}>
+                                    <p><strong>Origin:</strong> {flight.ORIGIN} <strong>Departure Time:</strong> {flight.DEPARTURETIME}</p>
+                                    <p><strong>Destination:</strong> {flight.DESTINATION} <strong>Landing Time:</strong> {flight.ARRIVALTIME}</p>
+                                  <button onClick={() => {
+                                      setFlightID(flight.FLIGHTID);
+                                      setSelectedFlightID(flight.FLIGHTID)
+                                      populateEditFields(flight.FLIGHTID);
+                                      
+                                      setDestination(flight.DESTINATION)
+                                      setOrigin(flight.ORIGIN)
+                                      setDepartureTime(formatDateString(flight.DEPARTURETIME))
+                                      setLandingTime(formatDateString(flight.ARRIVALTIME))
+                                      }}
+                                    
+                                      className={selectedFlightID === flight.FLIGHTID ? 'selectedFlight' : ''}>
+                                      Set Flight
+                                  </button>
+                                  <p></p>
+                              </div>
+                          ))}
+                        </div>    
                    </div>
                  
                )}
 
-   <div>
+   <div className='my-3'>
        <form className="flight-form" onSubmit={saveChangesToFlight} style={{ maxWidth: '400px', margin: 'auto', textAlign: 'left' }}>
            <h3>Edit Flight Details for FlightID: {selectedFlightID}</h3>
 
