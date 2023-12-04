@@ -155,38 +155,40 @@ function EditCrewAssignments(){
               <div>
                 <form action='' onSubmit={handleSearch}>
                     <div>
-                        <input type="text" placeholder='From...' name = 'Origin'
+                        <input type="text" placeholder='From' name = 'Origin'
                         onChange={handleInput} className='form-control'/>
-                        
                     </div>
+                    <p></p>
                     <div>
-                        <input type="text" placeholder='To...' name = 'Dest'
+                        <input type="text" placeholder='To' name = 'Dest'
                         onChange={handleInput} className='form-control'/>
-                      
                     </div>
+                    <p></p>
                     <button type='submit' className='btn btn-success w-100'>Search Flights</button>
                 </form>
                 {Array.isArray(flightData) && flightData.length > 0 && (
-                    <div className="flight-details-container">
+                      <div className="mt-3 p-2 border">
                         <h3>Flight Details</h3>
-                        {flightData.map((flight, index) => (
-                            <div className="flight-data-container" key={index}>
-                                <p>Departure: {flight.ORIGIN}, {flight.DEPARTURETIME}</p>
-                                <p>Land: {flight.DESTINATION}, {flight.ARRIVALTIME}</p>
+                        <div className="p-2 flight-details-container">
+                              {flightData.map((flight, index) => (
+                                  <div className="flight-data-container" key={index}>
+                                          <p><strong>Origin:</strong> {flight.ORIGIN} <strong>Departure Time:</strong> {flight.DEPARTURETIME}</p>
+                                          <p><strong>Destination:</strong> {flight.DESTINATION} <strong>Landing Time:</strong> {flight.ARRIVALTIME}</p>
 
-                                <button onClick={() => {
-                                    setFlightID(flight.FLIGHTID);
-                                    setSelectedFlightID(flight.FLIGHTID)
-                                    fetchCrew(flight.FLIGHTID);
-                                    }}
-                                    
-                                    className={selectedFlightID === flight.FLIGHTID ? 'selectedFlight' : ''}>
-                                    Set Flight
-                                </button>
-                                <p></p>
-                            </div>
-                        ))}     
-                    </div>
+                                      <button onClick={() => {
+                                          setFlightID(flight.FLIGHTID);
+                                          setSelectedFlightID(flight.FLIGHTID)
+                                          fetchCrew(flight.FLIGHTID);
+                                          }}
+                                          
+                                          className={selectedFlightID === flight.FLIGHTID ? 'selectedFlight' : ''}>
+                                          Set Flight
+                                      </button>
+                                      <p></p>
+                                  </div>
+                              ))}     
+                        </div>
+                      </div>
                 )}
     
                 <div style={{ marginTop: '20px' }}>

@@ -191,110 +191,110 @@ const fetchAircraftList = async () => {
   };
 
  return (
-   <div>
-       <form action='' onSubmit={handleSearch}>
-                   <div>
-                       <input type="text" placeholder='From' name = 'Origin'
-                       onChange={handleInput} className='form-control'/>
-                     
-                   </div>
-                   <p></p>
-                   <div>
-                       <input type="text" placeholder='To' name = 'Dest'
-                       onChange={handleInput} className='form-control'/>
-                   
-                   </div>
-                   <p></p>
-                   <button type='submit' className='btn btn-success w-100'>Search Flights</button>
-               </form>
-               {Array.isArray(flightData) && flightData.length > 0 && (
-                   <div className="mt-3 p-2 border">
-                      <h3>Flight Details</h3>
-                      <div className='p-2 flight-details-container'>
-                          {flightData.map((flight, index) => (
-                              <div className="flight-data-container" key={index}>
-                                    <p><strong>Origin:</strong> {flight.ORIGIN} <strong>Departure Time:</strong> {flight.DEPARTURETIME}</p>
-                                    <p><strong>Destination:</strong> {flight.DESTINATION} <strong>Landing Time:</strong> {flight.ARRIVALTIME}</p>
-                                  <button onClick={() => {
-                                      setFlightID(flight.FLIGHTID);
-                                      setSelectedFlightID(flight.FLIGHTID)
-                                      populateEditFields(flight.FLIGHTID);
+    <div>
+        <form action='' onSubmit={handleSearch}>
+                    <div>
+                        <input type="text" placeholder='From' name = 'Origin'
+                        onChange={handleInput} className='form-control'/>
+                      
+                    </div>
+                    <p></p>
+                    <div>
+                        <input type="text" placeholder='To' name = 'Dest'
+                        onChange={handleInput} className='form-control'/>
+                    
+                    </div>
+                    <p></p>
+                    <button type='submit' className='btn btn-success w-100'>Search Flights</button>
+                </form>
+                {Array.isArray(flightData) && flightData.length > 0 && (
+                    <div className="mt-3 p-2 border">
+                        <h3>Flight Details</h3>
+                        <div className='p-2 flight-details-container'>
+                            {flightData.map((flight, index) => (
+                                <div className="flight-data-container" key={index}>
+                                      <p><strong>Origin:</strong> {flight.ORIGIN} <strong>Departure Time:</strong> {flight.DEPARTURETIME}</p>
+                                      <p><strong>Destination:</strong> {flight.DESTINATION} <strong>Landing Time:</strong> {flight.ARRIVALTIME}</p>
+                                    <button onClick={() => {
+                                        setFlightID(flight.FLIGHTID);
+                                        setSelectedFlightID(flight.FLIGHTID)
+                                        populateEditFields(flight.FLIGHTID);
+                                        
+                                        setDestination(flight.DESTINATION)
+                                        setOrigin(flight.ORIGIN)
+                                        setDepartureTime(formatDateString(flight.DEPARTURETIME))
+                                        setLandingTime(formatDateString(flight.ARRIVALTIME))
+                                        }}
                                       
-                                      setDestination(flight.DESTINATION)
-                                      setOrigin(flight.ORIGIN)
-                                      setDepartureTime(formatDateString(flight.DEPARTURETIME))
-                                      setLandingTime(formatDateString(flight.ARRIVALTIME))
-                                      }}
-                                    
-                                      className={selectedFlightID === flight.FLIGHTID ? 'selectedFlight' : ''}>
-                                      Set Flight
-                                  </button>
-                                  <p></p>
-                              </div>
-                          ))}
-                        </div>    
-                   </div>
-                 
-               )}
+                                        className={selectedFlightID === flight.FLIGHTID ? 'selectedFlight' : ''}>
+                                        Set Flight
+                                    </button>
+                                    <p></p>
+                                </div>
+                            ))}
+                          </div>    
+                    </div>
+                  
+                )}
 
-   <div className='my-3'>
-       <form className="flight-form" onSubmit={saveChangesToFlight} style={{ maxWidth: '400px', margin: 'auto', textAlign: 'left' }}>
-           <h3>Edit Flight Details for FlightID: {selectedFlightID}</h3>
+    <div className='my-3'>
+        <form className="flight-form" onSubmit={saveChangesToFlight} style={{ maxWidth: '400px', margin: 'auto', textAlign: 'left' }}>
+            <h3>Edit Flight Details for FlightID: {selectedFlightID}</h3>
 
 
-           <div className="form-control" style={{ marginBottom: '10px', display: 'flex', flexDirection: 'column' }}>
-            <label style={{ marginBottom: '5px' }}>
-             Aircraft ID, Model:
-            </label>
-            <select value={aircraftid} onChange={(e) => setAircraftId(e.target.value)}>
-              <option value="" disabled>Select Aircraft</option>
-                 {aircraftList ? (
-                  aircraftList.map((aircraft) => (
-              <option key={aircraft.AIRPLANEVIN} value={aircraft.AIRPLANEVIN}>
-                {aircraft.AIRPLANEVIN}, {aircraft.MODEL}
-              </option>
-            ))
-          ) : null}
-        </select>
-      </div>
+            <div className="form-control" style={{ marginBottom: '10px', display: 'flex', flexDirection: 'column' }}>
+              <label style={{ marginBottom: '5px' }}>
+              Aircraft ID, Model:
+              </label>
+              <select value={aircraftid} onChange={(e) => setAircraftId(e.target.value)}>
+                <option value="" disabled>Select Aircraft</option>
+                  {aircraftList ? (
+                    aircraftList.map((aircraft) => (
+                <option key={aircraft.AIRPLANEVIN} value={aircraft.AIRPLANEVIN}>
+                  {aircraft.AIRPLANEVIN}, {aircraft.MODEL}
+                </option>
+              ))
+            ) : null}
+          </select>
+        </div>
 
-<div className="form-control" style={{ marginBottom: '10px', display: 'flex', flexDirection: 'column' }}>
-               <label style={{ marginBottom: '5px' }}>
-               Source:
-               </label>
-               <input type="text" value={origin} onChange={(e) => setOrigin(e.target.value)} />
-           </div>
-
-
-           <div className="form-control" style={{ marginBottom: '10px', display: 'flex', flexDirection: 'column' }}>
-               <label style={{ marginBottom: '5px' }}>
-               Destination:
-               </label>
-               <input type="text" value={destination} onChange={(e) => setDestination(e.target.value)} />
-           </div>
+            <div className="form-control" style={{ marginBottom: '10px', display: 'flex', flexDirection: 'column' }}>
+                <label style={{ marginBottom: '5px' }}>
+                Source:
+                </label>
+                <input type="text" value={origin} onChange={(e) => setOrigin(e.target.value)} />
+            </div>
 
 
-           <div className="form-control" style={{ marginBottom: '10px' }}>
-               <label>
-               Departure Time:
-               <input type="datetime-local" value={departureTime} onChange={(e) => setDepartureTime(e.target.value)} />
-               </label>
-           </div>
+            <div className="form-control" style={{ marginBottom: '10px', display: 'flex', flexDirection: 'column' }}>
+                <label style={{ marginBottom: '5px' }}>
+                Destination:
+                </label>
+                <input type="text" value={destination} onChange={(e) => setDestination(e.target.value)} />
+            </div>
 
 
-           <div className="form-control" style={{ marginBottom: '10px' }}>
-               <label>
-               Landing Time:
-               <input type="datetime-local" value={landingTime} onChange={(e) => setLandingTime(e.target.value)} />
-               </label>
-           </div>
+            <div className="form-control" style={{ marginBottom: '10px' }}>
+                <label>
+                Departure Time:
+                <input type="datetime-local" value={departureTime} onChange={(e) => setDepartureTime(e.target.value)} />
+                </label>
+            </div>
 
-           <button type='submit' className='btn btn-success w-100'>Save Changes to Flight</button>
-           <button onClick={deleteFlight} className='btn btn-danger w-100' style={{ marginTop: '10px' }}>Delete Flight</button>
-       </form>
-     
-   </div>
-   </div>
+
+            <div className="form-control" style={{ marginBottom: '10px' }}>
+                <label>
+                Landing Time:
+                <input type="datetime-local" value={landingTime} onChange={(e) => setLandingTime(e.target.value)} />
+                </label>
+            </div>
+
+            <button type='submit' className='btn btn-success w-100'>Save Changes to Flight</button>
+            <button onClick={deleteFlight} className='btn btn-danger w-100' style={{ marginTop: '10px' }}>Delete Flight</button>
+        </form>
+      
+    </div>
+  </div>
  
  );
 };
