@@ -1,4 +1,4 @@
-# Flight Reservation Web Application 
+# Flight Reservation Web Application ✈️
 
 An ENSF 614 Group Project
 
