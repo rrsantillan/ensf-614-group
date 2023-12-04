@@ -209,7 +209,7 @@ const fetchAircraftList = async () => {
                                       <p><strong>Origin:</strong> {flight.ORIGIN} <strong>Departure Time:</strong> {flight.DEPARTURETIME}</p>
                                       <p><strong>Destination:</strong> {flight.DESTINATION} <strong>Landing Time:</strong> {flight.ARRIVALTIME}</p>
                                     <button onClick={() => {
-                                        setFlightID(flight.FLIGHTID);
+                                        // setFlightID(flight.FLIGHTID);
                                         setSelectedFlightID(flight.FLIGHTID)
                                         populateEditFields(flight.FLIGHTID);
                                         
