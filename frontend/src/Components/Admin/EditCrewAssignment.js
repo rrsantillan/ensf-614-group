@@ -10,14 +10,9 @@ function EditCrewAssignments(){
     const [activeTab] = useState('browse'); 
 
     const [flightData, setFlightData] = useState(null);
-    const [selectedFlight, setSelectedFlight] = useState(null);
+    const [selectedFlight] = useState(null);
     const [selectedFlightID, setSelectedFlightID] = useState(null);
-    const [flightID2, setFlightID] = useState(null);
-    const [fetchedAssignedCrew, setFetchedAssignedCrew] = useState([]);
-
-
     
-
     const [values, setValues] = useState({
         Origin: '',
         Dest: ''
@@ -90,7 +85,7 @@ function EditCrewAssignments(){
           //console.log('Updated All Crew:', updatedAllCrew);
           return updatedAllCrew;
         });
-         setFetchedAssignedCrew(fetchedAssignedCrewArray.map(crew => ({ CREWID: crew.CREWID, FNAME: crew.FNAME })));
+        
          setSelectedCrew(fetchedAssignedCrewArray.map(crew => ({ CREWID: crew.CREWID, FNAME: crew.FNAME })));
 
         } catch (err) {
@@ -127,8 +122,7 @@ function EditCrewAssignments(){
             const fetchedFlightData = res.data.flights;
             //console.log('fetchedFlightData:', fetchedFlightData);
             setFlightData(fetchedFlightData);
-            setFlightID(fetchedFlightData.flightID);
-    
+           
         })
         .catch((err) => {
             console.error(err);
@@ -166,7 +160,7 @@ function EditCrewAssignments(){
                                           <p><strong>Destination:</strong> {flight.DESTINATION} <strong>Landing Time:</strong> {flight.ARRIVALTIME}</p>
 
                                       <button onClick={() => {
-                                          setFlightID(flight.FLIGHTID);
+                                         
                                           setSelectedFlightID(flight.FLIGHTID)
                                           fetchCrew(flight.FLIGHTID);
                                           }}
