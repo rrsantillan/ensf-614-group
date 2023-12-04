@@ -15,16 +15,9 @@ const EditFlightForm = () => {
  const [origin, setOrigin] = useState('');
  const [departureTime, setDepartureTime] = useState('');
  const [landingTime, setLandingTime] = useState('');
-
-
-
-
  const [flightData, setFlightData] = useState(null);
- const [selectedFlight, setSelectedFlight] = useState(null);
  const [selectedFlightID, setSelectedFlightID] = useState(null);
- const [flightID2, setFlightID] = useState(null);
- const [fetchedAssignedCrew, setFetchedAssignedCrew] = useState([]);
-
+ 
 
 
 
@@ -54,7 +47,7 @@ const EditFlightForm = () => {
         console.log('fetchedFlightData:', fetchedFlightData);
         const fetchedFlightDataTimeFormatted = formatFlightTime(fetchedFlightData)
         setFlightData(fetchedFlightDataTimeFormatted);
-        setFlightID(fetchedFlightData.flightID);
+        
    })
    .catch((err) => {
        console.error(err);
@@ -66,20 +59,20 @@ const EditFlightForm = () => {
 
  /**
   * Populates the edit flight details base on selection
-  * @param {*} FLIGHTID
+  * @param {*} flightid
   */
- const populateEditFields = (FLIGHTID) => {
+ const populateEditFields = (flightid) => {
 
    // flightID2 on the next line must be the same name in the post definition for /getFlightByFlightID
    // specifically the String that goes into db.query(sql, req.body.flightID2)
-   const requestData = { flightID2: FLIGHTID }
+   const requestData = { flightID2: flightid }
    // console.log(FLIGHTID)
    axios.post('http://localhost:8081/admin/getFlightByFlightID', requestData)
      .then((res) => {
          const fetchedFlightData = res.data.flights;
          console.log('fetchedFlightData before setters:', fetchedFlightData);
          setFlightData(fetchedFlightData);
-         setFlightID(fetchedFlightData.flightID);
+         
          setAircraftId(fetchedFlightData[0].AIRPLANEID)
          setDestination(fetchedFlightData[0].DESTINATION)
          setOrigin(fetchedFlightData[0].ORIGIN)
@@ -216,7 +209,7 @@ const fetchAircraftList = async () => {
                                     <p><strong>Origin:</strong> {flight.ORIGIN} <strong>Departure Time:</strong> {flight.DEPARTURETIME}</p>
                                     <p><strong>Destination:</strong> {flight.DESTINATION} <strong>Landing Time:</strong> {flight.ARRIVALTIME}</p>
                                   <button onClick={() => {
-                                      setFlightID(flight.FLIGHTID);
+                                     
                                       setSelectedFlightID(flight.FLIGHTID)
                                       populateEditFields(flight.FLIGHTID);
                                       

@@ -7,7 +7,7 @@ import axios from 'axios'
 
 function EditCrewAssignments(){
     //const { username } = useParams();
-    const [activeTab, setActiveTab] = useState('browse'); 
+    const [activeTab] = useState('browse'); 
 
     const [flightData, setFlightData] = useState(null);
     const [selectedFlight, setSelectedFlight] = useState(null);
@@ -15,11 +15,6 @@ function EditCrewAssignments(){
     const [flightID2, setFlightID] = useState(null);
     const [fetchedAssignedCrew, setFetchedAssignedCrew] = useState([]);
 
-    //for add aircraft
-    const [selectedAircraft, setSelectedAircarft] = useState([]);
-
-    //for add new crew
-    const [selectedNewCrew, setSelectedNewCrewTab] = useState([]);
 
     
 
@@ -90,8 +85,6 @@ function EditCrewAssignments(){
         const fetchedAssignedCrewArray = assignedCrewResponse.data.crew;
         //console.log('Assigned Crew:', fetchedAssignedCrewArray);
           
-         // Update the states
-         // Update the states
         setAllCrew((prevAllCrew) => {
           const updatedAllCrew = prevAllCrew.filter((c) => !fetchedAssignedCrewArray.some((assigned) => assigned.CREWID === c.CREWID));
           //console.log('Updated All Crew:', updatedAllCrew);
@@ -99,9 +92,6 @@ function EditCrewAssignments(){
         });
          setFetchedAssignedCrew(fetchedAssignedCrewArray.map(crew => ({ CREWID: crew.CREWID, FNAME: crew.FNAME })));
          setSelectedCrew(fetchedAssignedCrewArray.map(crew => ({ CREWID: crew.CREWID, FNAME: crew.FNAME })));
-
-         //console.log('All Crew after fetching:', allCrew);
-         //console.log('Assigned Crew after fetching:', fetchedAssignedCrewArray);
 
         } catch (err) {
             console.error(err);
