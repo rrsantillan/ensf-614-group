@@ -147,44 +147,48 @@ const EditCrewForm = () => {
                        onChange={handleInput} className='form-control'/>
                      
                    </div>
+                   <p></p>
                    <div>
                        <input type="text" placeholder='Dylan' name = 'lname'
                        onChange={handleInput} className='form-control'/>
                    
                    </div>
+                   <p></p>
                    <button type='submit' className='btn btn-success w-100'>Search Crew</button>
                </form>
 
                {Array.isArray(crewData) && crewData.length > 0 && (
-                   <div className="flight-details-container">
-                       <h3>Crew Member Details</h3>
-                       {crewData.map((crew, index) => (
-                           <div className="flight-data-container" key={crew.crewid}>
-                               <p>First Name: {crew.fname}</p>
-                               <p>Last Name: {crew.lname}</p>
-                               <p>Title: {crew.position}</p>
+                  <div className="mt-3 p-2 border">
+                    <div className="p-2 flight-details-container">
+                        <h3>Crew Member Details</h3>
+                          {crewData.map((crew, index) => (
+                              <div className="p-2 flight-data-container" key={crew.crewid}>
+                                  <p>First Name: {crew.fname}</p>
+                                  <p>Last Name: {crew.lname}</p>
+                                  <p>Title: {crew.position}</p>
 
-                               <button onClick={() => {
-                                   setCrewID(crew.crewid);
-                                   setSelectedCrewID(crew.crewid)
-                                   populateEditFields(crew.crewid);
-                                  
-                                   setFirstName(crew.fname)
-                                   setLastName(crew.lname)
-                                   setPosition(crew.position)
-                                  
-                                   }}
-                                 
-                                   className={selectedCrewId === crew.crewid ? 'selectedCrew' : ''}>
-                                   Set Crew
-                               </button>
-                               <p></p>
-                           </div>
-                       ))}    
-                   </div> 
+                                  <button onClick={() => {
+                                      setCrewID(crew.crewid);
+                                      setSelectedCrewID(crew.crewid)
+                                      populateEditFields(crew.crewid);
+                                      
+                                      setFirstName(crew.fname)
+                                      setLastName(crew.lname)
+                                      setPosition(crew.position)
+                                      
+                                      }}
+                                    
+                                      className={selectedCrewId === crew.crewid ? 'selectedCrew' : ''}>
+                                      Set Crew
+                                  </button>
+                                  <p></p>
+                              </div>
+                          ))}
+                      </div>        
+                    </div> 
                )}
-   <div>
-       <form className="flight-form" onSubmit={saveChangesToCrew} style={{ maxWidth: '400px' , margin: 'auto', textAlign: 'left' }}>
+   <div className='my-3'>
+       <form className="flight-form" onSubmit={saveChangesToFlight} style={{ maxWidth: '400px' , margin: 'auto', textAlign: 'left' }}>
            <h3>Edit Details for Crew ID #: {selectedCrewId}</h3>
 
 
