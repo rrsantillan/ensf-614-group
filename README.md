@@ -68,3 +68,6 @@ An ENSF 614 Group Project
 
 ## Usage
 Once the frontend server is up and running, go to [http://localhost:3000/](http://localhost:3000/) in your web browser. You should land on the login screen.
+
+## Demo
+Here is a video summary of our project. Demo starts at around the 4:00 mark. [Link](https://www.youtube.com/watch?v=dXytqYPxevk)
