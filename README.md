@@ -1,8 +1,9 @@
 # Flight Reservation Web Application ✈️
 
-An ENSF 614 Group Project
+For our term project, we built a flight reservation web application. 
 
-# Project Name - Node.js Application
+As a group, we analyzed, designed, and developed a web-based system that can be used
+by different type of users such as tourism agents, airline agents, and system admin(s). 
 
 ## Getting Started
 
@@ -22,7 +23,7 @@ An ENSF 614 Group Project
     git pull
     ```
 
-### Step 2: Install Node.js
+### Step 2: Install Node.js 🟢
 1. Download and install Node.js from [Node.js Official Website](https://nodejs.org/en/download/current).
 2. Choose your platform and download the appropriate installer.
 3. Follow the installation instructions to complete the setup.
